@@ -1,0 +1,74 @@
+{
+    "orders" : [
+        {
+            "id": 1,
+            "name" : "Dhiraj Borse",
+            "number" : 3278932649,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "14min",
+            "orders" : ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"]
+        },
+        {
+            "id": 2,
+            "name" : "Kuldeep Borse",
+            "number" : 7837290127,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "10min",
+            "orders" : [ "Pizza", "Cheesburger", "Hamburger", "Coca-Cola", "Rice"]
+        },
+        {
+            "id": 3,
+            "name" : "Manish Sharma",
+            "number" : 43243248789,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "9min",
+            "orders" : ["Hamburger" ,"Cheesburger", "Coca-Cola", "Pizza"]
+        },
+        {
+            "id": 4,
+            "name" : "Virat Kohli",
+            "number" : 9978562390,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "6min",
+            "orders" : ["Cheesburger", "Pizza", "Coca-Cola" ]
+        },
+        {
+            "id": 5,
+            "name" : "Mahindra Singh",
+            "number" : 3488932973,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "20min",
+            "orders" : [ "Coca-Cola", "Pizza"]
+        },
+        {
+            "id": 6,
+            "name" : "Yuvraj Sing",
+            "number" : 7872190632,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "14min",
+            "orders" : ["Pizza"]
+        },
+        {
+            "id": 7,
+            "name" : "Bhavesh Shinde",
+            "number" : 387201284,
+            "orderNumber": null,
+            "confirmTime" : null,
+            "staus" : "ordered",
+            "timeRequire": "6min",
+            "orders" : ["Cheesburger"]
+        }
+    ]
+}
