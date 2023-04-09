@@ -5,7 +5,10 @@ import colors from "../refs/colors";
 const Button = (props) => {
   return (
     <View style={[styles.container]}>
-      <TouchableOpacity style={props.outline ? styles.outline : styles.filled}>
+      <TouchableOpacity
+        onPress={props.onPress}
+        style={props.outline ? styles.outline : styles.filled}
+      >
         <Text
           style={{
             color: props.outline ? colors.lightGray : colors.lightBlack,

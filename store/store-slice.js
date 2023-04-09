@@ -1,30 +1,79 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
+import { useState } from "react";
+import data from "../assets/data/orders.json";
+import getTimePassedSec from "../refs/getTime";
 
 const initialState = {
-  value: 0,
+  pending: [],
+  current: [],
+  schedule: [],
+  complete: [],
 };
 
-export const counterSlice = createSlice({
-  name: "counter",
+export const OrdersDistrubutionSclie = createSlice({
+  name: "ordersDistribution",
   initialState,
   reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
+    handlePending: (state, action) => {
+      state.pending = data.orders;
     },
-    decrement: (state) => {
-      state.value -= 1;
+    onConfirm: (state, action) => {
+      const orders = state.pending;
+      const confirmOrder = orders?.find((item) => {
+        return item.id === action.payload.id;
+      });
+      confirmOrder.status = "preparing";
+      confirmOrder.confirmTime = getTimePassedSec();
+      confirmOrder.orderNumber = state.current.length + 1;
+      state.current = [...state.current, confirmOrder];
+      const newPendingOrders = state.pending.filter((item) => {
+        return item.id !== action.payload.id;
+      });
+      state.pending = newPendingOrders;
+      // console.log(state.current);
     },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    onReady: (state, action) => {
+      const orders = state.current;
+      const readyOrder = orders.find((item) => {
+        return item.id === action.payload.id;
+      });
+      readyOrder.status = "ready";
+      readyOrder.readyTime = getTimePassedSec();
+      readyOrder.orderNumber = state.complete.length + 1;
+      state.complete = [...state.complete, readyOrder];
+      const newCurrentOrders = state.current.filter((item) => {
+        return item.id !== action.payload.id;
+      });
+      state.current = newCurrentOrders;
+    },
+    onSchedule: (state, action) => {
+      const orders = state.pending;
+      const scheduleOrder = orders?.find((item) => {
+        return item.id === action.payload.id;
+      });
+      scheduleOrder.status = "schedule";
+      scheduleOrder.confirmTime = getTimePassedSec();
+      scheduleOrder.orderNumber = state.schedule.length + 1;
+      scheduleOrder.scheduleFor = action.payload.schedule;
+      state.schedule = [...state.schedule, scheduleOrder];
+      const newPendingOrders = state.pending.filter((item) => {
+        return item.id !== action.payload.id;
+      });
+      state.pending = newPendingOrders;
+    },
+    onDecline: (state, action) => {
+      const newPendingOrders = state.pending.filter((item) => {
+        return item.id !== action.payload.id;
+      });
+      state.pending = newPendingOrders;
     },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const handlePending = OrdersDistrubutionSclie.actions.handlePending;
+export const onConfirm = OrdersDistrubutionSclie.actions.onConfirm;
+export const onReady = OrdersDistrubutionSclie.actions.onReady;
+export const onSchedule = OrdersDistrubutionSclie.actions.onSchedule;
+export const onDecline = OrdersDistrubutionSclie.actions.onDecline;
 
-export default counterSlice.reducer;
+export default OrdersDistrubutionSclie.reducer;

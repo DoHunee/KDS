@@ -9,10 +9,32 @@ import Complete from "./screens/Complete";
 import Schedule from "./screens/Schedule";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "./refs/colors";
+import Profile from "./screens/Profile";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 const Tab = createMaterialBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const HomeStack = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="orders"
+          component={Orders}
+        />
+        <Stack.Screen
+          // options={{ headerShown: false }}
+          name="profile"
+          component={Profile}
+        />
+      </Stack.Navigator>
+    );
+  };
+
   // const [date, newData] = useState("");
   // let d = new Date();
   // let time = d.getTime();
@@ -23,73 +45,75 @@ export default function App() {
   //   return () => clearInterval(timeout);
   // }, [date]);
   return (
-    <NavigationContainer>
-      <StatusBar style="auto" />
-      <Tab.Navigator
-        initialRouteName="current"
-        activeColor={colors.tertiary}
-        inactiveColor={colors.lightGray}
-        barStyle={{ backgroundColor: colors.secondary }}
-      >
-        <Tab.Screen
-          options={{
-            tabBarLabel: "Current",
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name="bell-ring-outline"
-                color={focused ? colors.secondary : color}
-                size={26}
-              />
-            ),
-          }}
-          name="current"
-          component={Current}
-        />
-        <Tab.Screen
-          options={{
-            tabBarLabel: "Orders",
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name="clipboard-list-outline"
-                color={focused ? colors.secondary : color}
-                size={26}
-              />
-            ),
-          }}
-          name="orders"
-          component={Orders}
-        />
-        <Tab.Screen
-          options={{
-            tabBarLabel: "Complete",
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name="checkbox-marked-circle-outline"
-                color={focused ? colors.secondary : color}
-                size={26}
-              />
-            ),
-          }}
-          name="complete"
-          component={Complete}
-        />
+    <Provider store={store}>
+      <NavigationContainer>
+        <StatusBar style="light" />
+        <Tab.Navigator
+          activeColor={colors.tertiary}
+          inactiveColor={colors.lightGray}
+          barStyle={{ backgroundColor: colors.secondary }}
+        >
+          <Tab.Screen
+            options={{
+              tabBarLabel: "Pending",
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  name="clipboard-list-outline"
+                  color={focused ? colors.secondary : color}
+                  size={26}
+                />
+              ),
+            }}
+            name="homeStack"
+            component={HomeStack}
+          />
+          <Tab.Screen
+            options={{
+              tabBarLabel: "Current",
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  name="bell-ring-outline"
+                  color={focused ? colors.secondary : color}
+                  size={26}
+                />
+              ),
+            }}
+            name="current"
+            component={Current}
+          />
 
-        <Tab.Screen
-          options={{
-            tabBarLabel: "Schedule",
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name="timetable"
-                color={focused ? colors.secondary : color}
-                size={26}
-              />
-            ),
-          }}
-          name="schedule"
-          component={Schedule}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+          <Tab.Screen
+            options={{
+              tabBarLabel: "Complete",
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  name="checkbox-marked-circle-outline"
+                  color={focused ? colors.secondary : color}
+                  size={26}
+                />
+              ),
+            }}
+            name="complete"
+            component={Complete}
+          />
+
+          <Tab.Screen
+            options={{
+              tabBarLabel: "Schedule",
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  name="timetable"
+                  color={focused ? colors.secondary : color}
+                  size={26}
+                />
+              ),
+            }}
+            name="schedule"
+            component={Schedule}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
