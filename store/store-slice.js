@@ -30,7 +30,6 @@ export const OrdersDistrubutionSclie = createSlice({
         return item.id !== action.payload.id;
       });
       state.pending = newPendingOrders;
-      // console.log(state.current);
     },
     onReady: (state, action) => {
       const orders = state.current;

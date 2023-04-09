@@ -4,7 +4,3 @@ const getTimePassedSec = () => {
   return Math.round(time / 1000);
 };
 export default getTimePassedSec;
-
-const getScheduleDate = () => {
-  const date = new Date();
-};

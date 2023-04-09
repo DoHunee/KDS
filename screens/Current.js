@@ -25,7 +25,6 @@ const Current = ({ navigation }) => {
 
   const [orders, setOrders] = useState([]);
   const buttonPress = (data) => {
-    console.log(data);
     if (data.action === "ready") {
       dispatch(onReady({ id: data.id }));
     }
@@ -33,7 +32,6 @@ const Current = ({ navigation }) => {
   useEffect(() => {
     setOrders(currentOrders);
   }, [orders, currentOrders]);
-  console.log(currentOrders);
   return (
     <View style={styles.container}>
       {orders.length === 0 && <EmptyOrders name="Current" />}

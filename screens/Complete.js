@@ -8,11 +8,9 @@ import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
 
 const Complete = () => {
-  const dispatch = useDispatch();
   const readyOrders = useSelector(
     (state) => state.OrdersDistrubutionSclie.complete
   );
-  console.log(readyOrders);
 
   const [orders, setOrders] = useState([]);
   const buttonPress = (data) => {

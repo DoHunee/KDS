@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "kds-kittchen",
-    "slug": "kds-kittchen",
+    "name": "KDS",
+    "slug": "KDS",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

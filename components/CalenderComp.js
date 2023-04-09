@@ -1,4 +1,11 @@
-import { Dimensions, StatusBar, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { Calendar } from "react-native-calendars";
 
@@ -13,7 +20,7 @@ const CalenderComp = ({ onPress }) => {
         zIndex: 20000,
         position: "absolute",
         width: Dimensions.get("window").width,
-        top: StatusBar.currentHeight + 20,
+        top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
       }}
     >
       <Calendar
