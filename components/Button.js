@@ -2,6 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import colors from "../refs/colors";
 
+// 버튼 누르면 흐려지는거!!! 
+// accept , decline , schedule 에 정의할 것!!
 const Button = (props) => {
   return (
     <View style={[styles.container]}>
@@ -13,7 +15,7 @@ const Button = (props) => {
           style={{
             color: props.outline ? colors.lightGray : colors.lightBlack,
             fontWeight: "bold",
-            fontSize: 16,
+            fontSize: 17,
           }}
         >
           {props.children}
