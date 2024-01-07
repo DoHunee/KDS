@@ -58,7 +58,7 @@ export default function App() {
         >  
           <Tab.Screen
             options={{
-              tabBarLabel: "대기중",
+              tabBarLabel: "접수대기",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="clipboard-list-outline"
@@ -72,7 +72,7 @@ export default function App() {
           />
           <Tab.Screen
             options={{
-              tabBarLabel: "주문목록",
+              tabBarLabel: " 접수완료",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="bell-ring-outline"
@@ -87,7 +87,7 @@ export default function App() {
 
           <Tab.Screen
             options={{
-              tabBarLabel: "완료목록",
+              tabBarLabel: "처리완료",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="checkbox-marked-circle-outline"
