@@ -14,8 +14,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 
-const Tab = createMaterialBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+
+const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 생성 
+const Stack = createNativeStackNavigator();  //스택 네비게이터
 
 export default function App() {
   const HomeStack = () => {
@@ -45,17 +46,19 @@ export default function App() {
   //   return () => clearInterval(timeout);
   // }, [date]);
   return (
-    <Provider store={store}>
+    // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
+    <Provider store={store}>   
       <NavigationContainer>
-        <StatusBar style="light" />
-        <Tab.Navigator
-          activeColor={colors.tertiary}
-          inactiveColor={colors.lightGray}
-          barStyle={{ backgroundColor: colors.secondary }}
-        >
+        <StatusBar style="light" />  
+        {/* Tab.Navigator안에 탭에 각 화면 컴포넌트(Orders, Current, Complete, Schedule) */}
+        <Tab.Navigator      
+          activeColor={colors.tertiary}  //선택한 아이곤
+          inactiveColor={"black"}  // 선택하지 않은 아이콘 
+          barStyle={{ backgroundColor: "white" }} // 배경
+        >  
           <Tab.Screen
             options={{
-              tabBarLabel: "Pending",
+              tabBarLabel: "대기중",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="clipboard-list-outline"
@@ -69,7 +72,7 @@ export default function App() {
           />
           <Tab.Screen
             options={{
-              tabBarLabel: "Current",
+              tabBarLabel: "주문목록",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="bell-ring-outline"
@@ -84,7 +87,7 @@ export default function App() {
 
           <Tab.Screen
             options={{
-              tabBarLabel: "Complete",
+              tabBarLabel: "완료목록",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="checkbox-marked-circle-outline"
@@ -99,7 +102,7 @@ export default function App() {
 
           <Tab.Screen
             options={{
-              tabBarLabel: "Schedule",
+              tabBarLabel: "예약",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="timetable"
