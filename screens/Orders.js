@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity } from "react-native";
+import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity  } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Calendar } from "react-native-calendars";
 import Modal from "react-native-modal";
@@ -14,6 +14,7 @@ import {
   onDecline,
   onSchedule,
 } from "../store/store-slice";
+import RefreshButton from '../components/RefreshButton';
 
 
 const Orders = ({ navigation }) => {
@@ -75,9 +76,19 @@ const Orders = ({ navigation }) => {
     setOrders(pendingOrders);
   }, [orders, pendingOrders]);
 
+
+  const onRefresh = () => {
+    // 새로고침 작업 수행
+    dispatch(handlePending());
+  };
+
+
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
+        <RefreshButton onRefresh={onRefresh} />
+
         {orders.length === 0 && <EmptyOrders name="Pending" />}
 
         {showCalender && <CalenderComp onPress={handleCalenderDay} />}
@@ -120,7 +131,6 @@ const Orders = ({ navigation }) => {
     </View>
   );
 };
-export default Orders;
 
 const styles = StyleSheet.create({
   container: {
@@ -152,3 +162,5 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 });
+
+export default Orders;
