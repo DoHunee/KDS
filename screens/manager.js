@@ -20,15 +20,13 @@ const Orders = ({ navigation }) => {
   const [showCalender, setShowCalender] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
 
-  // Redux에서 useDispatch를 사용하여 액션을 디스패치
-  const dispatch = useDispatch();
+  
+  const dispatch = useDispatch();    // Redux에서 useDispatch를 사용하여 액션을 디스패치
+  const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);  // Redux에서 상태를 가져오기 위해 useSelector를 사용
+  const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 pendingOrders를 업데이트
 
-  // Redux에서 상태를 가져오기 위해 useSelector를 사용
-  const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
 
-  // 로컬 상태 orders를 사용하여 pendingOrders를 업데이트
-  const [orders, setOrders] = useState([]);
-
+  
   // 주문 목록 및 스케줄 캘린더의 동작을 처리하는 함수
   const buttonPress = (data) => {
     if (data.action === "accept") {

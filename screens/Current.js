@@ -18,14 +18,10 @@ import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
 
 const Current = ({ navigation }) => {
-  // Redux의 useDispatch를 사용하여 액션을 디스패치
-  const dispatch = useDispatch();
-
-  // Redux에서 상태를 가져오기 위해 useSelector를 사용
-  const currentOrders = useSelector((state) => state.OrdersDistrubutionSclie.current);
-
-  // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
-  const [orders, setOrders] = useState([]);
+  
+  const dispatch = useDispatch();  // Redux의 useDispatch를 사용하여 액션을 디스패치
+  const currentOrders = useSelector((state) => state.OrdersDistrubutionSclie.current);  // Redux에서 상태를 가져오기 위해 useSelector를 사용
+  const [orders, setOrders] = useState([]);   // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
 
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {

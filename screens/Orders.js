@@ -1,92 +1,154 @@
-import { Dimensions, StyleSheet, StatusBar, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../refs/colors";
+import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import OrderList from "../components/OrderList";
 import { Calendar } from "react-native-calendars";
+import Modal from "react-native-modal";
+import colors from "../refs/colors";
+import OrderList from "../components/OrderList";
+import EmptyOrders from "../components/EmptyOrders";
+import OrdersNumbers from "../components/OrdersNumbers";
+import CalenderComp from "../components/CalenderComp";
 import {
   handlePending,
   onConfirm,
   onDecline,
   onSchedule,
 } from "../store/store-slice";
-import EmptyOrders from "../components/EmptyOrders";
-import OrdersNumbers from "../components/OrdersNumbers";
-import CalenderComp from "../components/CalenderComp";
+
 
 const Orders = ({ navigation }) => {
-  // 캘린더 표시 여부와 선택된 스케줄 ID를 관리하는 상태
   const [showCalender, setShowCalender] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedReasons, setSelectedReasons] = useState([]);
 
-  // Redux에서 useDispatch를 사용하여 액션을 디스패치
   const dispatch = useDispatch();
-
-  // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
-
-  // 로컬 상태 orders를 사용하여 pendingOrders를 업데이트
   const [orders, setOrders] = useState([]);
 
-  // 주문 목록 및 스케줄 캘린더의 동작을 처리하는 함수
   const buttonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
     } else if (data.action === "decline") {
-      dispatch(onDecline({ id: data.id }));
+      setScheduleId(data.id);
+      setModalVisible(true);
     } else if (data.action === "schedule") {
-      // 스케줄 버튼이 눌렸을 때 캘린더 표시 및 선택된 주문 ID 설정
       setShowCalender(true);
       setScheduleId(data.id);
     }
   };
 
-  // useEffect를 사용하여 초기에 handlePending 액션을 디스패치
-  useEffect(() => {
-    dispatch(handlePending());
-  }, []);
-
-  // useEffect를 사용하여 pendingOrders가 업데이트될 때마다 orders를 업데이트
-  useEffect(() => {
-    setOrders(pendingOrders);
-  }, [orders, pendingOrders]);
-
-  // 캘린더에서 선택한 날짜에 대한 처리 함수
   const handleCalenderDay = (date) => {
-    // 캘린더 숨기기 및 선택한 날짜로 스케줄 액션 디스패치
     setShowCalender(false);
     dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
   };
 
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleDecline = () => {
+    if (selectedReasons.length > 0) {
+      dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
+      setModalVisible(false);
+      setSelectedReasons([]); // Done 버튼을 누른 후에는 선택한 이유 초기화
+    } else {
+      alert("거절 사유를 선택해주세요.");
+    }
+  };
+
+  // 선택한 이유를 추가하거나 제거하는 함수
+  const toggleSelectedReason = (reason) => {
+    const isSelected = selectedReasons.includes(reason);
+    if (isSelected) {
+      setSelectedReasons(selectedReasons.filter((selectedReason) => selectedReason !== reason));
+    } else {
+      setSelectedReasons([...selectedReasons, reason]);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(handlePending());
+  }, []);
+
+  useEffect(() => {
+    setOrders(pendingOrders);
+  }, [orders, pendingOrders]);
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
         {orders.length === 0 && <EmptyOrders name="Pending" />}
 
-        {/* 캘린더 표시 여부에 따라 CalenderComp 컴포넌트 표시 */}
         {showCalender && <CalenderComp onPress={handleCalenderDay} />}
 
-        {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
         <OrdersNumbers length={orders.length} />
 
-        {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
         <OrderList
-          buttons={["Accept", "Decline", "Schedule"]}
+          buttons={["Accept", "Decline", "Pick up immediately", "Schedule"]}
           itemsData={orders}
           buttonPress={buttonPress}
         />
+
+        <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+          <View style={styles.modalContainer}>
+            <FlatList
+              data={["재료소진", "품절", "딴거 드셈"]}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.reasonButton,
+                    {
+                      backgroundColor: selectedReasons.includes(item)
+                        ? colors.secondary
+                        : colors.primary,
+                    },
+                  ]}
+                  onPress={() => toggleSelectedReason(item)}
+                >
+                  <Text style={styles.buttonText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity onPress={handleDecline} style={styles.button}>
+              <Text style={styles.buttonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </SafeAreaView>
     </View>
   );
 };
-
 export default Orders;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primary,
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    padding: 22,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 4,
+    borderColor: "rgba(0, 0, 0, 0.1)",
+  },
+  button: {
+    backgroundColor: colors.secondary,
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  reasonButton: {
+    backgroundColor: colors.primary,
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 4,
   },
 });
