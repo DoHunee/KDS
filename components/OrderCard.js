@@ -63,13 +63,14 @@ const OrderCard = ({
 
 
     
-  // 주문의 상태(status)에 따라 다른 값을 할당합니다. 
-  // opLeft 기본값을 mins로 설정
+  // timeRequire 원래 얼마나 걸리는지
+  // timeRemaining 
   // 준비중일때만 sec로 설정
   let topLeft = timeRequire + " mins";
   if (status === "preparing") {
     topLeft = timeRemaining + " secs";
-  } else if (status === "schedule") {
+  } 
+  else if (status === "schedule") {
     topLeft = scheduleFor;
   }
 
@@ -102,15 +103,20 @@ const OrderCard = ({
             {topLeft}
           </Text>
           {timerIcon}
+        
         </TouchableOpacity>
+        
         <View style={{ alignItems: "center" }}>
+        
           <Text>{status}...</Text>
+          
           {status === "preparing" && (
-            <Text>Time Elapsed : {Math.round(timeElapse / 60)} mins</Text>
+            <Text>경과시간 : {Math.round(timeElapse / 60)} mins</Text>
           )}
+          
           {status === "ready" && (
             <Text style={{ color: colors.white }}>
-              Completed in : {Math.round((readyTime - confirmTime) / 60)} mins
+              준비 소요 시간 : {Math.round((readyTime - confirmTime) / 60)} mins
             </Text>
           )}
         </View>

@@ -80,6 +80,13 @@ const Orders = ({ navigation }) => {
     await dispatch(handlePending());
   };
 
+  const handleAcceptAll = () => {
+    // 선택한 모든 주문을 수락하는 액션을 디스패치
+    orders.forEach((order) => {
+      dispatch(onConfirm({ id: order.id }));
+    });
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,6 +99,9 @@ const Orders = ({ navigation }) => {
           itemsData={orders}
           buttonPress={buttonPress}
         />
+        <TouchableOpacity onPress={handleAcceptAll} style={styles.acceptAllButton}>
+          <Text style={styles.acceptAllButtonText}>Accept All</Text>
+        </TouchableOpacity>
         <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
           <View style={styles.modalContainer}>
             <FlatList
@@ -123,6 +133,7 @@ const Orders = ({ navigation }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -152,6 +163,20 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 4,
   },
+
+  acceptAllButton: {
+    position: 'absolute',
+    top: 10,
+    right: 0,
+    backgroundColor: colors.secondary,
+    padding: 10,
+    borderRadius: 4,
+  },
+  acceptAllButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+
 });
 
 export default Orders;
