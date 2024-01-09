@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import Current from "./screens/Current";
@@ -14,6 +14,10 @@ import Profile from "./screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from './store/actions/authActions';  // 사용자 인증 액션을 dispatch 하는 액션 생성자 함수
+
 
 
 const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 생성 
@@ -36,6 +40,7 @@ export default function App() {
       </Stack.Navigator>
     );
   };
+  
 
   // const [date, newData] = useState("");
   // let d = new Date();
@@ -46,6 +51,8 @@ export default function App() {
   //   }, 1000);
   //   return () => clearInterval(timeout);
   // }, [date]);
+
+
   return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
     <Provider store={store}>   
