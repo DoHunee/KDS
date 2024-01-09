@@ -1,113 +1,166 @@
-import React, { useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
+import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import Current from "./screens/Current";
+import Orders from "./screens/Orders";
+import Complete from "./screens/Complete";
+import Schedule from "./screens/Schedule";
+import manager from "./screens/manager"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import colors from "./refs/colors";
+import Profile from "./screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
-import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from './store/actions/authActions';  // 사용자 인증 액션을 dispatch 하는 액션 생성자 함수
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { store } from "./store/store";
-import colors from "./refs/colors";
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from './store/authActions';  // 사용자 인증 액션을 dispatch 하는 액션 생성자 함수
+
+
 
 const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 생성 
 const Stack = createNativeStackNavigator();  //스택 네비게이터
 
-const LoginScreen = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>로그인</Text>
-      <TextInput
-        label="사용자 이름"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
-        style={styles.input}
-      />
-      <TextInput
-        label="비밀번호"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        secureTextEntry
-        style={styles.input}
-      />
-      <Button
-        title="로그인"
-        onPress={() => onLogin(username, password)}
-      />
-    </View>
-  );
-};
-
 export default function App() {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = (username, password) => {
-    // 여기에서 실제 사용자 인증 로직을 구현합니다.
-    // 사용자가 유효하다면 Redux 액션을 디스패치하여 로그인 상태를 변경합니다.
-    if (username === 'user' && password === 'password') {
-      dispatch(loginUser());
-    } else {
-      alert('로그인 실패. 다시 시도하세요.');
+  const handleLogin = () => {
+    if (!username || !password) {
+      alert("아이디와 패스워드를 입력하세요.");
+      return;
     }
+
+    dispatch(loginUser({ username, password }));
   };
 
-  if (isAuthenticated) {
-    // 로그인이 성공한 경우 메인 화면을 표시
+  const HomeStack = () => {
     return (
-      <Provider store={store}>
-        <NavigationContainer>
-          <StatusBar style="light" />
+      <Stack.Navigator>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="orders"
+          component={Orders}
+        />
+        <Stack.Screen
+          name="profile"
+          component={Profile}
+        />
+      </Stack.Navigator>
+    );
+  };
+
+  // const [date, newData] = useState("");
+  // let d = new Date();
+  // let time = d.getTime();
+  // useEffect(() => {
+  //   let timeout = setInterval(() => {
+  //     newData(time);
+  //   }, 1000);
+  //   return () => clearInterval(timeout);
+  // }, [date]);
+
+
+
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <StatusBar style="light" />
+        <View style={styles.container}>
+          <TextInput
+            style={styles.input}
+            placeholder="아이디"
+            onChangeText={(text) => setUsername(text)}
+            value={username}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="패스워드"
+            secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+          />
+          <Button title="로그인" onPress={handleLogin} />
+
           <Tab.Navigator
             activeColor={colors.tertiary}
             inactiveColor={"black"}
             barStyle={{ backgroundColor: "white" }}
           >
-            {/* 기존 코드... */}
+            <Tab.Screen
+              options={{
+                tabBarLabel: "접수대기",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="clipboard-list-outline"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="homeStack"
+              component={HomeStack}
+            />
+            <Tab.Screen
+              options={{
+                tabBarLabel: " 접수완료",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="bell-ring-outline"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="current"
+              component={Current}
+            />
+            <Tab.Screen
+              options={{
+                tabBarLabel: "처리완료",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="checkbox-marked-circle-outline"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="complete"
+              component={Complete}
+            />
+            <Tab.Screen
+              options={{
+                tabBarLabel: "예약",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="timetable"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="schedule"
+              component={Schedule}
+            />
+            <Tab.Screen
+              options={{
+                tabBarLabel: "관리자",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="account-plus-outline"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="manager"
+              component={manager}
+            />
           </Tab.Navigator>
-        </NavigationContainer>
-      </Provider>
-    );
-  }
-
-  // 로그인이 되지 않은 경우 로그인 화면을 표시
-  return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <StatusBar style="light" />
-        <Tab.Navigator
-          activeColor={colors.tertiary}
-          inactiveColor={"black"}
-          barStyle={{ backgroundColor: "white" }}
-        >
-          {/* 기존 코드... */}
-
-          {/* 새로 추가된 로그인 화면 */}
-          <Tab.Screen
-            options={{
-              tabBarLabel: "로그인",
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons
-                  name="login"
-                  color={focused ? colors.secondary : color}
-                  size={26}
-                />
-              ),
-            }}
-            name="login"
-          >
-            {() => (
-              <LoginScreen
-                onLogin={(username, password) => handleLogin(username, password)}
-              />
-            )}
-          </Tab.Screen>
-        </Tab.Navigator>
+        </View>
       </NavigationContainer>
     </Provider>
   );
@@ -116,16 +169,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   input: {
-    width: '100%',
-    marginVertical: 8,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    padding: 10,
+    width: 200,
   },
 });
