@@ -85,7 +85,7 @@ const Orders = ({ navigation }) => {
         <OrdersNumbers length={orders.length} />
 
         <OrderList
-          buttons={["Accept", "Decline", "Pick up immediately", "Schedule"]}
+          buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
           itemsData={orders}
           buttonPress={buttonPress}
         />
