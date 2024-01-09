@@ -7,6 +7,7 @@ import Current from "./screens/Current";
 import Orders from "./screens/Orders";
 import Complete from "./screens/Complete";
 import Schedule from "./screens/Schedule";
+import manager from "./screens/manager"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "./refs/colors";
 import Profile from "./screens/Profile";
@@ -114,6 +115,22 @@ export default function App() {
             name="schedule"
             component={Schedule}
           />
+  
+          <Tab.Screen
+            options={{
+              tabBarLabel: "관리자",
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  name="account-plus-outline"
+                  color={focused ? colors.secondary : color}
+                  size={26}
+                />
+              ),
+            }}
+            name="manager"
+            component={manager}
+          />
+
         </Tab.Navigator>
       </NavigationContainer>
     </Provider>
