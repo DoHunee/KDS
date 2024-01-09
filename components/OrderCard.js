@@ -38,22 +38,31 @@ const OrderCard = ({
     }, 1000);
 
     // 컴포넌트가 언마운트되면 타이머 해제
+    // 배달 시간 나타내주는 친구 상태에 따라 색 변경
     return () => clearInterval(timeout);
   }, [timeElapsed]);
 
   const timeRemaining = confirmTime + timeRequire * 60 - getTimePassedSec();
 
-  // 시간 범위에 따라 배경색 변경
-  if (timeRemaining < 300 && timeRemaining >= 0 && status === "preparation") {
+
+  // 주문이 처리중이고 0이상 5분(300초) 이하일때 주황색으로 표시
+  if (timeRemaining < 300 && timeRemaining >= 0 && status === "preparing") {
     dynamicChange.backgroundColor = "orange";
-  } else if (timeRemaining < 0 && status === "preparation") {
+  } 
+  // 주문이 처리중이고 0아래로 갈때 빨간색으로 표시 
+  else if (timeRemaining < 0 && status === "preparing") {
     dynamicChange.backgroundColor = "red";
     dynamicChange.color = "white";
-  } else if (status === "ready") {
+  } 
+  // 주문 준비 됐으면 그린
+  else if (status === "ready") {
     dynamicChange.backgroundColor = "green";
-  } else if (status === "schedule") {
+  } 
+  // 주문 스케쥴로 넘어가면 pink
+  else if (status === "schedule") {
     dynamicChange.backgroundColor = "pink";
   }
+
 
   // 주문 상태에 따라 좌상단에 표시되는 텍스트 설정
   let topLeft = timeRequire + "min";
@@ -64,7 +73,7 @@ const OrderCard = ({
     topLeft = scheduleFor;
   }
 
-  // MaterialCommunityIcons 아이콘 설정
+  // MaterialCommunityIcons 트럭 아이콘 설정
   let timerIcon = (
     <MaterialCommunityIcons
       style={[styles.timerText, { color: dynamicChange.color }]}
