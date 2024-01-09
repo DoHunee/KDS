@@ -1,18 +1,16 @@
+// Orders.js
+
 import React, { useEffect, useState } from "react";
-import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity , RefreshControl } from "react-native";
+import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-import {
-  handlePending,
-  onConfirm,
-  onDecline,
-  onSchedule,
-} from "../store/store-slice";
+import { handlePending, onConfirm, onDecline, onSchedule } from "../store/store-slice";
 import RefreshComponent from '../components/Refresh'; // 새로고침
+
 const Orders = ({ navigation }) => {
   const [showCalender, setShowCalender] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
@@ -21,6 +19,7 @@ const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
+
   const buttonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
@@ -32,23 +31,26 @@ const Orders = ({ navigation }) => {
       setScheduleId(data.id);
     }
   };
+
   const handleCalenderDay = (date) => {
     setShowCalender(false);
     dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
   };
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
   const handleDecline = () => {
     if (selectedReasons.length > 0) {
       dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
       setModalVisible(false);
-      setSelectedReasons([]); // Done 버튼을 누른 후에는 선택한 이유 초기화
+      setSelectedReasons([]);
     } else {
       alert("거절 사유를 선택해주세요.");
     }
   };
-  // 선택한 이유를 추가하거나 제거하는 함수
+
   const toggleSelectedReason = (reason) => {
     const isSelected = selectedReasons.includes(reason);
     if (isSelected) {
@@ -57,23 +59,32 @@ const Orders = ({ navigation }) => {
       setSelectedReasons([...selectedReasons, reason]);
     }
   };
+
   useEffect(() => {
     dispatch(handlePending());
   }, []);
+
   useEffect(() => {
     setOrders(pendingOrders);
   }, [orders, pendingOrders]);
+
   const handleRefresh = async () => {
     await dispatch(handlePending());
   };
 
+  const handleAcceptAllOrders = () => {
+    orders.forEach((order) => {
+      dispatch(onConfirm({ id: order.id }));
+    });
+    setOrders([]);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <RefreshComponent onRefresh={handleRefresh}>
+      <RefreshComponent onRefresh={() => dispatch(handlePending())}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
         {showCalender && <CalenderComp onPress={handleCalenderDay} />}
-        <OrdersNumbers length={orders.length} />
+        <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
           buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
           itemsData={orders}

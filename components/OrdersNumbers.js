@@ -1,69 +1,38 @@
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+// OrdersNumbers.js
+
 import React, { useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet, Platform, StatusBar } from "react-native";
 import colors from "../refs/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-// OrdersNumbers 컴포넌트는 length라는 프롭을 받아와 주문 아이템의 수를 나타냅니다.
-// 주문 아이템의 수에 따라 "Item" 또는 "Items"로 표시됩니다.
-// 마지막으로, 화살표 아이콘은 "chevron-down"으로 지정되었으며 크기는 24로 설정되고 색상은 흰색입니다.
-// 주문 아이템의 수를 클릭하면 Accept All 버튼이 나타납니다.
-const OrdersNumbers = ({ length }) => {
+const OrdersNumbers = ({ length, onAcceptAll }) => {
   const [showAcceptAll, setShowAcceptAll] = useState(false);
 
   const handlePress = () => {
     setShowAcceptAll(true);
   };
 
+  const handleAcceptAll = () => {
+    setShowAcceptAll(false);
+    onAcceptAll(); // 수정된 부분: Accept All 버튼 클릭 시 콜백 호출
+  };
+
   return (
-    <TouchableOpacity
-      style={styles.listMetaData}
-      onPress={handlePress}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Text
-          style={{
-            color: colors.white,
-            fontSize: 12,
-          }}
-        >
-          <Text style={{ fontWeight: "bold", fontSize: 13 }}>{length}</Text> :
-          Item{length > 1 ? "s" : ""}{" "}
+    <TouchableOpacity style={styles.listMetaData} onPress={handlePress}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ color: colors.white, fontSize: 12 }}>
+          <Text style={{ fontWeight: "bold", fontSize: 13 }}>{length}</Text> : Item{length > 1 ? "s" : ""}{" "}
         </Text>
-        <MaterialCommunityIcons
-          name="chevron-down"
-          size={24}
-          color={colors.white}
-        />
+        <MaterialCommunityIcons name="chevron-down" size={24} color={colors.white} />
       </View>
       {showAcceptAll && (
-        <TouchableOpacity
-          style={styles.acceptAllButton}
-          onPress={() => {
-            // Accept All 버튼 동작 구현
-            setShowAcceptAll(false);
-          }}
-        >
+        <TouchableOpacity style={styles.acceptAllButton} onPress={handleAcceptAll}>
           <Text style={styles.acceptAllButtonText}>Accept All</Text>
         </TouchableOpacity>
       )}
     </TouchableOpacity>
   );
 };
-
-export default OrdersNumbers;
 
 const styles = StyleSheet.create({
   listMetaData: {
@@ -77,13 +46,16 @@ const styles = StyleSheet.create({
     top: Platform.OS === "android" ? StatusBar.currentHeight : 50,
   },
   acceptAllButton: {
-    backgroundColor: colors.primary,
-    padding: 5,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
+    backgroundColor: colors.secondary,
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 4,
+    alignSelf: "flex-end", // align right
   },
   acceptAllButtonText: {
-    color: colors.white,
-    fontSize: 12,
+    color: "white",
+    fontSize: 16,
   },
 });
+
+export default OrdersNumbers;
