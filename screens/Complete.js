@@ -24,6 +24,10 @@ const Complete = () => {
     setOrders(readyOrders);
   }, [orders, readyOrders]);
 
+  const handleRefresh = async () => {
+    await dispatch(handlePending());
+  };
+
   return (
     <View style={styles.container}>
       {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}

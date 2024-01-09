@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity  } from "react-native";
+import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity , RefreshControl } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { Calendar } from "react-native-calendars";
 import Modal from "react-native-modal";
 import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-import CalenderComp from "../components/CalenderComp";
 import {
   handlePending,
   onConfirm,
   onDecline,
   onSchedule,
 } from "../store/store-slice";
-import RefreshButton from '../components/RefreshButton';
+
+import RefreshComponent from '../components/Refresh'; // 새로고침
 
 
 const Orders = ({ navigation }) => {
@@ -77,30 +76,22 @@ const Orders = ({ navigation }) => {
   }, [orders, pendingOrders]);
 
 
-  const onRefresh = () => {
-    // 새로고침 작업 수행
-    dispatch(handlePending());
+  const handleRefresh = async () => {
+    await dispatch(handlePending());
   };
 
 
-
   return (
-    <View style={styles.container}>
-      <SafeAreaView>
-        <RefreshButton onRefresh={onRefresh} />
-
+    <SafeAreaView style={styles.container}>
+      <RefreshComponent onRefresh={handleRefresh}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
-
         {showCalender && <CalenderComp onPress={handleCalenderDay} />}
-
         <OrdersNumbers length={orders.length} />
-
         <OrderList
           buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
           itemsData={orders}
           buttonPress={buttonPress}
         />
-
         <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
           <View style={styles.modalContainer}>
             <FlatList
@@ -127,8 +118,8 @@ const Orders = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </Modal>
-      </SafeAreaView>
-    </View>
+      </RefreshComponent>
+    </SafeAreaView>
   );
 };
 
