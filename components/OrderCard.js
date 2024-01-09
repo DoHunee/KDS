@@ -19,61 +19,61 @@ const OrderCard = ({
   readyTime,
   scheduleFor,
 }) => {
-  const [timeElapsed, setTimeElapsed] = useState(0);
-
+  const [timeElapse, setTimeElapsed] = useState(0);
   const handleOnPress = (data) => {
     onPress({ action: data, id: id });
   };
+  let tempOrder = ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"];
 
-  // 시간 타이머에 관련된 스타일
+    // 배달 시간 나타내주는 친구
   let dynamicChange = {
     backgroundColor: "white",
     color: "black",
   };
 
-  // 경과시간 갱신
+    // 경과시간 갱신
   useEffect(() => {
     let timeout = setInterval(() => {
-      setTimeElapsed(timeElapsed + 1);
+      setTimeElapsed(timeElapse + 1);
     }, 1000);
 
-    // 컴포넌트가 언마운트되면 타이머 해제
-    // 배달 시간 나타내주는 친구 상태에 따라 색 변경
+        // 배달 시간 나타내주는 친구 상태에 따라 색 변경
     return () => clearInterval(timeout);
-  }, [timeElapsed]);
-
+  }, [timeElapse]);
   const timeRemaining = confirmTime + timeRequire * 60 - getTimePassedSec();
 
+    // 주문이 처리중이고 0이상 5분(300초) 이하일때 주황색으로 표시
+    if (timeRemaining < 300 && timeRemaining >= 0 && status === "preparing") {
+      dynamicChange.backgroundColor = "orange";
+    } 
+  
+    // 주문이 처리중이고 0아래로 갈때 빨간색으로 표시 
+    else if (timeRemaining < 0 && status === "preparing") {
+      dynamicChange.backgroundColor = "red";
+      dynamicChange.color = "white";
+    } 
+    // 주문 준비 됐으면 그린
+    else if (status === "ready") {
+      dynamicChange.backgroundColor = "green";
+    } 
+    // 주문 스케쥴로 넘어가면 pink
+    else if (status === "schedule") {
+      dynamicChange.backgroundColor = "pink";
+    }
 
-  // 주문이 처리중이고 0이상 5분(300초) 이하일때 주황색으로 표시
-  if (timeRemaining < 300 && timeRemaining >= 0 && status === "preparing") {
-    dynamicChange.backgroundColor = "orange";
-  } 
-  // 주문이 처리중이고 0아래로 갈때 빨간색으로 표시 
-  else if (timeRemaining < 0 && status === "preparing") {
-    dynamicChange.backgroundColor = "red";
-    dynamicChange.color = "white";
-  } 
-  // 주문 준비 됐으면 그린
-  else if (status === "ready") {
-    dynamicChange.backgroundColor = "green";
-  } 
-  // 주문 스케쥴로 넘어가면 pink
-  else if (status === "schedule") {
-    dynamicChange.backgroundColor = "pink";
-  }
 
-
-  // 주문 상태에 따라 좌상단에 표시되는 텍스트 설정
-  let topLeft = timeRequire + "min";
-
-  if (status === "preparation") {
-    topLeft = timeRemaining + "sec";
+    
+  // 주문의 상태(status)에 따라 다른 값을 할당합니다. 
+  // opLeft 기본값을 mins로 설정
+  // 준비중일때만 sec로 설정
+  let topLeft = timeRequire + " mins";
+  if (status === "preparing") {
+    topLeft = timeRemaining + " secs";
   } else if (status === "schedule") {
     topLeft = scheduleFor;
   }
 
-  // MaterialCommunityIcons 트럭 아이콘 설정
+   // MaterialCommunityIcons 컴포넌트 이용하여 트럭 아이콘 생성하여 변수 timerIcon에 할당하는 부분
   let timerIcon = (
     <MaterialCommunityIcons
       style={[styles.timerText, { color: dynamicChange.color }]}
@@ -82,7 +82,6 @@ const OrderCard = ({
       size={26}
     />
   );
-
   return (
     <View style={styles.container}>
       <View
@@ -106,17 +105,21 @@ const OrderCard = ({
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text>{status}...</Text>
-          {status === "preparation" && (
-            <Text>TimeElapsed : {Math.round(timeElapsed / 60)} mins</Text>
+          {status === "preparing" && (
+            <Text>Time Elapsed : {Math.round(timeElapse / 60)} mins</Text>
           )}
           {status === "ready" && (
             <Text style={{ color: colors.white }}>
-              Completed in: {Math.round((readyTime - confirmTime) / 60)} mins
+              Completed in : {Math.round((readyTime - confirmTime) / 60)} mins
             </Text>
           )}
         </View>
       </View>
 
+
+      {/* orderNumber가 존재하는 경우, 문자열 "#00"과 orderNumber를 결합하여 반환합니다.
+      orderNumber가 존재하지 않는 경우, 문자열 "#000"을 반환합니다
+      */}
       <View style={styles.namePhone}>
         <View>
           <Text style={styles.text}>{name}</Text>
@@ -128,26 +131,28 @@ const OrderCard = ({
           </Text>
         </View>
       </View>
-
       <View style={styles.orders}>
-        {orders.map((order, index) => (
-          <View style={styles.orderItem} key={index}>
-            <Text style={{ color: colors.white }}>- {order}</Text>
-          </View>
-        ))}
+        {orders.map((order, index) => {
+          return (
+            <View style={styles.orderItem} key={index}>
+              <Text style={{ color: colors.white }}>- {order}</Text>
+            </View>
+          );
+        })}
       </View>
-
       <View style={styles.buttons}>
-        {buttons.map((name, index) => (
-          <Button
-            onPress={() => handleOnPress(name?.toLowerCase())}
-            key={index}
-            filled={index % 2 === 0}
-            outline={index % 2 !== 0}
-          >
-            {name}
-          </Button>
-        ))}
+        {buttons.map((name, index) => {
+          return (
+            <Button
+              onPress={() => handleOnPress(name?.toLowerCase())}
+              key={index}
+              filled={index % 2 === 0}
+              outline={index % 2 !== 0}
+            >
+              {name}
+            </Button>
+          );
+        })}
       </View>
     </View>
   );
@@ -168,12 +173,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    // backgroundColor: colors.secondary,
     padding: 10,
     borderRadius: 15,
   },
   timerText: {
     marginHorizontal: 5,
     fontWeight: "bold",
+    // color: colors.white,
   },
   namePhone: {
     marginVertical: 5,
