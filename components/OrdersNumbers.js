@@ -6,17 +6,26 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import colors from "../refs/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-// 총 주문 갯수 나타내주는!!!
-// rdersNumbers 컴포넌트는 length라는 prop을 받아와서 주문 아이템의 수를 나타냅니다.
-// 길이에 따라 "Item" 또는 "Items"로 표시됩니다.
-//마지막으로, 화살표 아이콘은 "chevron-down"으로 지정되어 있고, 크기는 24, 색상은 흰색으로 설정되어 있습니다
+// OrdersNumbers 컴포넌트는 length라는 프롭을 받아와 주문 아이템의 수를 나타냅니다.
+// 주문 아이템의 수에 따라 "Item" 또는 "Items"로 표시됩니다.
+// 마지막으로, 화살표 아이콘은 "chevron-down"으로 지정되었으며 크기는 24로 설정되고 색상은 흰색입니다.
+// 주문 아이템의 수를 클릭하면 Accept All 버튼이 나타납니다.
 const OrdersNumbers = ({ length }) => {
+  const [showAcceptAll, setShowAcceptAll] = useState(false);
+
+  const handlePress = () => {
+    setShowAcceptAll(true);
+  };
+
   return (
-    <TouchableOpacity style={styles.listMetaData}>
+    <TouchableOpacity
+      style={styles.listMetaData}
+      onPress={handlePress}
+    >
       <View
         style={{
           flexDirection: "row",
@@ -39,17 +48,23 @@ const OrdersNumbers = ({ length }) => {
           color={colors.white}
         />
       </View>
+      {showAcceptAll && (
+        <TouchableOpacity
+          style={styles.acceptAllButton}
+          onPress={() => {
+            // Accept All 버튼 동작 구현
+            setShowAcceptAll(false);
+          }}
+        >
+          <Text style={styles.acceptAllButtonText}>Accept All</Text>
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 };
 
 export default OrdersNumbers;
 
-
-// top: Platform.OS === "android" ? StatusBar.currentHeight : 50: 
-// 화면 상단으로부터의 거리를 설정합니다. 
-// 안드로이드 플랫폼인 경우 상태 바의 높이(StatusBar.currentHeight)로, 
-// 아닌 경우 50으로 설정합니다.
 const styles = StyleSheet.create({
   listMetaData: {
     position: "absolute",
@@ -60,5 +75,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
     top: Platform.OS === "android" ? StatusBar.currentHeight : 50,
+  },
+  acceptAllButton: {
+    backgroundColor: colors.primary,
+    padding: 5,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  acceptAllButtonText: {
+    color: colors.white,
+    fontSize: 12,
   },
 });

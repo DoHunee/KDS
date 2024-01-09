@@ -12,20 +12,15 @@ import {
   onDecline,
   onSchedule,
 } from "../store/store-slice";
-
 import RefreshComponent from '../components/Refresh'; // 새로고침
-
-
 const Orders = ({ navigation }) => {
   const [showCalender, setShowCalender] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState([]);
-
   const dispatch = useDispatch();
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
-
   const buttonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
@@ -37,16 +32,13 @@ const Orders = ({ navigation }) => {
       setScheduleId(data.id);
     }
   };
-
   const handleCalenderDay = (date) => {
     setShowCalender(false);
     dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
   };
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
   const handleDecline = () => {
     if (selectedReasons.length > 0) {
       dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
@@ -56,7 +48,6 @@ const Orders = ({ navigation }) => {
       alert("거절 사유를 선택해주세요.");
     }
   };
-
   // 선택한 이유를 추가하거나 제거하는 함수
   const toggleSelectedReason = (reason) => {
     const isSelected = selectedReasons.includes(reason);
@@ -66,25 +57,14 @@ const Orders = ({ navigation }) => {
       setSelectedReasons([...selectedReasons, reason]);
     }
   };
-
   useEffect(() => {
     dispatch(handlePending());
   }, []);
-
   useEffect(() => {
     setOrders(pendingOrders);
   }, [orders, pendingOrders]);
-
-
   const handleRefresh = async () => {
     await dispatch(handlePending());
-  };
-
-  const handleAcceptAll = () => {
-    // 선택한 모든 주문을 수락하는 액션을 디스패치
-    orders.forEach((order) => {
-      dispatch(onConfirm({ id: order.id }));
-    });
   };
 
 
@@ -99,9 +79,6 @@ const Orders = ({ navigation }) => {
           itemsData={orders}
           buttonPress={buttonPress}
         />
-        <TouchableOpacity onPress={handleAcceptAll} style={styles.acceptAllButton}>
-          <Text style={styles.acceptAllButtonText}>Accept All</Text>
-        </TouchableOpacity>
         <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
           <View style={styles.modalContainer}>
             <FlatList
@@ -133,7 +110,6 @@ const Orders = ({ navigation }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -163,20 +139,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 4,
   },
-
-  acceptAllButton: {
-    position: 'absolute',
-    top: 10,
-    right: 0,
-    backgroundColor: colors.secondary,
-    padding: 10,
-    borderRadius: 4,
-  },
-  acceptAllButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-
 });
 
 export default Orders;
