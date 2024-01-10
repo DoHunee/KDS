@@ -1,63 +1,126 @@
-return (
-  <SafeAreaView style={styles.container}>
-    <RefreshComponent onRefresh={handleRefresh}>
-      {orders.length === 0 && <EmptyOrders name="Pending" />}
-      {showCalendar && <CalendarComp onPress={handleCalendarDay} />}
-      <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
-      <OrderList
-        buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
-        itemsData={orders}
-        buttonPress={handleButtonPress}
-      />
-      <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={REASONS}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.reasonButton,
-                  {
-                    backgroundColor: selectedReasons.includes(item) ? BUTTON_COLORS.secondary : BUTTON_COLORS.primary,
-                  },
-                ]}
-                onPress={() => toggleSelectedReason(item)}
-              >
-                <Text style={styles.buttonText}>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
-          <TouchableOpacity onPress={handleDecline} style={styles.button}>
-            <Text style={styles.buttonText}>Done</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </RefreshComponent>
+import { createSlice } from "@reduxjs/toolkit";
+import getTimePassedSec from "../refs/getTime";
+import data from "../assets/data/orders.json";
 
-    {/* Completed Orders Section */}
-    <RefreshComponent onRefresh={handleRefresh}>
-      {completedOrders.length === 0 && <EmptyOrders name="Completed" />}
-      {/* ... (Completed Orders에 대한 기존 코드) */}
-    </RefreshComponent>
-
-    {/* Processing Orders Section */}
-    <RefreshComponent onRefresh={handleRefresh}>
-      {processingOrders.length === 0 && <EmptyOrders name="Processing" />}
-      {/* ... (Processing Orders에 대한 기존 코드) */}
-    </RefreshComponent>
-
-    {/* Reservation Orders Section */}
-    <RefreshComponent onRefresh={handleRefresh}>
-      {reservationOrders.length === 0 && <EmptyOrders name="Reservation" />}
-      {/* ... (Reservation Orders에 대한 기존 코드) */}
-    </RefreshComponent>
-
-    {/* Admin Orders Section */}
-    <RefreshComponent onRefresh={handleRefresh}>
-      {adminOrders.length === 0 && <EmptyOrders name="Administrator" />}
-      {/* ... (Admin Orders에 대한 기존 코드) */}
-    </RefreshComponent>
-  </SafeAreaView>
-);
+// 초기 상태 정의
+const initialState = {
+  pending: [],
+  current: [],
+  schedule: [],
+  complete: [],
 };
+
+// Redux slice 생성
+export const OrdersDistrubutionSclie = createSlice({
+  name: "ordersDistribution",
+  initialState,
+  reducers: {
+    // 대기 중인 주문 목록을 초기 데이터로 설정
+    handlePending: (state, action) => {
+      state.pending = data.orders;
+    },
+    handleCurrent: (state, action) => {
+      state.current = data.current;
+    },
+    handleComplete: (state, action) => {
+      state.complete = data.complete;
+    },
+    handleSchedule: (state, action) => {
+      state.schedule = data.schedule;
+    },
+
+    // 주문 확인 및 현재 상태로 이동
+    onConfirm: (state, action) => {
+      const orders = state.pending;
+      const confirmOrder = orders?.find((item) => item.id === action.payload.id);
+
+      confirmOrder.status = "preparing";
+      confirmOrder.confirmTime = getTimePassedSec();
+      confirmOrder.orderNumber = state.current.length + 1;
+
+      state.current = [...state.current, confirmOrder];
+      state.pending = state.pending.filter((item) => item.id !== action.payload.id);
+    },
+    // 주문이 완료되었음을 나타내고 완료 상태로 이동
+    onReady: (state, action) => {
+      const orders = state.current;
+      const readyOrder = orders.find((item) => item.id === action.payload.id);
+
+      readyOrder.status = "ready";
+      readyOrder.readyTime = getTimePassedSec();
+      readyOrder.orderNumber = state.complete.length + 1;
+
+      state.complete = [...state.complete, readyOrder];
+      state.current = state.current.filter((item) => item.id !== action.payload.id);
+    },
+    // 주문을 예약하고 예약된 상태로 이동
+    onSchedule: (state, action) => {
+      const orders = state.pending;
+      const scheduleOrder = orders?.find((item) => item.id === action.payload.id);
+
+      scheduleOrder.status = "schedule";
+      scheduleOrder.confirmTime = getTimePassedSec();
+      scheduleOrder.orderNumber = state.schedule.length + 1;
+      scheduleOrder.scheduleFor = action.payload.schedule;
+
+      state.schedule = [...state.schedule, scheduleOrder];
+      state.pending = state.pending.filter((item) => item.id !== action.payload.id);
+    },
+    // 주문을 거절하고 대기 중 목록에서 제거
+    onDecline: (state, action) => {
+      state.pending = state.pending.filter((item) => item.id !== action.payload.id);
+    },
+    // "즉시 수령"에 대한 액션 및 리듀서
+    onImmediateReceipt: (state, action) => {
+      const orders = state.pending;
+      const immediateReceiptOrder = orders?.find((item) => item.id === action.payload.id);
+
+      immediateReceiptOrder.status = "ready"; // "completed" 대신 "ready"로 변경
+
+      immediateReceiptOrder.completeTime = getTimePassedSec();
+      immediateReceiptOrder.orderNumber = state.complete.length + 1;
+
+      state.complete = [...state.complete, immediateReceiptOrder];
+      state.pending = state.pending.filter((item) => item.id !== action.payload.id);
+    },
+
+    updatePending: (state, action) => {
+      state.pending = action.payload;
+    },
+
+    // 비동기 액션: Current 상태를 업데이트합니다.
+    updateCurrent: (state, action) => {
+      state.current = action.payload;
+    },
+
+    // 비동기 액션: Complete 상태를 업데이트합니다.
+    updateComplete: (state, action) => {
+      state.complete = action.payload;
+    },
+
+    // 비동기 액션: Schedule 상태를 업데이트합니다.
+    updateSchedule: (state, action) => {
+      state.schedule = action.payload;
+    },
+  },
+});
+
+// Export action creator 함수
+export const {
+  handlePending,
+  handleCurrent,
+  handleComplete,
+  handleSchedule,
+  onConfirm,
+  onReady,
+  onSchedule,
+  onDecline,
+  onImmediateReceipt,
+  updatePending,
+  updateCurrent,
+  updateComplete,
+  updateSchedule,
+} = OrdersDistrubutionSclie.actions;
+
+// Reducer를 내보냄
+export default OrdersDistrubutionSclie.reducer;
