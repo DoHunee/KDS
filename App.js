@@ -107,10 +107,10 @@ export default function App() {
 
           <Tab.Screen
             options={{
-              tabBarLabel: "예약",
+              tabBarLabel: "매출",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
-                  name="timetable"
+                  name="calendar"
                   color={focused ? colors.secondary : color}
                   size={26}
                 />
@@ -122,7 +122,7 @@ export default function App() {
   
           <Tab.Screen
             options={{
-              tabBarLabel: "관리자",
+              tabBarLabel: "관리자 설정",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="account-plus-outline"
