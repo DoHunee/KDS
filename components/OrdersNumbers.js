@@ -8,22 +8,22 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const OrdersNumbers = ({ length, onAcceptAll }) => {
   const [showAcceptAll, setShowAcceptAll] = useState(false);
 
-  const handlePress = () => {
-    setShowAcceptAll(true);
+  const toggleAcceptAll = () => {
+    setShowAcceptAll((prev) => !prev);
   };
 
   const handleAcceptAll = () => {
-    setShowAcceptAll(false);
-    onAcceptAll(); // 수정된 부분: Accept All 버튼 클릭 시 콜백 호출
+    toggleAcceptAll(); // Accept All 버튼 클릭 시 상태 변경
+    onAcceptAll();
   };
 
   return (
-    <TouchableOpacity style={styles.listMetaData} onPress={handlePress}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ color: colors.white, fontSize: 12 }}>
-          <Text style={{ fontWeight: "bold", fontSize: 13 }}>{length}</Text> : Item{length > 1 ? "s" : ""}{" "}
+    <TouchableOpacity style={styles.container} onPress={toggleAcceptAll}>
+      <View style={styles.metadataContainer}>
+        <Text style={styles.metadataText}>
+          <Text style={styles.boldText}>{length}</Text> : Item{length > 1 ? "s" : ""}
         </Text>
-        <MaterialCommunityIcons name="chevron-down" size={24} color={colors.white} />
+        <MaterialCommunityIcons name={showAcceptAll ? "chevron-up" : "chevron-down"} size={24} color={colors.white} />
       </View>
       {showAcceptAll && (
         <TouchableOpacity style={styles.acceptAllButton} onPress={handleAcceptAll}>
@@ -35,7 +35,7 @@ const OrdersNumbers = ({ length, onAcceptAll }) => {
 };
 
 const styles = StyleSheet.create({
-  listMetaData: {
+  container: {
     position: "absolute",
     zIndex: 100,
     backgroundColor: colors.secondary,
@@ -45,12 +45,25 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     top: Platform.OS === "android" ? StatusBar.currentHeight : 50,
   },
+  metadataContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  metadataText: {
+    color: colors.white,
+    fontSize: 12,
+  },
+  boldText: {
+    fontWeight: "bold",
+    fontSize: 13,
+  },
   acceptAllButton: {
     backgroundColor: colors.secondary,
     padding: 10,
     marginTop: 10,
     borderRadius: 4,
-    alignSelf: "flex-end", // align right
+    alignSelf: "flex-end", // 우측 정렬
   },
   acceptAllButtonText: {
     color: "white",

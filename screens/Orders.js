@@ -1,7 +1,6 @@
-// Orders.js
 
 import React, { useEffect, useState } from "react";
-import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl } from "react-native";
+import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import colors from "../refs/colors";
@@ -11,8 +10,15 @@ import OrdersNumbers from "../components/OrdersNumbers";
 import { handlePending, onConfirm, onDecline, onSchedule } from "../store/store-slice";
 import RefreshComponent from '../components/Refresh'; // 새로고침
 
+// 상수 정의
+const REASONS = ["재료소진", "품절", "딴거 드셈"];
+const BUTTON_COLORS = {
+  primary: colors.primary,
+  secondary: colors.secondary,
+};
+
 const Orders = ({ navigation }) => {
-  const [showCalender, setShowCalender] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState([]);
@@ -20,20 +26,20 @@ const Orders = ({ navigation }) => {
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
 
-  const buttonPress = (data) => {
+  const handleButtonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
     } else if (data.action === "decline") {
       setScheduleId(data.id);
       setModalVisible(true);
     } else if (data.action === "schedule") {
-      setShowCalender(true);
+      setShowCalendar(true);
       setScheduleId(data.id);
     }
   };
 
-  const handleCalenderDay = (date) => {
-    setShowCalender(false);
+  const handleCalendarDay = (date) => {
+    setShowCalendar(false);
     dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
   };
 
@@ -47,7 +53,7 @@ const Orders = ({ navigation }) => {
       setModalVisible(false);
       setSelectedReasons([]);
     } else {
-      alert("거절 사유를 선택해주세요.");
+      showWarningAlert("경고", "거절 사유를 선택해주세요.");
     }
   };
 
@@ -66,7 +72,7 @@ const Orders = ({ navigation }) => {
 
   useEffect(() => {
     setOrders(pendingOrders);
-  }, [orders, pendingOrders]);
+  }, [pendingOrders]);
 
   const handleRefresh = async () => {
     await dispatch(handlePending());
@@ -79,30 +85,32 @@ const Orders = ({ navigation }) => {
     setOrders([]);
   };
 
+  const showWarningAlert = (title, message) => {
+    Alert.alert(title, message);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <RefreshComponent onRefresh={() => dispatch(handlePending())}>
+      <RefreshComponent onRefresh={handleRefresh}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
-        {showCalender && <CalenderComp onPress={handleCalenderDay} />}
+        {showCalendar && <CalendarComp onPress={handleCalendarDay} />}
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
           buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
           itemsData={orders}
-          buttonPress={buttonPress}
+          buttonPress={handleButtonPress}
         />
         <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
           <View style={styles.modalContainer}>
             <FlatList
-              data={["재료소진", "품절", "딴거 드셈"]}
+              data={REASONS}
               keyExtractor={(item) => item}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[
                     styles.reasonButton,
                     {
-                      backgroundColor: selectedReasons.includes(item)
-                        ? colors.secondary
-                        : colors.primary,
+                      backgroundColor: selectedReasons.includes(item) ? BUTTON_COLORS.secondary : BUTTON_COLORS.primary,
                     },
                   ]}
                   onPress={() => toggleSelectedReason(item)}
@@ -135,7 +143,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0, 0, 0, 0.1)",
   },
   button: {
-    backgroundColor: colors.secondary,
+    backgroundColor: BUTTON_COLORS.secondary,
     padding: 10,
     marginTop: 10,
     borderRadius: 4,
@@ -145,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   reasonButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: BUTTON_COLORS.primary,
     padding: 10,
     marginVertical: 5,
     borderRadius: 4,
