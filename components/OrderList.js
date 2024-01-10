@@ -18,6 +18,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 // renderItem 속성을 통해 OrderCard 컴포넌트를 렌더링하고, 해당 컴포넌트에 필요한 데이터를 전달합니다.
 // keyExtractor 속성을 통해 각 항목의 고유 키를 지정합니다.
 // "OrderCard" 컴포넌트에서 사용되는 함수를 전달하고, 해당 함수는 부모 컴포넌트의 buttonPress 함수를 호출합니다.
+
 const OrderList = ({ itemsData, buttons, buttonPress }) => {
   const [listItems, setListItems] = useState([]);
   useEffect(() => {
