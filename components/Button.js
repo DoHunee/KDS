@@ -15,7 +15,7 @@ const Button = (props) => {
           style={{
             color: props.outline ? colors.lightGray : colors.lightBlack,
             fontWeight: "bold",
-            fontSize: 12,
+            fontSize: 18,
           }}
         >
           {props.children}

@@ -39,17 +39,6 @@ export default function App() {
   };
   
 
-  // const [date, newData] = useState("");
-  // let d = new Date();
-  // let time = d.getTime();
-  // useEffect(() => {
-  //   let timeout = setInterval(() => {
-  //     newData(time);
-  //   }, 1000);
-  //   return () => clearInterval(timeout);
-  // }, [date]);
-
-
   return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
     <Provider store={store}>   

@@ -25,25 +25,19 @@ const Orders = ({ navigation }) => {
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
 
+
   const handleButtonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
     } else if (data.action === "decline") {
       setScheduleId(data.id);
       setModalVisible(true);
-    } else if (data.action === "schedule") {
-      setShowCalendar(true);
-      setScheduleId(data.id);
     } else if (data.action === "즉시수령") {
-      dispatch(onImmediateReceipt({ id: data.id })); // 새로 추가된 부분
+      dispatch(onImmediateReceipt({ id: data.id }));
     }
   };
 
-  const handleCalendarDay = (date) => {
-    setShowCalendar(false);
-    dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
-  };
-
+  
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -56,6 +50,7 @@ const Orders = ({ navigation }) => {
       { cancelable: false }
     );
   };
+
   const handleDecline = () => {
     if (selectedReasons.length > 0) {
       dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
@@ -79,6 +74,8 @@ const Orders = ({ navigation }) => {
     dispatch(handlePending());
   }, []);
 
+
+
   useEffect(() => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
@@ -95,18 +92,16 @@ const Orders = ({ navigation }) => {
     setOrders([]);
   };
 
-  const showWarningAlert = (title, message) => {
-    Alert.alert(title, message);
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <RefreshComponent onRefresh={handleRefresh}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
-        {showCalendar && <CalendarComp onPress={handleCalendarDay} />}
+        {/* 스케줄 관련 UI가 필요 없으므로 해당 부분을 제거하거나 주석 처리하세요. */}
+   
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
-          buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
+          buttons={["Accept", "Decline", "즉시수령"]}  // 스케줄 버튼 제거
           itemsData={orders}
           buttonPress={handleButtonPress}
         />
@@ -138,6 +133,7 @@ const Orders = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
