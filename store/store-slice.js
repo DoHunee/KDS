@@ -19,16 +19,6 @@ export const OrdersDistrubutionSclie = createSlice({
     handlePending: (state, action) => {
       state.pending = data.orders;
     },
-    handleCurrent: (state, action) => {
-      state.current = data.current;
-    },
-    handleComplete: (state, action) => {
-      state.complete = data.complete;
-    },
-    handleSchedule: (state, action) => {
-      state.schedule = data.schedule;
-    },
-
     // 주문 확인 및 현재 상태로 이동
     onConfirm: (state, action) => {
       const orders = state.pending;
@@ -89,9 +79,6 @@ export const OrdersDistrubutionSclie = createSlice({
 // Export action creator 함수
 export const {
   handlePending,
-  handleCurrent,
-  handleComplete,
-  handleSchedule,
   onConfirm,
   onReady,
   onSchedule,

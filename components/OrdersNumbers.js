@@ -34,7 +34,6 @@ const OrdersNumbers = ({ length, onAcceptAll }) => {
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     position: "absolute",

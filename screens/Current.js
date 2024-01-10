@@ -18,7 +18,7 @@ import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
 
 const Current = ({ navigation }) => {
-  
+
   const dispatch = useDispatch();  // Redux의 useDispatch를 사용하여 액션을 디스패치
   const currentOrders = useSelector((state) => state.OrdersDistrubutionSclie.current);  // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const [orders, setOrders] = useState([]);   // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
@@ -30,20 +30,16 @@ const Current = ({ navigation }) => {
       dispatch(onReady({ id: data.id }));
     }
   };
-
   // currentOrders가 업데이트될 때마다 orders를 업데이트
   useEffect(() => {
     setOrders(currentOrders);
   }, [orders, currentOrders]);
-
   return (
     <View style={styles.container}>
       {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
       {orders.length === 0 && <EmptyOrders name="Current" />}
-
       {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
       <OrdersNumbers length={orders.length} />
-
       {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
       <SafeAreaView>
         {/* 주문 목록에 Ready와 Cancel 버튼을 추가하여 OrderList 컴포넌트 사용 */}
@@ -56,9 +52,7 @@ const Current = ({ navigation }) => {
     </View>
   );
 };
-
 export default Current;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

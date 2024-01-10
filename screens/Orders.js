@@ -6,7 +6,7 @@ import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-import { handlePending,handleComplete,handleSchedule,handleCurrent, onReady ,onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
+import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
 import RefreshComponent from '../components/Refresh'; // 새로고침
 
 // 상수 정의
@@ -15,7 +15,6 @@ const BUTTON_COLORS = {
   primary: colors.primary,
   secondary: colors.secondary,
 };
-
 const Orders = ({ navigation }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
@@ -24,20 +23,24 @@ const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
-
-
   const handleButtonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
     } else if (data.action === "decline") {
       setScheduleId(data.id);
       setModalVisible(true);
+    } else if (data.action === "schedule") {
+      setShowCalendar(true);
+      setScheduleId(data.id);
     } else if (data.action === "즉시수령") {
-      dispatch(onImmediateReceipt({ id: data.id }));
+      dispatch(onImmediateReceipt({ id: data.id })); // 새로 추가된 부분
     }
   };
 
-  
+  const handleCalendarDay = (date) => {
+    setShowCalendar(false);
+    dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
+  };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -50,7 +53,6 @@ const Orders = ({ navigation }) => {
       { cancelable: false }
     );
   };
-
   const handleDecline = () => {
     if (selectedReasons.length > 0) {
       dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
@@ -69,39 +71,32 @@ const Orders = ({ navigation }) => {
       setSelectedReasons([...selectedReasons, reason]);
     }
   };
-
   useEffect(() => {
     dispatch(handlePending());
   }, []);
-
-
-
   useEffect(() => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
-
   const handleRefresh = async () => {
     await dispatch(handlePending());
   };
-
-  
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
       dispatch(onConfirm({ id: order.id }));
     });
     setOrders([]);
   };
-
-
+  const showWarningAlert = (title, message) => {
+    Alert.alert(title, message);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <RefreshComponent onRefresh={handleRefresh}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
-        {/* 스케줄 관련 UI가 필요 없으므로 해당 부분을 제거하거나 주석 처리하세요. */}
-   
+        {showCalendar && <CalendarComp onPress={handleCalendarDay} />}
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
-          buttons={["Accept", "Decline", "즉시수령"]}  // 스케줄 버튼 제거
+          buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
           itemsData={orders}
           buttonPress={handleButtonPress}
         />
@@ -109,7 +104,7 @@ const Orders = ({ navigation }) => {
           <View style={styles.modalContainer}>
             <FlatList
               data={REASONS}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item) => item}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[
@@ -118,7 +113,7 @@ const Orders = ({ navigation }) => {
                       backgroundColor: selectedReasons.includes(item) ? BUTTON_COLORS.secondary : BUTTON_COLORS.primary,
                     },
                   ]}
-                  onPress={() => toggleSelectedReason(item)}
+                  keyExtractor={(item, index) => index.toString()}
                 >
                   <Text style={styles.buttonText}>{item}</Text>
                 </TouchableOpacity>
@@ -133,7 +128,6 @@ const Orders = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -164,5 +158,4 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 });
-
 export default Orders;

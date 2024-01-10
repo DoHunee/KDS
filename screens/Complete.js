@@ -6,18 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-
 const Complete = () => {
-  
-  const readyOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete); // Redux에서 상태를 가져오기 위해 useSelector를 사용  
-  const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 readyOrders를 업데이트
-
-
+  // Redux에서 상태를 가져오기 위해 useSelector를 사용
+  const readyOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
+  // 로컬 상태 orders를 사용하여 readyOrders를 업데이트
+  const [orders, setOrders] = useState([]);
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
     // 만약에 추가적인 동작이 필요하다면 여기에 추가
   };
-
   // readyOrders가 업데이트될 때마다 orders를 업데이트
   useEffect(() => {
     setOrders(readyOrders);
@@ -29,9 +26,10 @@ const Complete = () => {
 
   return (
     <View style={styles.container}>
-      {orders.length === 0 && <EmptyOrders name="Complete" />} {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
-      <OrdersNumbers length={orders.length} /> {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
-
+      {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
+      {orders.length === 0 && <EmptyOrders name="Complete" />}
+      {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
+      <OrdersNumbers length={orders.length} />
       {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
       <SafeAreaView>
         <OrderList buttons={[]} itemsData={orders} buttonPress={buttonPress} />
@@ -39,9 +37,7 @@ const Complete = () => {
     </View>
   );
 };
-
 export default Complete;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

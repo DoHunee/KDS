@@ -1,20 +1,19 @@
-import React from "react";
-import { View, StyleSheet } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import Current from "./screens/Current";
+import Orders from "./screens/Orders";
+import Complete from "./screens/Complete";
+import Schedule from "./screens/Schedule";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import colors from "./refs/colors";
+import Profile from "./screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import { StatusBar } from "expo-status-bar";
-
-import colors from "./refs/colors";
-import Orders from "./screens/Orders";
-import Profile from "./screens/Profile";
-import Current from "./screens/Current";
-import Complete from "./screens/Complete";
-import Schedule from "./screens/Schedule";
-import manager from "./screens/manager";
+import manager from "./screens/manager"
 
 
 const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 생성 
@@ -37,8 +36,15 @@ export default function App() {
       </Stack.Navigator>
     );
   };
-  
-
+  // const [date, newData] = useState("");
+  // let d = new Date();
+  // let time = d.getTime();
+  // useEffect(() => {
+  //   let timeout = setInterval(() => {
+  //     newData(time);
+  //   }, 1000);
+  //   return () => clearInterval(timeout);
+  // }, [date]);
   return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
     <Provider store={store}>   
@@ -66,7 +72,7 @@ export default function App() {
           />
           <Tab.Screen
             options={{
-              tabBarLabel: " 접수완료",
+              tabBarLabel: "접수완료",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="bell-ring-outline"
@@ -99,7 +105,7 @@ export default function App() {
               tabBarLabel: "매출",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
-                  name="calendar"
+                  name="timetable"
                   color={focused ? colors.secondary : color}
                   size={26}
                 />
@@ -108,10 +114,11 @@ export default function App() {
             name="schedule"
             component={Schedule}
           />
-  
+
+
           <Tab.Screen
             options={{
-              tabBarLabel: "관리자 설정",
+              tabBarLabel: "관리자",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="account-plus-outline"
@@ -123,13 +130,11 @@ export default function App() {
             name="manager"
             component={manager}
           />
-
         </Tab.Navigator>
       </NavigationContainer>
     </Provider>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

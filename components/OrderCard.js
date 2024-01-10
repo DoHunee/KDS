@@ -4,7 +4,6 @@ import colors from "../refs/colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Button from "./Button";
 import getTimePassedSec from "../refs/getTime";
-
 const OrderCard = ({
   name,
   number,
@@ -46,7 +45,7 @@ const OrderCard = ({
     if (timeRemaining < 300 && timeRemaining >= 0 && status === "preparing") {
       dynamicChange.backgroundColor = "orange";
     } 
-  
+
     // 주문이 처리중이고 0아래로 갈때 빨간색으로 표시 
     else if (timeRemaining < 0 && status === "preparing") {
       dynamicChange.backgroundColor = "red";
@@ -62,15 +61,14 @@ const OrderCard = ({
     }
 
 
-    
-  // timeRequire 원래 얼마나 걸리는지
-  // timeRemaining 
+
+  // 주문의 상태(status)에 따라 다른 값을 할당합니다. 
+  // opLeft 기본값을 mins로 설정
   // 준비중일때만 sec로 설정
   let topLeft = timeRequire + " mins";
   if (status === "preparing") {
     topLeft = timeRemaining + " secs";
-  } 
-  else if (status === "schedule") {
+  } else if (status === "schedule") {
     topLeft = scheduleFor;
   }
 
@@ -83,8 +81,6 @@ const OrderCard = ({
       size={26}
     />
   );
-
-  
   return (
     <View style={styles.container}>
       <View
@@ -105,20 +101,15 @@ const OrderCard = ({
             {topLeft}
           </Text>
           {timerIcon}
-        
         </TouchableOpacity>
-        
         <View style={{ alignItems: "center" }}>
-        
           <Text>{status}...</Text>
-          
           {status === "preparing" && (
             <Text>경과시간 : {Math.round(timeElapse / 60)} mins</Text>
           )}
-          
           {status === "ready" && (
             <Text style={{ color: colors.white }}>
-              준비 소요 시간 : {Math.round((readyTime - confirmTime) / 60)} mins
+              준비소요시간 : {Math.round((readyTime - confirmTime) / 60)} mins
             </Text>
           )}
         </View>
@@ -165,9 +156,7 @@ const OrderCard = ({
     </View>
   );
 };
-
 export default OrderCard;
-
 const styles = StyleSheet.create({
   container: {
     padding: 15,
