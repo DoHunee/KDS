@@ -1,24 +1,25 @@
 // OrdersNumbers.js
-
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet, Platform, StatusBar } from "react-native";
 import colors from "../refs/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+
+// OrdersNumbers.js 수정 예시
 const OrdersNumbers = ({ length, onAcceptAll }) => {
   const [showAcceptAll, setShowAcceptAll] = useState(false);
 
-  const toggleAcceptAll = () => {
+  const toggleShowAcceptAll = () => {
     setShowAcceptAll((prev) => !prev);
   };
 
   const handleAcceptAll = () => {
-    toggleAcceptAll(); // Accept All 버튼 클릭 시 상태 변경
+    toggleShowAcceptAll();
     onAcceptAll();
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={toggleAcceptAll}>
+    <TouchableOpacity style={styles.container} onPress={toggleShowAcceptAll}>
       <View style={styles.metadataContainer}>
         <Text style={styles.metadataText}>
           <Text style={styles.boldText}>{length}</Text> : Item{length > 1 ? "s" : ""}
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   metadataContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",  // 좌우로 정렬 변경
   },
   metadataText: {
     color: colors.white,
@@ -70,5 +71,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
 export default OrdersNumbers;

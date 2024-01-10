@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +6,7 @@ import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-import { handlePending, onConfirm, onDecline, onSchedule } from "../store/store-slice";
+import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
 import RefreshComponent from '../components/Refresh'; // 새로고침
 
 // 상수 정의
@@ -35,6 +34,8 @@ const Orders = ({ navigation }) => {
     } else if (data.action === "schedule") {
       setShowCalendar(true);
       setScheduleId(data.id);
+    } else if (data.action === "즉시수령") {
+      dispatch(onImmediateReceipt({ id: data.id })); // 새로 추가된 부분
     }
   };
 
@@ -47,13 +48,21 @@ const Orders = ({ navigation }) => {
     setModalVisible(!isModalVisible);
   };
 
+  const showAlert = (title, message, buttons = [{ text: 'OK' }]) => {
+    Alert.alert(
+      title,
+      message,
+      buttons,
+      { cancelable: false }
+    );
+  };
   const handleDecline = () => {
     if (selectedReasons.length > 0) {
       dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
       setModalVisible(false);
       setSelectedReasons([]);
     } else {
-      showWarningAlert("경고", "거절 사유를 선택해주세요.");
+      showAlert("거절 사유를 선택해주세요.");
     }
   };
 
@@ -128,7 +137,6 @@ const Orders = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
