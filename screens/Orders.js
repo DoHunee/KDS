@@ -87,6 +87,7 @@ const Orders = ({ navigation }) => {
     await dispatch(handlePending());
   };
 
+  
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
       dispatch(onConfirm({ id: order.id }));
@@ -113,7 +114,7 @@ const Orders = ({ navigation }) => {
           <View style={styles.modalContainer}>
             <FlatList
               data={REASONS}
-              keyExtractor={(item) => item}
+              keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[
