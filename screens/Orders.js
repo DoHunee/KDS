@@ -6,7 +6,7 @@ import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
+import { handlePending,handleComplete,handleSchedule,handleCurrent, onReady ,onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
 import RefreshComponent from '../components/Refresh'; // 새로고침
 
 // 상수 정의
