@@ -6,7 +6,6 @@ import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
-import CalenderComp from "../components/CalenderComp";
 import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
 import RefreshComponent from '../components/Refresh'; // 새로고침
 
@@ -19,7 +18,6 @@ const BUTTON_COLORS = {
 
 
 const Orders = ({ navigation }) => {
-  const [showCalendar, setShowCalendar] = useState(false);
   const [scheduleId, setScheduleId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState([]);
@@ -34,26 +32,12 @@ const Orders = ({ navigation }) => {
     } else if (data.action === "decline") {
       setScheduleId(data.id);
       setModalVisible(true);
-    } else if (data.action === "schedule") {
-      handleShowCalendar(data.id);  // 캘린더를 일단 보여주고!!!
     } else if (data.action === "즉시수령") {
       dispatch(onImmediateReceipt({ id: data.id }));
     }
   };
 
-  //캘린더를 보여주는 기능을 수행하는 함수
-  //선택한 id를 설정
-  const handleShowCalendar = (id) => {
-    setScheduleId(id);
-    setShowCalendar(true);
-  };
-
-  // 캘린더 날짜를  선택했을 때의 동작을 처리하는 함수입니다
-  const handleCalendarDay = (date) => {
-    setShowCalendar(false);
-    // 선택된 주문의 아이디와 선택된 날짜를 사용하여 예약을 스케줄링합니다
-    dispatch(onSchedule({ id: scheduleId, schedule: date?.dateString }));
-  };
+ 
 
   //모달창 => 거절사유 띄울때!!
   const toggleModal = () => {
@@ -123,11 +107,10 @@ const Orders = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <RefreshComponent onRefresh={handleRefresh}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
-        {/* 캘린더 동작처리!*/}
-        {showCalendar && <CalenderComp onPress={handleCalendarDay} />}  
+        
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
-          buttons={["Accept", "Decline", "즉시수령" , "schedule"]}
+          buttons={["Accept", "Decline", "즉시수령" ]}
           itemsData={orders}
           buttonPress={handleButtonPress}
         />

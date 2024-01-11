@@ -13,9 +13,10 @@ import OrderCard from "../components/OrderCard";
 import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import { useDispatch, useSelector } from "react-redux";
-import { onReady } from "../store/store-slice";
+import { onReady , onCancel } from "../store/store-slice";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
+
 
 const Current = ({ navigation }) => {
 
@@ -25,15 +26,21 @@ const Current = ({ navigation }) => {
 
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
-    // Ready 버튼이 눌렸을 때 액션 디스패치
     if (data.action === "ready") {
       dispatch(onReady({ id: data.id }));
+    } else if (data.action === "cancel") {
+      dispatch(onCancel({ id: data.id }));
     }
   };
+  
   // currentOrders가 업데이트될 때마다 orders를 업데이트
   useEffect(() => {
     setOrders(currentOrders);
   }, [orders, currentOrders]);
+
+ 
+
+
   return (
     <View style={styles.container}>
       {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}

@@ -6,23 +6,25 @@ import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
+
+
 const Complete = () => {
   // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const readyOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
-  // 로컬 상태 orders를 사용하여 readyOrders를 업데이트
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 readyOrders를 업데이트
+  
+  
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
     // 만약에 추가적인 동작이 필요하다면 여기에 추가
   };
+  
   // readyOrders가 업데이트될 때마다 orders를 업데이트
   useEffect(() => {
     setOrders(readyOrders);
   }, [orders, readyOrders]);
 
-  const handleRefresh = async () => {
-    await dispatch(handlePending());
-  };
+
 
   return (
     <View style={styles.container}>
@@ -32,7 +34,10 @@ const Complete = () => {
       <OrdersNumbers length={orders.length} />
       {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
       <SafeAreaView>
-        <OrderList buttons={[]} itemsData={orders} buttonPress={buttonPress} />
+        <OrderList buttons={[]} 
+        itemsData={orders} 
+        buttonPress={buttonPress} 
+        />
       </SafeAreaView>
     </View>
   );

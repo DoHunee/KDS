@@ -5,7 +5,7 @@ import data from "../assets/data/orders.json";
 // 초기 상태 정의
 const initialState = {
   pending: [],
-  current: [],
+  current: [], //현재 주문 목록
   schedule: [],
   complete: [],
 };
@@ -60,6 +60,17 @@ export const OrdersDistrubutionSclie = createSlice({
     onDecline: (state, action) => {
       state.pending = state.pending.filter((item) => item.id !== action.payload.id);
     },
+    // 주문을 취소하고 대기 중인 목록으로 이동
+    onCancel: (state, action) => {
+      const orderId = action.payload.id;
+      const canceledOrder = state.current.find((order) => order.id === orderId);
+
+      canceledOrder.status = "pending"; // 상태를 "pending"로 변경
+      canceledOrder.cancelTime = getTimePassedSec();
+
+      state.pending = [...state.pending, canceledOrder];
+      state.current = state.current.filter((order) => order.id !== orderId);
+    },
     // "즉시 수령"에 대한 액션 및 리듀서
     onImmediateReceipt: (state, action) => {
       const orders = state.pending;
@@ -83,6 +94,7 @@ export const {
   onReady,
   onSchedule,
   onDecline,
+  onCancel,
   onImmediateReceipt,
 } = OrdersDistrubutionSclie.actions;
 

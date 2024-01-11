@@ -3,17 +3,19 @@ import { useEffect, useState } from "react";
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import Current from "./screens/Current";
-import Orders from "./screens/Orders";
-import Complete from "./screens/Complete";
-import Schedule from "./screens/Schedule";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "./refs/colors";
 import Profile from "./screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+
+import Orders from "./screens/Orders";
+import Current from "./screens/Current";
+import Complete from "./screens/Complete";
+import Schedule from "./screens/Schedule";
 import manager from "./screens/manager"
+
 
 
 const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 생성 
@@ -23,27 +25,31 @@ export default function App() {
   const HomeStack = () => {
     return (
       <Stack.Navigator>
+        {/* "orders" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
-          options={{ headerShown: false }}
-          name="orders"
-          component={Orders}
+          options={{ headerShown: false }}  // 헤더를 숨김
+          name="orders"  // 화면의 이름
+          component={Orders}  // 화면에 렌더링될 컴포넌트
         />
+
+        {/* "profile" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
-          // options={{ headerShown: false }}
-          name="profile"
-          component={Profile}
+          // options={{ headerShown: false }}  // 헤더를 숨기거나 필요한 설정을 추가할 수 있음
+          name="profile"  // 화면의 이름
+          component={Profile}  // 화면에 렌더링될 컴포넌트
         />
       </Stack.Navigator>
     );
   };
-
   
-  return (
+  // (Homestack(Orders.js + Profile)  Current,   Complete,    Schedule    manager ) 
+  //  접수대기                         접수완료   처리완료        일정         관리자
+  
+   return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
     <Provider store={store}>   
       <NavigationContainer>
         <StatusBar style="light" />  
-        {/* Tab.Navigator안에 탭에 각 화면 컴포넌트(Orders, Current, Complete, Schedule) */}
         <Tab.Navigator      
           activeColor={colors.tertiary}  //선택한 아이곤
           inactiveColor={"black"}  // 선택하지 않은 아이콘 
@@ -107,7 +113,6 @@ export default function App() {
             name="schedule"
             component={Schedule}
           />
-
 
           <Tab.Screen
             options={{
