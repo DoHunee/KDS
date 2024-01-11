@@ -58,7 +58,18 @@ export const OrdersDistrubutionSclie = createSlice({
     },
     // 주문을 거절하고 대기 중 목록에서 제거
     onDecline: (state, action) => {
+      const orders = state.pending;
+      const immediateReceiptOrder = orders?.find((item) => item.id === action.payload.id);
+
+      immediateReceiptOrder.status = "decline"; 
+
+      immediateReceiptOrder.completeTime = getTimePassedSec();
+      immediateReceiptOrder.orderNumber = state.complete.length + 1;
+
+      state.complete = [...state.complete, immediateReceiptOrder];
       state.pending = state.pending.filter((item) => item.id !== action.payload.id);
+      
+      
     },
     // 주문을 취소하고 대기 중인 목록으로 이동
     onCancel: (state, action) => {
@@ -76,7 +87,7 @@ export const OrdersDistrubutionSclie = createSlice({
       const orders = state.pending;
       const immediateReceiptOrder = orders?.find((item) => item.id === action.payload.id);
 
-      immediateReceiptOrder.status = "ready"; // "completed" 대신 "ready"로 변경
+      immediateReceiptOrder.status = "fast-ready"; // "completed" 대신 "ready"로 변경
 
       immediateReceiptOrder.completeTime = getTimePassedSec();
       immediateReceiptOrder.orderNumber = state.complete.length + 1;

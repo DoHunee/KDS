@@ -4,6 +4,8 @@ import colors from "../refs/colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Button from "./Button";
 import getTimePassedSec from "../refs/getTime";
+
+
 const OrderCard = ({
   name,
   number,
@@ -16,63 +18,23 @@ const OrderCard = ({
   timeRequire,
   buttons,
   readyTime,
-  scheduleFor,
+  
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0);
   const handleOnPress = (data) => {
     onPress({ action: data, id: id });
   };
-  let tempOrder = ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"];
+  // let tempOrder = ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"];
 
-    // 배달 시간 나타내주는 친구
+    
+  // 배달 시간 나타내주는 네모 창
   let dynamicChange = {
     backgroundColor: "white",
     color: "black",
   };
+     
 
-    // 경과시간 갱신
-  useEffect(() => {
-    let timeout = setInterval(() => {
-      setTimeElapsed(timeElapse + 1);
-    }, 1000);
-
-        // 배달 시간 나타내주는 친구 상태에 따라 색 변경
-    return () => clearInterval(timeout);
-  }, [timeElapse]);
-  const timeRemaining = confirmTime + timeRequire * 60 - getTimePassedSec();
-
-    // 주문이 처리중이고 0이상 5분(300초) 이하일때 주황색으로 표시
-    if (timeRemaining < 300 && timeRemaining >= 0 && status === "preparing") {
-      dynamicChange.backgroundColor = "orange";
-    } 
-
-    // 주문이 처리중이고 0아래로 갈때 빨간색으로 표시 
-    else if (timeRemaining < 0 && status === "preparing") {
-      dynamicChange.backgroundColor = "red";
-      dynamicChange.color = "white";
-    } 
-    // 주문 준비 됐으면 그린
-    else if (status === "ready") {
-      dynamicChange.backgroundColor = "green";
-    } 
-    // 주문 스케쥴로 넘어가면 pink
-    else if (status === "schedule") {
-      dynamicChange.backgroundColor = "pink";
-    }
-
-
-
-  // 주문의 상태(status)에 따라 다른 값을 할당합니다. 
-  // opLeft 기본값을 mins로 설정
-  // 준비중일때만 sec로 설정
-  let topLeft = timeRequire + " mins";
-  if (status === "preparing") {
-    topLeft = timeRemaining + " secs";
-  } else if (status === "schedule") {
-    topLeft = scheduleFor;
-  }
-
-   // MaterialCommunityIcons 컴포넌트 이용하여 트럭 아이콘 생성하여 변수 timerIcon에 할당하는 부분
+  // MaterialCommunityIcons 컴포넌트 이용하여 트럭 아이콘 생성하여 변수 timerIcon에 할당하는 부분
   let timerIcon = (
     <MaterialCommunityIcons
       style={[styles.timerText, { color: dynamicChange.color }]}
@@ -81,6 +43,56 @@ const OrderCard = ({
       size={26}
     />
   );
+
+
+    // 경과시간 갱신
+    useEffect(() => {
+      let timeout = setInterval(() => {
+        setTimeElapsed(timeElapse + 1);
+      }, 1000);
+      return () => clearInterval(timeout);
+    }, [timeElapse]);
+
+    
+
+    
+    
+    
+    let topLeft
+
+    if (status === "pending") {
+      topLeft ="주문 대기중";
+    }
+
+    else if (status === "preparing") {
+      // 경과 시간 계산
+      const elapsedMinutes = Math.floor(timeElapse / 60); // 분 단위
+      const elapsedSeconds = Math.round(timeElapse) % 60; // 초 단위
+
+      // 경과 시간에 따라 텍스트 생성
+      topLeft = `경과시간: ${
+        timeElapse < 60 ? `${elapsedSeconds} 초` : `${elapsedMinutes} 분 ${elapsedSeconds} 초`
+      }`;
+    } 
+    // 주문 준비 됐으면 그린
+    else if (status === "ready") {
+      dynamicChange.backgroundColor = "green";
+      topLeft = "주문처리완료"    
+    } 
+
+    else if (status === "fast-ready") {
+      dynamicChange.backgroundColor = "pink";
+      topLeft = "즉시수령";
+    } 
+
+    else if (status === "decline") {
+      dynamicChange.backgroundColor = "red";
+      topLeft = "취소처리";
+    } 
+
+
+
+
   return (
     <View style={styles.container}>
       <View
@@ -98,23 +110,13 @@ const OrderCard = ({
           ]}
         >
           <Text style={[styles.timerText, { color: dynamicChange.color }]}>
-            {topLeft}
+          {topLeft}
           </Text>
           {timerIcon}
         </TouchableOpacity>
-        <View style={{ alignItems: "center" }}>
-          <Text>{status}...</Text>
-          {status === "preparing" && (
-            <Text>경과시간 : {Math.round(timeElapse / 60)} mins</Text>
-          )}
-          {status === "ready" && (
-            <Text style={{ color: colors.white }}>
-              준비소요시간 : {Math.round((readyTime - confirmTime) / 60)} mins
-            </Text>
-          )}
-        </View>
       </View>
 
+    
 
       {/* orderNumber가 존재하는 경우, 문자열 "#00"과 orderNumber를 결합하여 반환합니다.
       orderNumber가 존재하지 않는 경우, 문자열 "#000"을 반환합니다
@@ -156,7 +158,10 @@ const OrderCard = ({
     </View>
   );
 };
+
+
 export default OrderCard;
+
 const styles = StyleSheet.create({
   container: {
     padding: 15,

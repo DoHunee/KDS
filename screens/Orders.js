@@ -33,36 +33,20 @@ const Orders = ({ navigation }) => {
       setScheduleId(data.id);
       setModalVisible(true);
     } else if (data.action === "즉시수령") {
-      dispatch(onImmediateReceipt({ id: data.id }));
+      dispatch(onImmediateReceipt({ id: data.id })); // 새로 추가된 부분
     }
   };
 
  
 
-  //모달창 => 거절사유 띄울때!!
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-
-  //경고 알람!
-  const showAlert = (title, message, buttons = [{ text: 'OK' }]) => {
+   //경고 알람!
+   const showAlert = (title, message, buttons = [{ text: 'OK' }]) => {
     Alert.alert(
       title,
       message,
       buttons,
       { cancelable: false }
     );
-  };
-
-  // decline 눌렀을때 => 거절 사유 선택!!
-  const handleDecline = () => {
-    if (selectedReasons.length > 0) {
-      dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
-      setModalVisible(false);
-      setSelectedReasons([]);
-    } else {
-      showAlert("거절 사유를 선택해주세요.");
-    }
   };
 
   // 거절 사유 하나만 선택할 수 있게 설정
@@ -80,6 +64,30 @@ const Orders = ({ navigation }) => {
       // console.log("거절 이유 추가: " + reason);
     }
   };
+  
+
+    //모달창 => 거절사유 띄울때!!
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  // decline 눌렀을때 => 거절 사유 선택!!
+  const handleDecline = () => {
+    if (selectedReasons.length > 0) {
+      dispatch(onDecline({ id: scheduleId, reasons: selectedReasons }));
+      setModalVisible(false);
+      setSelectedReasons([]);
+    } else {
+      showAlert("거절 사유를 선택해주세요.");
+    }
+  };
+
+  
+
+
+ 
+
+  
 
   useEffect(() => {
     dispatch(handlePending());
