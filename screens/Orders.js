@@ -23,6 +23,7 @@ const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
+
   const handleButtonPress = (data) => {
     if (data.action === "accept") {
       dispatch(onConfirm({ id: data.id }));
@@ -30,11 +31,15 @@ const Orders = ({ navigation }) => {
       setScheduleId(data.id);
       setModalVisible(true);
     } else if (data.action === "schedule") {
-      setShowCalendar(true);
-      setScheduleId(data.id);
+      handleShowCalendar(data.id);
     } else if (data.action === "즉시수령") {
-      dispatch(onImmediateReceipt({ id: data.id })); // 새로 추가된 부분
+      dispatch(onImmediateReceipt({ id: data.id }));
     }
+  };
+
+  const handleShowCalendar = (id) => {
+    setScheduleId(id);
+    setShowCalendar(true);
   };
 
   const handleCalendarDay = (date) => {
@@ -71,6 +76,7 @@ const Orders = ({ navigation }) => {
       setSelectedReasons([...selectedReasons, reason]);
     }
   };
+
   useEffect(() => {
     dispatch(handlePending());
   }, []);
@@ -86,9 +92,8 @@ const Orders = ({ navigation }) => {
     });
     setOrders([]);
   };
-  const showWarningAlert = (title, message) => {
-    Alert.alert(title, message);
-  };
+  
+  
   return (
     <SafeAreaView style={styles.container}>
       <RefreshComponent onRefresh={handleRefresh}>
@@ -96,7 +101,7 @@ const Orders = ({ navigation }) => {
         {showCalendar && <CalendarComp onPress={handleCalendarDay} />}
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
-          buttons={["Accept", "Decline", "즉시수령", "Schedule"]}
+          buttons={["Accept", "Decline", "즉시수령"]}
           itemsData={orders}
           buttonPress={handleButtonPress}
         />
@@ -113,7 +118,7 @@ const Orders = ({ navigation }) => {
                       backgroundColor: selectedReasons.includes(item) ? BUTTON_COLORS.secondary : BUTTON_COLORS.primary,
                     },
                   ]}
-                  keyExtractor={(item, index) => index.toString()}
+                  onPress={() => toggleSelectedReason(item)}  // 거절사유 선택하는 부분!!!
                 >
                   <Text style={styles.buttonText}>{item}</Text>
                 </TouchableOpacity>
