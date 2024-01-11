@@ -16,6 +16,8 @@ import Complete from "./screens/Complete";
 import Schedule from "./screens/Schedule";
 import manager from "./screens/manager"
 
+import LoginScreen from "./screens/LoginScreen"; // 추가된 부분
+
 
 
 const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 생성 
@@ -25,6 +27,15 @@ export default function App() {
   const HomeStack = () => {
     return (
       <Stack.Navigator>
+            
+            
+         {/* "Login" 화면을 나타내는 Stack.Screen */}
+        <Stack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={LoginScreen} // 로그인 화면을 첫 번째 스크린으로 설정
+          />
+        
         {/* "orders" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}  // 헤더를 숨김

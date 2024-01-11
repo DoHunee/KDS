@@ -5,7 +5,7 @@ import colors from "../refs/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 
-// OrdersNumbers.js 수정 예시
+
 const OrdersNumbers = ({ length, onAcceptAll }) => {
   const [showAcceptAll, setShowAcceptAll] = useState(false);
 
