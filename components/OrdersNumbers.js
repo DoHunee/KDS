@@ -28,7 +28,7 @@ const OrdersNumbers = ({ length, onAcceptAll }) => {
       </View>
       {showAcceptAll && (
         <TouchableOpacity style={styles.acceptAllButton} onPress={handleAcceptAll}>
-          <Text style={styles.acceptAllButtonText}>Accept All</Text>
+          <Text style={styles.acceptAllButtonText}>전체수락</Text>
         </TouchableOpacity>
       )}
     </TouchableOpacity>

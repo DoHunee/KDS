@@ -42,9 +42,7 @@ export default function App() {
     );
   };
   
-  // (Homestack(Orders.js + Profile)  Current,   Complete,    Schedule    manager ) 
-  //  접수대기                         접수완료   처리완료        일정         관리자
-  
+
    return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
     <Provider store={store}>   

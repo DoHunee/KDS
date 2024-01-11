@@ -18,7 +18,6 @@ const OrderCard = ({
   timeRequire,
   buttons,
   readyTime,
-  
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0);
   const handleOnPress = (data) => {
@@ -27,12 +26,12 @@ const OrderCard = ({
   // let tempOrder = ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"];
 
     
+
   // 배달 시간 나타내주는 네모 창
   let dynamicChange = {
     backgroundColor: "white",
     color: "black",
   };
-     
 
   // MaterialCommunityIcons 컴포넌트 이용하여 트럭 아이콘 생성하여 변수 timerIcon에 할당하는 부분
   let timerIcon = (
@@ -55,17 +54,16 @@ const OrderCard = ({
 
     
 
-    
-    
-    
     let topLeft
 
+    // "주문대기중"
     if (status === "pending") {
       topLeft ="주문 대기중";
     }
 
+    // 경과 시간 : n분 m초
     else if (status === "preparing") {
-      // 경과 시간 계산
+      
       const elapsedMinutes = Math.floor(timeElapse / 60); // 분 단위
       const elapsedSeconds = Math.round(timeElapse) % 60; // 초 단위
 
@@ -74,20 +72,23 @@ const OrderCard = ({
         timeElapse < 60 ? `${elapsedSeconds} 초` : `${elapsedMinutes} 분 ${elapsedSeconds} 초`
       }`;
     } 
-    // 주문 준비 됐으면 그린
-    else if (status === "ready") {
-      dynamicChange.backgroundColor = "green";
-      topLeft = "주문처리완료"    
-    } 
 
-    else if (status === "fast-ready") {
+    //즉시수령
+    else if (status === "fast_ready") {
       dynamicChange.backgroundColor = "pink";
       topLeft = "즉시수령";
     } 
 
+    // 취소처리
     else if (status === "decline") {
       dynamicChange.backgroundColor = "red";
       topLeft = "취소처리";
+    } 
+
+    // 주문 준비 됐으면 그린
+    else if (status === "ready") {
+      dynamicChange.backgroundColor = "green";
+      topLeft = "주문처리완료"    
     } 
 
 

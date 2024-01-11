@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl, Alert } from "react-native";
+import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import colors from "../refs/colors";
@@ -84,11 +84,6 @@ const Orders = ({ navigation }) => {
 
   
 
-
- 
-
-  
-
   useEffect(() => {
     dispatch(handlePending());
   }, []);
@@ -111,6 +106,7 @@ const Orders = ({ navigation }) => {
   };
   
 
+  
   return (
     <SafeAreaView style={styles.container}>
       <RefreshComponent onRefresh={handleRefresh}>
@@ -150,6 +146,8 @@ const Orders = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
