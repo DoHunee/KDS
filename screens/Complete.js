@@ -5,7 +5,7 @@ import colors from "../refs/colors";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
-import OrdersNumbers from "../components/OrdersNumbers";
+import Length from "../components/Length";
 
 
 const Complete = () => {
@@ -31,7 +31,7 @@ const Complete = () => {
       {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
       {orders.length === 0 && <EmptyOrders name="Complete" />}
       {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
-      <OrdersNumbers length={orders.length} />
+      <Length length={orders.length} />
       {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
       <SafeAreaView>
         <OrderList buttons={[]} 

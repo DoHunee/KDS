@@ -24,7 +24,9 @@ const OrdersNumbers = ({ length, onAcceptAll }) => {
         <Text style={styles.metadataText}>
           <Text style={styles.boldText}>{length}</Text> : Item{length > 1 ? "s" : ""}
         </Text>
-        <MaterialCommunityIcons name={showAcceptAll ? "chevron-up" : "chevron-down"} size={24} color={colors.white} />
+        <MaterialCommunityIcons name={showAcceptAll ? "chevron-up" : "chevron-down"} 
+        size={20} 
+        color={colors.white} />
       </View>
       {showAcceptAll && (
         <TouchableOpacity style={styles.acceptAllButton} onPress={handleAcceptAll}>
@@ -34,12 +36,14 @@ const OrdersNumbers = ({ length, onAcceptAll }) => {
     </TouchableOpacity>
   );
 };
+
+
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
     zIndex: 100,
     backgroundColor: colors.secondary,
-    padding: 5,
+    padding: 10,
     right: 0,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
@@ -60,14 +64,14 @@ const styles = StyleSheet.create({
   },
   acceptAllButton: {
     backgroundColor: colors.secondary,
-    padding: 10,
+    padding: 5,
     marginTop: 10,
     borderRadius: 4,
     alignSelf: "flex-end", // 우측 정렬
   },
   acceptAllButtonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 export default OrdersNumbers;

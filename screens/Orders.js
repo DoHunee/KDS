@@ -7,7 +7,6 @@ import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
 import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
-import RefreshComponent from '../components/Refresh'; // 새로고침
 
 // 상수 정의
 const REASONS = ["재료소진", "품절", "딴거 드셈"];
@@ -109,7 +108,7 @@ const Orders = ({ navigation }) => {
   
   return (
     <SafeAreaView style={styles.container}>
-      <RefreshComponent onRefresh={handleRefresh}>
+      
         {orders.length === 0 && <EmptyOrders name="Pending" />}
         
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
@@ -142,7 +141,7 @@ const Orders = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </Modal>
-      </RefreshComponent>
+      
     </SafeAreaView>
   );
 };

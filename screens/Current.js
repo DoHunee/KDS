@@ -15,7 +15,7 @@ import OrderList from "../components/OrderList";
 import { useDispatch, useSelector } from "react-redux";
 import { onReady , onCancel } from "../store/store-slice";
 import EmptyOrders from "../components/EmptyOrders";
-import OrdersNumbers from "../components/OrdersNumbers";
+import Length from "../components/Length";
 
 
 const Current = ({ navigation }) => {
@@ -46,7 +46,7 @@ const Current = ({ navigation }) => {
       {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
       {orders.length === 0 && <EmptyOrders name="Current" />}
       {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
-      <OrdersNumbers length={orders.length} />
+      <Length length={orders.length} />
       {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
       <SafeAreaView>
         {/* 주문 목록에 Ready와 Cancel 버튼을 추가하여 OrderList 컴포넌트 사용 */}
