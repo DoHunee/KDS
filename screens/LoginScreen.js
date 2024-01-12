@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🚀 안녕하세요! 🚀</Text>
+      <Text style={styles.title}>🚀 Open 🚀</Text>
 
       <View style={styles.inputContainer}>
         {storedNumber.map((digit, index) => (
@@ -131,13 +131,14 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     marginHorizontal: 5,
+    marginBottom : 20,
   },
   input: {
     height: 40,
     width: "80%",
     borderColor: "#61dafb",
     borderBottomWidth: 2,
-    marginBottom: 20,
+    marginBottom: 10,
     paddingHorizontal: 15,
     color: "black",
   },
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
-    marginTop: 10,
+    marginTop: 30,
   },
   buttonText: {
     color: "#FFF",
