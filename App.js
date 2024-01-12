@@ -5,7 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "./refs/colors";
-import Profile from "./screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
@@ -26,28 +25,19 @@ const Stack = createNativeStackNavigator();  //스택 네비게이터
 export default function App() {
   const HomeStack = () => {
     return (
-      <Stack.Navigator>
-            
-            
-         {/* "Login" 화면을 나타내는 Stack.Screen */}
+      <Stack.Navigator initialRouteName="Login">
+        {/* "Login" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={LoginScreen} // 로그인 화면을 첫 번째 스크린으로 설정
-          />
+          options={{ headerShown: false }}
+          name="Login"
+          component={LoginScreen}
+        />
         
         {/* "orders" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
-          options={{ headerShown: false }}  // 헤더를 숨김
-          name="orders"  // 화면의 이름
-          component={Orders}  // 화면에 렌더링될 컴포넌트
-        />
-
-        {/* "profile" 화면을 나타내는 Stack.Screen */}
-        <Stack.Screen
-          // options={{ headerShown: false }}  // 헤더를 숨기거나 필요한 설정을 추가할 수 있음
-          name="profile"  // 화면의 이름
-          component={Profile}  // 화면에 렌더링될 컴포넌트
+          options={{ headerShown: false }}
+          name="Orders"
+          component={Orders}
         />
       </Stack.Navigator>
     );

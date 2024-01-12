@@ -17,10 +17,12 @@ const LoginScreen = ({ navigation }) => {
   let categoryNumberRef = useRef();
   let employeeIDRef = useRef();
 
+
+  // 로그인 성공 실패 로직!
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-      navigation.replace("MainApp");
+      navigation.replace("Orders");
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
