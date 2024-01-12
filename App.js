@@ -41,6 +41,13 @@ export default function App() {
           name="orders"
           component={Orders}
         />
+        {/* "Manager" 화면을 나타내는 Stack.Screen */}
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="manager"
+          component={Manager}
+        />
+
       </Stack.Navigator>
     );
   };
@@ -49,10 +56,13 @@ export default function App() {
    return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
     <Provider store={store}>   
+      
       <NavigationContainer>
-        <StatusBar style="light" />  
+        <StatusBar style="dark" />  
+        
+        {/* 하단 탭 네비게이터을 클릭했을때 색 */}
         <Tab.Navigator      
-          activeColor={colors.tertiary}  //선택한 아이곤
+          activeColor={colors.tertiary}  //선택한 아이콘
           inactiveColor={"black"}  // 선택하지 않은 아이콘 
           barStyle={{ backgroundColor: "white" }} // 배경
         >  

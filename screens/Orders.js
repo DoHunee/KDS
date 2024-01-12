@@ -37,8 +37,6 @@ const Orders = ({ navigation }) => {
     }
   };
 
- 
-
    //경고 알람!
    const showAlert = (title, message, buttons = [{ text: 'OK' }]) => {
     Alert.alert(
@@ -106,16 +104,12 @@ const Orders = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
-        
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
-        
         <OrderList
           buttons={["Accept", "Decline", "즉시수령" ]}
           itemsData={orders}
           buttonPress={handleButtonPress}
         />
-        <Logout navigation={navigation} />
-
         <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
           <View style={styles.modalContainer}>
             <FlatList

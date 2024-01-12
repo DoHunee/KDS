@@ -18,6 +18,7 @@ import EmptyOrders from "../components/EmptyOrders";
 import Length from "../components/Length";
 
 
+
 const Current = ({ navigation }) => {
 
   const dispatch = useDispatch();  // Redux의 useDispatch를 사용하여 액션을 디스패치
@@ -49,7 +50,6 @@ const Current = ({ navigation }) => {
       <Length length={orders.length} />
       {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
       <SafeAreaView>
-        {/* 주문 목록에 Ready와 Cancel 버튼을 추가하여 OrderList 컴포넌트 사용 */}
         <OrderList
           buttons={["Ready", "Cancel"]}
           itemsData={orders}
