@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -8,43 +8,26 @@ import {
   Alert,
 } from "react-native";
 
-
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, route }) => {
   const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
   const [categoryNumber, setCategoryNumber] = useState("");
   const [employeeID, setEmployeeID] = useState("");
 
-  let storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
-  let categoryNumberRef = useRef();
-  let employeeIDRef = useRef();
+  const storedNumberRefs = [
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+  ];
+  const categoryNumberRef = useRef();
+  const employeeIDRef = useRef();
 
+  // Example values ​​to be stored
+  const storedNumberExample = "1234";
+  const storedCategoryNumberExample = "5";
+  const storedEmployeeIDExample = "6789012";
 
-  // 로그인 성공 실패 로직!
-  const handleLogin = () => {
-    if (validateCredentials()) {
-      Alert.alert("로그인 성공", "환영합니다!");
-      navigation.replace("orders");
-    } else {
-      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
-    }
-  };
-
-  const validateCredentials = () => {
-    const storedNumberString = storedNumber.join("");
-    const enteredNumber = storedNumberString + categoryNumber + employeeID;
-
-    // 예시로 저장된 값
-    const storedNumberExample = "1234";
-    const storedCategoryNumberExample = "5";
-    const storedEmployeeIDExample = "6789012";
-
-    return (
-      storedNumberString === storedNumberExample &&
-      categoryNumber === storedCategoryNumberExample &&
-      employeeID === storedEmployeeIDExample
-    );
-  };
-
+  // Called when a number is entered, stores the entered number in an array, and moves the focus to the next input box as needed.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
     newStoredNumber[index] = text;
@@ -54,6 +37,40 @@ const LoginScreen = ({ navigation }) => {
     if (text.length === 1 && nextRef && nextRef.current) {
       nextRef.current.focus();
     }
+  };
+
+  // Login success failure logic!
+  const handleLogin = () => {
+    if (validateCredentials()) {
+      Alert.alert("Login successful", "Welcome!");
+      navigation.replace("orders");
+    } else {
+      Alert.alert("Login failed", "The information you entered is incorrect.");
+    }
+  };
+
+  // Combine the entered numbers into one string, compare it with the value stored as an example, and return whether there is a match.
+  const validateCredentials = () => {
+    const storedNumberString = storedNumber.join("");
+    const enteredNumber = storedNumberString + categoryNumber + employeeID;
+
+    return (
+      storedNumberString === storedNumberExample &&
+      categoryNumber === storedCategoryNumberExample &&
+      employeeID === storedEmployeeIDExample
+    );
+  };
+
+  useEffect(() => {
+    // Initialize values when the component mounts
+    initializeValues();
+  }, []);
+
+  // Example usage: call initialization or modification function
+  const initializeValues = () => {
+    setStoredNumber(["", "", "", ""]);
+    setCategoryNumber("");
+    setEmployeeID("");
   };
 
   return (
@@ -87,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
 
       <TextInput
         style={styles.input}
-        placeholder="직원 식별 번호 (7자리)"
+        placeholder="직원식별번호(7자리)"
         keyboardType="numeric"
         maxLength={7}
         value={employeeID}
@@ -96,7 +113,7 @@ const LoginScreen = ({ navigation }) => {
       />
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.buttonText}>로그인</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
     </View>
   );
@@ -132,7 +149,7 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     marginHorizontal: 5,
-    marginBottom : 20,
+    marginBottom: 20,
   },
   input: {
     height: 40,
