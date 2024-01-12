@@ -13,7 +13,7 @@ import Orders from "./screens/Orders";
 import Current from "./screens/Current";
 import Complete from "./screens/Complete";
 import Schedule from "./screens/Schedule";
-import manager from "./screens/manager"
+import Manager from "./screens/Manager";
 
 import LoginScreen from "./screens/LoginScreen"; // 추가된 부분
 
@@ -23,6 +23,8 @@ const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 �
 const Stack = createNativeStackNavigator();  //스택 네비게이터
 
 export default function App() {
+
+  
   const HomeStack = () => {
     return (
       <Stack.Navigator initialRouteName="Login">
@@ -36,7 +38,7 @@ export default function App() {
         {/* "orders" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}
-          name="Orders"
+          name="orders"
           component={Orders}
         />
       </Stack.Navigator>
@@ -125,7 +127,7 @@ export default function App() {
               ),
             }}
             name="manager"
-            component={manager}
+            component={Manager}
           />
         </Tab.Navigator>
       </NavigationContainer>

@@ -8,6 +8,7 @@ import {
   Alert,
 } from "react-native";
 
+
 const LoginScreen = ({ navigation }) => {
   const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
   const [categoryNumber, setCategoryNumber] = useState("");
@@ -22,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-      navigation.replace("Orders");
+      navigation.replace("orders");
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
