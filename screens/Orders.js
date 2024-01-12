@@ -7,6 +7,7 @@ import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
 import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
+import Logout from "../components/Logout";
 
 // 상수 정의
 const REASONS = ["재료소진", "품절", "딴거 드셈"];
@@ -81,7 +82,6 @@ const Orders = ({ navigation }) => {
     }
   };
 
-  
 
   useEffect(() => {
     dispatch(handlePending());
@@ -91,10 +91,7 @@ const Orders = ({ navigation }) => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
 
-  //새로고침
-  const handleRefresh = async () => {
-    await dispatch(handlePending());
-  };
+ 
 
   // 주문 모두승인
   const handleAcceptAllOrders = () => {
@@ -108,15 +105,17 @@ const Orders = ({ navigation }) => {
   
   return (
     <SafeAreaView style={styles.container}>
-      
         {orders.length === 0 && <EmptyOrders name="Pending" />}
         
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
+        
         <OrderList
           buttons={["Accept", "Decline", "즉시수령" ]}
           itemsData={orders}
           buttonPress={handleButtonPress}
         />
+        <Logout navigation={navigation} />
+
         <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
           <View style={styles.modalContainer}>
             <FlatList
@@ -175,6 +174,14 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderRadius: 4,
+  },
+
+  logoutButton: {
+    backgroundColor: "#61dafb",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 30,
   },
 });
 export default Orders;
