@@ -1,36 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform ,Button} from "react-native";
 
 const LoginScreen = ({ navigation, route }) => {
-    // 저장할 값들의 초기값 설정
-    const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
-    const [categoryNumber, setCategoryNumber] = useState("");
-    const [employeeID, setEmployeeID] = useState("");
+  // 저장할 값들의 초기값 설정
+  const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
+  const [categoryNumber, setCategoryNumber] = useState("");
+  const [employeeID, setEmployeeID] = useState("");
 
-    // Fix.js에서 전달된 exampleValues 받아오기
-    const exampleValues = route.params?.exampleValues;
-    console.log("Current route.params:", route.params);
+  // Fix.js에서 업데이트된 값들을 받아오기
+  const updatedExampleValues = route.params?.exampleValues;
 
-    // 예제 값들을 useState로 관리
-    const [storedNumberExample, setStoredNumberExample] = useState("1234");
-    const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
-    const [storedEmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
-  
-    // storedNumberRefs 정의
-    const storedNumberRefs = [
-      useRef(),
-      useRef(),
-      useRef(),
-      useRef(),
-    ];
-    const categoryNumberRef = useRef();
-    const employeeIDRef = useRef();
+  // 예제 값들을 useState로 관리
+  const [storedNumberExample, setStoredNumberExample] = useState("1234");
+  const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
+  const [storedEmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
 
+  // storedNumberRefs 정의
+  const storedNumberRefs = [
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+  ];
+  const categoryNumberRef = useRef();
+  const employeeIDRef = useRef();
 
-
-
-
-    // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
+  // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
     newStoredNumber[index] = text;
@@ -58,80 +53,83 @@ const LoginScreen = ({ navigation, route }) => {
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-      console.log("현재 식별번호 : ",storedNumberExample,"+",storedCategoryNumberExample,"+",storedEmployeeIDExample)
+      console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
       navigation.replace("orders");
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
-      console.log("현재 식별번호 : ",storedNumberExample,"+",storedCategoryNumberExample,"+",storedEmployeeIDExample)
+      console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
     }
   };
-
 
   const updateExampleValues = (values) => {
     setStoredNumberExample(values.storedNumber);
     setStoredCategoryNumberExample(values.categoryNumber);
     setStoredEmployeeIDExample(values.employeeID);
   };
-  
 
+  // 업데이트된 값들이 존재하면 적용
   useEffect(() => {
-    if (route.params?.exampleValues) {
-      console.log("Received exampleValues:", route.params.exampleValues);
-      updateExampleValues(route.params.exampleValues);
+    if (updatedExampleValues) {
+      console.log("Received updatedExampleValues:", updatedExampleValues);
+      updateExampleValues(updatedExampleValues);
+      console.log("바뀐식별번호!", updatedExampleValues.storedNumber);
     }
-  }, [route.params?.exampleValues]);
+  }, [updatedExampleValues]);
+
+  const handleGoToFix = () => {
+    navigation.navigate("fix");
+  };
 
 
-
-
-return (
+  return (
     <KeyboardAvoidingView
-    style={styles.container}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-   >
-    <View style={styles.container}>
-      <Text style={styles.title}>🚀 오픈 🚀</Text>
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>🚀 오픈 🚀</Text>
 
-      <View style={styles.inputContainer}>
-        {storedNumber.map((digit, index) => (
-          <TextInput
-            key={index}
-            style={styles.digitInput}
-            keyboardType="numeric"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) =>
-              handleDigitInput(text, index, storedNumberRefs[index + 1])
-            }
-            ref={storedNumberRefs[index]}
-          />
-        ))}
+        <View style={styles.inputContainer}>
+          {storedNumber.map((digit, index) => (
+            <TextInput
+              key={index}
+              style={styles.digitInput}
+              keyboardType="numeric"
+              maxLength={1}
+              value={digit}
+              onChangeText={(text) =>
+                handleDigitInput(text, index, storedNumberRefs[index + 1])
+              }
+              ref={storedNumberRefs[index]}
+            />
+          ))}
+        </View>
+
+        <TextInput
+          style={styles.digitInput}
+          keyboardType="numeric"
+          maxLength={1}
+          value={categoryNumber}
+          onChangeText={(text) => setCategoryNumber(text)}
+          ref={categoryNumberRef}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="사원 식별 번호 (7자리)"
+          keyboardType="numeric"
+          maxLength={7}
+          value={employeeID}
+          onChangeText={(text) => setEmployeeID(text)}
+          ref={employeeIDRef}
+        />
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.buttonText}>로그인</Text>
+        </TouchableOpacity>
+
+        <Button title="식별번호수정" onPress={handleGoToFix} />
       </View>
-
-      <TextInput
-        style={styles.digitInput}
-        keyboardType="numeric"
-        maxLength={1}
-        value={categoryNumber}
-        onChangeText={(text) => setCategoryNumber(text)}
-        ref={categoryNumberRef}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="사원 식별 번호 (7자리)"
-        keyboardType="numeric"
-        maxLength={7}
-        value={employeeID}
-        onChangeText={(text) => setEmployeeID(text)}
-        ref={employeeIDRef}
-      />
-
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.buttonText}>로그인</Text>
-      </TouchableOpacity>
-
-    </View>
     </KeyboardAvoidingView>
   );
 };

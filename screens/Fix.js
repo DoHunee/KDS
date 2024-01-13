@@ -1,3 +1,4 @@
+//Fix.js
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -25,20 +26,20 @@ const Fix = ({ navigation, route }) => {
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
 
-  // 사용자가 입력한 값을 저장하는 변수
+  // Variable to store the value entered by the user
   const [userInput, setUserInput] = useState({
     storedNumber: ["", "", "", ""],
     categoryNumber: "",
     employeeID: "",
   });
 
-  // 사용자가 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
+  // Called when the user enters a number, stores the entered number in an array and moves focus to the next input box as needed.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
     newStoredNumber[index] = text;
     setStoredNumber(newStoredNumber);
 
-    // 사용자가 입력한 값을 업데이트
+    // Update the value entered by the user
     setUserInput({
       storedNumber: newStoredNumber,
       categoryNumber,
@@ -50,25 +51,29 @@ const Fix = ({ navigation, route }) => {
     }
   };
 
-  
-// 값을 업데이트하는 함수
-const updateExampleValues = () => {
-  // 사용자가 입력한 값들을 exampleValues로 업데이트
-  const updatedExampleValues = {
-    storedNumber: storedNumber.join(""),
-    categoryNumber,
-    employeeID,
+  // Function to update the value
+  const updateExampleValues = () => {
+    // Update the values entered by the user to exampleValues
+    const updatedExampleValues = {
+      storedNumber: storedNumber.join(""),
+      categoryNumber,
+      employeeID,
+    };
+
+      // 초기화
+  navigation.setParams({
+    exampleValues: null,
+  });
+
+    if (navigation && navigation.setParams) {
+      navigation.setParams({
+        exampleValues: updatedExampleValues,
+      });
+
+      Alert.alert("Example values have been updated!");
+      console.log(updatedExampleValues);
+    }
   };
-
-  if (navigation && navigation.setParams) {
-    navigation.setParams({
-      exampleValues: updatedExampleValues,
-    });
-
-    Alert.alert("예제 값이 업데이트되었습니다!");
-    console.log(updatedExampleValues);
-  }
-};
 
   const handleGoToLogin = () => {
     navigation.navigate("Login");
@@ -79,8 +84,8 @@ const updateExampleValues = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View>
-        <Text style={styles.title}>🚀 식별번호 변경 🚀</Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>🚀 식별번호 수정 🚀</Text>
 
         <View style={styles.inputContainer}>
           {storedNumber.map((digit, index) => (
@@ -109,7 +114,7 @@ const updateExampleValues = () => {
 
         <TextInput
           style={styles.input}
-          placeholder="직원식별번호 (7자리)"
+          placeholder="식별번호 (7 자리)"
           keyboardType="numeric"
           maxLength={7}
           value={employeeID}
@@ -121,10 +126,10 @@ const updateExampleValues = () => {
           style={styles.updateButton}
           onPress={updateExampleValues}
         >
-          <Text style={styles.buttonText}>예제 값 업데이트</Text>
+          <Text style={styles.buttonText}>식별번호 수정</Text>
         </TouchableOpacity>
 
-        <Button title="로그인 페이지로 이동" onPress={handleGoToLogin} />
+        <Button title="로그인" onPress={handleGoToLogin} />
       </View>
     </KeyboardAvoidingView>
   );
@@ -176,7 +181,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
-    marginTop: 15,
+    marginTop: 30,
   },
   buttonText: {
     color: "#FFF",
