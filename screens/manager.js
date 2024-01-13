@@ -1,10 +1,10 @@
 // Manager.js
 
 import React, { useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet ,Button} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Logout from "../components/Logout";
-import Fix from "../components/Fix";
+
 
 const Manager = () => {
   const navigation = useNavigation();
@@ -23,11 +23,17 @@ const Manager = () => {
     navigation.navigate("Login");
   };
 
+  const handleGoToFix = () => {
+    navigation.navigate("fix");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Logout 버튼을 눌렀을 때 handleLogout 함수 실행 */}
       <Logout onPress={handleLogout} />
-      <Fix ref={fixRef} />
+
+       {/* Fix.js로 이동하는 버튼 추가 */}
+       <Button title="식별번호변경" onPress={handleGoToFix} />
     </SafeAreaView>
   );
 };
@@ -38,6 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+ 
 });
 
 export default Manager;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle ,ref } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Button,
+  Alert,
 } from "react-native";
 
 const Fix = ({ navigation, route }) => {
@@ -23,54 +25,54 @@ const Fix = ({ navigation, route }) => {
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
 
-  const [exampleValues, setExampleValues] = useState({
-    storedNumber: "1234",
-    categoryNumber: "5",
-    employeeID: "6789012",
+  // 사용자가 입력한 값을 저장하는 변수
+  const [userInput, setUserInput] = useState({
+    storedNumber: ["", "", "", ""],
+    categoryNumber: "",
+    employeeID: "",
   });
 
+  // 사용자가 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
     newStoredNumber[index] = text;
-
     setStoredNumber(newStoredNumber);
+
+    // 사용자가 입력한 값을 업데이트
+    setUserInput({
+      storedNumber: newStoredNumber,
+      categoryNumber,
+      employeeID,
+    });
 
     if (text.length === 1 && nextRef && nextRef.current) {
       nextRef.current.focus();
     }
   };
 
-  useEffect(() => {
-    initializeValues();
-  }, []);
-
-  useEffect(() => {
-    // navigation 객체가 초기화된 후에 호출되도록 useEffect 사용
-    if (navigation) {
-      updateExampleValues();
-    }
-  }, [navigation]); // navigation이 변경될 때마다 useEffect가 다시 실행되도록 설정
-
-  const initializeValues = () => {
-    setStoredNumber(["", "", "", ""]);
-    setCategoryNumber("");
-    setEmployeeID("");
+  
+// 값을 업데이트하는 함수
+const updateExampleValues = () => {
+  // 사용자가 입력한 값들을 exampleValues로 업데이트
+  const updatedExampleValues = {
+    storedNumber: storedNumber.join(""),
+    categoryNumber,
+    employeeID,
   };
 
-  const updateExampleValues = () => {
-    if (navigation && navigation.setParams) {
-      navigation.setParams({
-        storedNumberExample: "5678",
-        storedCategoryNumberExample: "3",
-        storedEmployeeIDExample: "9876543",
-      });
-    }
+  if (navigation && navigation.setParams) {
+    navigation.setParams({
+      exampleValues: updatedExampleValues,
+    });
+
+    Alert.alert("예제 값이 업데이트되었습니다!");
+    console.log(updatedExampleValues);
+  }
+};
+
+  const handleGoToLogin = () => {
+    navigation.navigate("Login");
   };
-
-  useImperativeHandle(ref, () => ({
-    updateExampleValues,
-  }));
-
 
   return (
     <KeyboardAvoidingView
@@ -78,7 +80,7 @@ const Fix = ({ navigation, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View>
-        <Text style={styles.title}>🚀 Open 🚀</Text>
+        <Text style={styles.title}>🚀 식별번호 변경 🚀</Text>
 
         <View style={styles.inputContainer}>
           {storedNumber.map((digit, index) => (
@@ -107,7 +109,7 @@ const Fix = ({ navigation, route }) => {
 
         <TextInput
           style={styles.input}
-          placeholder="Employee identification number (7 digits)"
+          placeholder="직원식별번호 (7자리)"
           keyboardType="numeric"
           maxLength={7}
           value={employeeID}
@@ -115,9 +117,14 @@ const Fix = ({ navigation, route }) => {
           ref={employeeIDRef}
         />
 
-        <TouchableOpacity style={styles.updateButton} onPress={updateExampleValues}>
-          <Text style={styles.buttonText}>Update Example Values</Text>
+        <TouchableOpacity
+          style={styles.updateButton}
+          onPress={updateExampleValues}
+        >
+          <Text style={styles.buttonText}>예제 값 업데이트</Text>
         </TouchableOpacity>
+
+        <Button title="로그인 페이지로 이동" onPress={handleGoToLogin} />
       </View>
     </KeyboardAvoidingView>
   );

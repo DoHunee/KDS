@@ -1,34 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView } from "react-native";
 
 const LoginScreen = ({ navigation, route }) => {
-  // 저장할 값들의 초기값 설정
-  const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
-  const [categoryNumber, setCategoryNumber] = useState("");
-  const [employeeID, setEmployeeID] = useState("");
+    // 저장할 값들의 초기값 설정
+    const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
+    const [categoryNumber, setCategoryNumber] = useState("");
+    const [employeeID, setEmployeeID] = useState("");
 
+    // Fix.js에서 전달된 exampleValues 받아오기
+    const exampleValues = route.params?.exampleValues;
+    console.log("Current route.params:", route.params);
 
     // 예제 값들을 useState로 관리
     const [storedNumberExample, setStoredNumberExample] = useState("1234");
     const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
     const [storedEmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
   
-  // storedNumberRefs 정의
-  const storedNumberRefs = [
-    useRef(),
-    useRef(),
-    useRef(),
-    useRef(),
-  ];
-  const categoryNumberRef = useRef();
-  const employeeIDRef = useRef();
+    // storedNumberRefs 정의
+    const storedNumberRefs = [
+      useRef(),
+      useRef(),
+      useRef(),
+      useRef(),
+    ];
+    const categoryNumberRef = useRef();
+    const employeeIDRef = useRef();
+
+
 
 
 
@@ -44,17 +42,6 @@ const LoginScreen = ({ navigation, route }) => {
     }
   };
 
-  // 로그인이 성공했는지 확인하는 로직
-  const handleLogin = () => {
-    if (validateCredentials()) {
-      Alert.alert("로그인 성공", "환영합니다!");
-      navigation.replace("orders");
-    } else {
-      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
-    }
-  };
-
-
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
@@ -67,26 +54,41 @@ const LoginScreen = ({ navigation, route }) => {
     );
   };
 
+  // 로그인이 성공했는지 확인하는 로직
+  const handleLogin = () => {
+    if (validateCredentials()) {
+      Alert.alert("로그인 성공", "환영합니다!");
+      console.log("현재 식별번호 : ",storedNumberExample,"+",storedCategoryNumberExample,"+",storedEmployeeIDExample)
+      navigation.replace("orders");
+    } else {
+      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
+      console.log("현재 식별번호 : ",storedNumberExample,"+",storedCategoryNumberExample,"+",storedEmployeeIDExample)
+    }
+  };
+
+
+  const updateExampleValues = (values) => {
+    setStoredNumberExample(values.storedNumber);
+    setStoredCategoryNumberExample(values.categoryNumber);
+    setStoredEmployeeIDExample(values.employeeID);
+  };
+  
+
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 값들을 초기화합니다.
-    initializeValues();
-  }, []);
+    if (route.params?.exampleValues) {
+      console.log("Received exampleValues:", route.params.exampleValues);
+      updateExampleValues(route.params.exampleValues);
+    }
+  }, [route.params?.exampleValues]);
 
-  // Example usage: call initialization or modification function
-  const initializeValues = () => {
-    setStoredNumber(["", "", "", ""]);
-    setCategoryNumber("");
-    setEmployeeID("");
-  };
 
-   // 예제 값 업데이트 함수
-   const updateExampleValues = () => {
-    setStoredNumberExample("5678");
-    setStoredCategoryNumberExample("3");
-    setStoredEmployeeIDExample("9876543");
-  };
 
-  return (
+
+return (
+    <KeyboardAvoidingView
+    style={styles.container}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+   >
     <View style={styles.container}>
       <Text style={styles.title}>🚀 오픈 🚀</Text>
 
@@ -129,10 +131,8 @@ const LoginScreen = ({ navigation, route }) => {
         <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.updateButton} onPress={updateExampleValues}>
-        <Text style={styles.buttonText}>예제 값 업데이트</Text>
-      </TouchableOpacity>
     </View>
+    </KeyboardAvoidingView>
   );
 };
 

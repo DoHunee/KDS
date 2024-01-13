@@ -14,6 +14,7 @@ import Current from "./screens/Current";
 import Complete from "./screens/Complete";
 import Schedule from "./screens/Schedule";
 import Manager from "./screens/Manager";
+import Fix from "./screens/Fix";
 
 import LoginScreen from "./screens/LoginScreen"; // 추가된 부분
 
@@ -27,7 +28,7 @@ export default function App() {
   
   const HomeStack = () => {
     return (
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="manager">
         {/* "Login" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}
@@ -41,11 +42,18 @@ export default function App() {
           name="orders"
           component={Orders}
         />
+
         {/* "Manager" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="manager"
           component={Manager}
+        />
+         
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="fix"
+          component={Fix}
         />
 
       </Stack.Navigator>
