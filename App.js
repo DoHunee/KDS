@@ -27,7 +27,7 @@ export default function App() {
   
   const HomeStack = () => {
     return (
-      <Stack.Navigator initialRouteName="orders">
+      <Stack.Navigator initialRouteName="Login">
         {/* "Login" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}
