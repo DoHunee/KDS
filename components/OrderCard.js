@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 15,
     marginVertical: 10,
-    backgroundColor: colors.card,
+    backgroundColor:  colors.secondary,
     borderRadius: 20,
   },
   timer: {
@@ -176,14 +176,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: colors.secondary,
+    backgroundColor: "white",
     padding: 10,
     borderRadius: 15,
   },
   timerText: {
     marginHorizontal: 5,
     fontWeight: "bold",
-    // color: colors.white,
+    color: "black",
   },
   namePhone: {
     marginVertical: 5,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   orders: {
-    borderTopColor: colors.darkGray,
+    borderTopColor: "skyblue",
     borderTopWidth: 2,
     marginTop: 5,
   },

@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     zIndex: 100,
-    backgroundColor: colors.secondary,
+    backgroundColor: "skyblue",
     padding: 10,
     right: 0,
     borderTopLeftRadius: 10,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   acceptAllButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: "skyblue",
     padding: 5,
     marginTop: 10,
     borderRadius: 4,

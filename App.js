@@ -28,7 +28,7 @@ export default function App() {
     const { isLoggedIn } = useAuth(); // useAuth 훅 사용
     
     return (
-      <Stack.Navigator initialRouteName={isLoggedIn ? "orders" : "Login"}>
+      <Stack.Navigator initialRouteName={isLoggedIn ? "orders" : "Login"}> 
         {/* "Login" 화면을 나타내는 Stack.Screen */}
           <Stack.Screen
             options={{ headerShown: false }}
