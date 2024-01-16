@@ -25,7 +25,7 @@ const Logout = () => {
             // 사용자가 '로그아웃'을 선택한 경우에만 로그아웃 수행
             logout();
             navigation.navigate("homeStack");
-            navigation.navigate("LoginScreen");
+            navigation.navigate("Login");
             console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
           },
         },

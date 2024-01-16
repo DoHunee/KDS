@@ -96,11 +96,6 @@ const LoginScreen = ({ navigation, route }) => {
   }, [isLoggedIn, navigation])
   
 
-  // 식별번호 수정으로 이동!!
-  const handleGoToFix = () => {
-    navigation.navigate("fix");
-  };
-  
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
