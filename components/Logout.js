@@ -1,7 +1,8 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet , SafeAreaView ,Alert,Button} from "react-native";
+import { TouchableOpacity, Text, StyleSheet , SafeAreaView ,Alert,Button , setIsLoggedIn} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../AuthContext";
+
 
 
 const Logout = () => {
@@ -27,6 +28,7 @@ const Logout = () => {
             navigation.navigate("homeStack");
             navigation.navigate("Login");
             console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
+           
           },
         },
       ],

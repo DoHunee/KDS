@@ -1,13 +1,13 @@
 // Manager.js
 import React from "react";
+import { Text } from "react-native-paper";
 import { SafeAreaView, StyleSheet } from "react-native";
-import Logout from "../components/Logout";
 
 
 const Manager = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <Logout />
+      <Text> 관리자 페이지!</Text>
     </SafeAreaView>
   );
 };
