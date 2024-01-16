@@ -1,33 +1,26 @@
 // Refresh.js
 import React from "react";
-import { FlatList, RefreshControl } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, Text } from "react-native";
 
 const RefreshComponent = ({ onRefresh, children }) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const onScroll = (event) => {
-    const currentOffset = event.nativeEvent.contentOffset.y;
-    const refreshingOffset = 0;
-
-    if (currentOffset <= refreshingOffset) {
-      if (!refreshing) {
-        setRefreshing(true);
-        onRefresh && onRefresh();
-      }
-    } else {
-      setRefreshing(false);
-    }
+  const handleEmojiPress = () => {
+    setRefreshing(true);
+    onRefresh && onRefresh();
   };
 
   return (
     <FlatList
       style={{ flex: 1 }}
-      onScroll={onScroll}
-      scrollEventThrottle={16}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={refreshing} onRefresh={handleEmojiPress} />
       }
-      ListHeaderComponent={() => <>{children}</>}
+      ListHeaderComponent={() => (
+        <TouchableOpacity onPress={handleEmojiPress}>
+          <Text>🔄</Text>
+        </TouchableOpacity>
+      )}
       data={[]}
       keyExtractor={() => "dummyKey"}
       renderItem={() => null}

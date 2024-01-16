@@ -1,14 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform ,Button} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Button,
+  TouchableWithoutFeedback,
+  Keyboard,
+  SafeAreaView
+} from "react-native";
+import Logout from "../components/Logout";
 
 const LoginScreen = ({ navigation, route }) => {
   // 저장할 값들의 초기값 설정
   const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
   const [categoryNumber, setCategoryNumber] = useState("");
   const [employeeID, setEmployeeID] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Fix.js에서 업데이트된 값들을 받아오기
-  const updatedExampleValues = route.params?.exampleValues;
 
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
@@ -53,32 +66,66 @@ const LoginScreen = ({ navigation, route }) => {
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-      console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
-      navigation.replace("orders");
-    } else {
+      // console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
+      setIsLoggedIn(true);
+      // navigation.navigate("orders");
+
+        // 추가: 로그인 성공 시 사용자가 입력한 값들을 초기화
+      setStoredNumber(["", "", "", ""]);
+      setCategoryNumber("");
+      setEmployeeID("");
+ 
+    } 
+
+    else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
       console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
     }
   };
 
-  const updateExampleValues = (values) => {
-    setStoredNumberExample(values.storedNumber);
-    setStoredCategoryNumberExample(values.categoryNumber);
-    setStoredEmployeeIDExample(values.employeeID);
-  };
-
-  // 업데이트된 값들이 존재하면 적용
+ 
+  //로그인 후 isLoggedIn = true로 설정되는거 확인하는!!! + 로그인 성공하면 orders.js 로!
   useEffect(() => {
-    if (updatedExampleValues) {
-      console.log("Received updatedExampleValues:", updatedExampleValues);
-      updateExampleValues(updatedExampleValues);
-      console.log("바뀐식별번호!", updatedExampleValues.storedNumber);
+    if (isLoggedIn) {
+      navigation.navigate("orders");
+      console.log("로그인 후 isLoggedIn:", isLoggedIn);
+     
+    // 추가: 로그인 후에 isLoggedIn 상태를 초기화
+    // setIsLoggedIn(false);
     }
-  }, [updatedExampleValues]);
+  }, [isLoggedIn, navigation])
+  
 
+  // 식별번호 수정으로 이동!!
   const handleGoToFix = () => {
     navigation.navigate("fix");
   };
+  
+  // 키보드 내리기
+  const handleDismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
+   // Fix.js에서 업데이트된 값들을 받아오기
+   const updatedExampleValues = route.params?.exampleValues;
+
+   // Fix.js에서 업데이트된 값들을 받아오기
+    const updateExampleValues = (values) => {
+      setStoredNumberExample(values.storedNumber);
+      setStoredCategoryNumberExample(values.categoryNumber);
+      setStoredEmployeeIDExample(values.employeeID);
+    };
+  
+  
+   //  Fix.js에서 업데이트된 값들이 존재하면 적용
+    useEffect(() => {
+      if (updatedExampleValues) {
+        console.log("Received updatedExampleValues:", updatedExampleValues);
+        updateExampleValues(updatedExampleValues);
+        console.log("바뀐식별번호!", updatedExampleValues.storedNumber);
+      }
+    }, [updatedExampleValues]);
+  
 
 
   return (
@@ -86,54 +133,70 @@ const LoginScreen = ({ navigation, route }) => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>🚀 오픈 🚀</Text>
+      <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
+        <View style={styles.container}>
+          <Text style={styles.title}>🚀 OPen 🚀</Text>
+  
+          {isLoggedIn ? (
+            // 로그인 후 화면
+           <View>
+            {/* 로그아웃 + 식별번호 수정 버튼 */}
+            <SafeAreaView style={styles.container}>
+            <Logout navigation={navigation} />
+            </SafeAreaView>         
+          </View>
+          ) : (
+            // 로그인 전 화면
+            <View>
+              <View style={styles.inputContainer}>
+                {/* 여러 개의 TextInput으로 이루어진 입력란 */}
+                {storedNumber.map((digit, index) => (
+                  <TextInput
+                    key={index}
+                    style={styles.digitInput}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChangeText={(text) =>
+                      handleDigitInput(text, index, storedNumberRefs[index + 1])
+                    }
+                    ref={storedNumberRefs[index]}
+                  />
+                ))}
+              </View>
+  
+              {/* 추가 입력란들 */}
+              <TextInput
+                style={[styles.digitInput, { alignSelf: 'center' }]}
+                keyboardType="numeric"
+                maxLength={2}
+                value={categoryNumber}
+                onChangeText={(text) => setCategoryNumber(text)}
+                ref={categoryNumberRef}
+              />
+  
+              <TextInput
+                style={[styles.input, { alignSelf: 'center' }]}
+                placeholder="사원 식별 번호 (7자리)"
+                keyboardType="numeric"
+                maxLength={7}
+                value={employeeID}
+                onChangeText={(text) => setEmployeeID(text)}
+                ref={employeeIDRef}
+              />
+  
+              {/* 로그인 버튼 */}
+              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.buttonText}>로그인</Text>
+              </TouchableOpacity>
 
-        <View style={styles.inputContainer}>
-          {storedNumber.map((digit, index) => (
-            <TextInput
-              key={index}
-              style={styles.digitInput}
-              keyboardType="numeric"
-              maxLength={1}
-              value={digit}
-              onChangeText={(text) =>
-                handleDigitInput(text, index, storedNumberRefs[index + 1])
-              }
-              ref={storedNumberRefs[index]}
-            />
-          ))}
+            </View>
+          )}
         </View>
-
-        <TextInput
-          style={styles.digitInput}
-          keyboardType="numeric"
-          maxLength={1}
-          value={categoryNumber}
-          onChangeText={(text) => setCategoryNumber(text)}
-          ref={categoryNumberRef}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="사원 식별 번호 (7자리)"
-          keyboardType="numeric"
-          maxLength={7}
-          value={employeeID}
-          onChangeText={(text) => setEmployeeID(text)}
-          ref={employeeIDRef}
-        />
-
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.buttonText}>로그인</Text>
-        </TouchableOpacity>
-
-        <Button title="식별번호수정" onPress={handleGoToFix} />
-      </View>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -189,6 +252,29 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  editButton: {
+    backgroundColor: "#FF4500", // 예시 색상 (눈에 띄는 색상으로 변경 가능)
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 20, // 수정된 부분: 기존보다 더 큰 간격으로 조정
+  },
+
+  logoutButton: {
+    backgroundColor: "#61dafb", // 로그아웃 버튼과 비슷한 색상
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+
+  updateButton: {
+    backgroundColor: "#61dafb",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 30,
+  },
 });
 
-export default LoginScreen;
+export default LoginScreen; 

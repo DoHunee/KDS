@@ -1,6 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
+import {  StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -8,6 +7,7 @@ import colors from "./refs/colors";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import { AuthProvider, useAuth } from './AuthContext'; // AuthProvider 추가
 
 import Orders from "./screens/Orders";
 import Current from "./screens/Current";
@@ -24,17 +24,17 @@ const Tab = createMaterialBottomTabNavigator();  //하단 네비게이션 탭 �
 const Stack = createNativeStackNavigator();  //스택 네비게이터
 
 export default function App() {
-
-  
-  const HomeStack = () => {
+    const HomeStack = () => {
+    const { isLoggedIn } = useAuth(); // useAuth 훅 사용
+    
     return (
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName={isLoggedIn ? "orders" : "Login"}>
         {/* "Login" 화면을 나타내는 Stack.Screen */}
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={LoginScreen}
-        />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={LoginScreen}
+          />
         
         {/* "orders" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
@@ -44,12 +44,15 @@ export default function App() {
         />
 
         {/* "Manager" 화면을 나타내는 Stack.Screen */}
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="manager"
-          component={Manager}
-        />
+         {isLoggedIn && (
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="manager"
+            component={Manager}
+          />
+        )}
          
+         {/* "Fix" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="fix"
@@ -63,16 +66,16 @@ export default function App() {
 
    return (
     // 리액트 앱에서 Redux 스토어를 제공하기 위해 사용됩니다
-    <Provider store={store}>   
-      
-      <NavigationContainer>
-        <StatusBar style="dark" />  
+    <Provider store={store}>
+    <NavigationContainer>   
+      <AuthProvider>
+        <StatusBar style="white" />  
         
         {/* 하단 탭 네비게이터을 클릭했을때 색 */}
         <Tab.Navigator      
-          activeColor={colors.tertiary}  //선택한 아이콘
+          activeColor={"black"}  //선택한 아이콘
           inactiveColor={"black"}  // 선택하지 않은 아이콘 
-          barStyle={{ backgroundColor: "white" }} // 배경
+          barStyle={{ backgroundColor: "skyblue" }} // 배경
         >  
           <Tab.Screen
             options={{
@@ -148,7 +151,8 @@ export default function App() {
             component={Manager}
           />
         </Tab.Navigator>
-      </NavigationContainer>
+      </AuthProvider>
+    </NavigationContainer>
     </Provider>
   );
 }
