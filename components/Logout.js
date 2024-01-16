@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet , SafeAreaView ,Alert,Button , setIsLoggedIn} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../AuthContext";
+import { CommonActions } from "@react-navigation/native"; //reset을 위해 가져옴
 
 
 
@@ -9,6 +10,7 @@ const Logout = () => {
 
   const navigation = useNavigation();
   const { logout, isLoggedIn } = useAuth();
+  const { dispatch } = navigation;
   
 
   const handleLogout = () => {
@@ -25,8 +27,12 @@ const Logout = () => {
           onPress: () => {
             // 사용자가 '로그아웃'을 선택한 경우에만 로그아웃 수행
             logout();
-            navigation.navigate("homeStack");
-            navigation.navigate("Login");
+            dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Login" }],
+              })
+            );
             console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
            
           },
