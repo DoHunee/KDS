@@ -42,16 +42,7 @@ export default function App() {
           name="orders"
           component={Orders}
         />
-
-        {/* "Manager" 화면을 나타내는 Stack.Screen */}
-         {isLoggedIn && (
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="manager"
-            component={Manager}
-          />
-        )}
-         
+  
          {/* "Fix" 화면을 나타내는 Stack.Screen */}
         <Stack.Screen
           options={{ headerShown: false }}
@@ -156,6 +147,8 @@ export default function App() {
     </Provider>
   );
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

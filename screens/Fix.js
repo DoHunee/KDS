@@ -70,7 +70,7 @@ const Fix = ({ navigation, route }) => {
         exampleValues: updatedExampleValues,
       });
 
-      Alert.alert("Example values have been updated!");
+      Alert.alert("식별번호가 수정되었습니다");
       console.log(updatedExampleValues);
     }
   };
@@ -129,7 +129,7 @@ const Fix = ({ navigation, route }) => {
           <Text style={styles.buttonText}>식별번호 수정</Text>
         </TouchableOpacity>
 
-        <Button title="로그인" onPress={handleGoToLogin} />
+        <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
       </View>
     </KeyboardAvoidingView>
   );
