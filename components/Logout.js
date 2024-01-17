@@ -46,6 +46,10 @@ const Logout = () => {
     navigation.navigate("fix");
   };
 
+  const handleGoToOrders = () => {
+    navigation.navigate("orders");
+  };
+
 
   return (
     <SafeAreaView >
@@ -53,6 +57,7 @@ const Logout = () => {
       <Text style={styles.buttonText}>로그아웃</Text>
     </TouchableOpacity>
     <Button title="식별번호 수정" onPress={handleGoToFix} />
+    <Button title="접수대기 목록으로!" onPress={handleGoToOrders} />
     </SafeAreaView>
   );
 };

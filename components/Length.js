@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     zIndex: 100,
-    backgroundColor: colors.secondary,
+    backgroundColor: "skyblue",
     padding: 10,
     right: 0,
     borderTopLeftRadius: 10,
