@@ -3,12 +3,10 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Button ,Alert ,TouchableWithoutFeedback} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Keyboard } from "react-native"; 
-import Refresh from "../components/Refresh";
 
 const Fix = ({ route, navigation }) => {
 
-  const { employeeID } = route.params || {}; // route.params가 없을 경우 빈 객체로 초기화
- 
+  
 
   // 사용자가 입력한 identification number를 저장할 state
   const [modifiedEmployeeID, setModifiedEmployeeID] = useState("");
@@ -33,6 +31,7 @@ const Fix = ({ route, navigation }) => {
 
 
   // 수정된 identification number를 AsyncStorage에 저장하고 state에 반영하는 함수
+  // 식별번호를 수정하는 함수!
 const handleUpdateEmployeeID = async () => {
   try {
     await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
