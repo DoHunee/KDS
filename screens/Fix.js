@@ -1,7 +1,8 @@
 //Fix.js
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Button ,Alert } from "react-native";
-import AsyncStorage from '@react-native-community/async-storage';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Button ,Alert ,TouchableWithoutFeedback} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Keyboard } from "react-native"; 
 
 const Fix = ({ route, navigation }) => {
 
@@ -16,9 +17,7 @@ const Fix = ({ route, navigation }) => {
     try {
       const storedModifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
       if (storedModifiedEmployeeID) {
-        console.log("Modified identification number received from AsyncStorage:", storedModifiedEmployeeID);
         setModifiedEmployeeID(storedModifiedEmployeeID);
-        Alert("식별번호가 변경되었습니다");
       }
     } catch (error) {
       console.error("AsyncStorage error:", error);
@@ -29,7 +28,7 @@ const Fix = ({ route, navigation }) => {
   // 컴포넌트가 처음 마운트될 때 AsyncStorage에서 값을 가져와서 state에 반영
   useEffect(() => {
     fetchModifiedEmployeeID();
-  }, []);
+  }, [])
 
 
   // 수정된 identification number를 AsyncStorage에 저장하고 state에 반영하는 함수
@@ -37,14 +36,17 @@ const handleUpdateEmployeeID = async () => {
   try {
     await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
     console.log("AsyncStorage에 변환된 식별번호를 저장했습니다!", modifiedEmployeeID);
+    Alert.alert("식별번호가 변경되었습니다");
+
+    setModifiedEmployeeID(""); // 입력란 초기화
 
     // AsyncStorage에 값을 저장한 후에, fetchModifiedEmployeeID 함수를 호출하여 상태에 반영
     fetchModifiedEmployeeID();
   } catch (error) {
     console.error("AsyncStorage error:", error);
-    // Add error handling logic
   }
 };
+
 
   
 
@@ -53,8 +55,13 @@ const handleUpdateEmployeeID = async () => {
     navigation.navigate("Login");
   };
 
+    // 키보드 내리기
+    const handleDismissKeyboard = () => {
+      Keyboard.dismiss();
+    };
 
   return (
+    <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -76,12 +83,13 @@ const handleUpdateEmployeeID = async () => {
           style={styles.updateButton}
           onPress={handleUpdateEmployeeID}
         >
-          <Text style={styles.buttonText}>식별번호 수정</Text>
+          <Text style={styles.buttonText}>식별번호수정 </Text>
         </TouchableOpacity>
 
         <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
       </View>
     </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
   );
 };
 
@@ -99,7 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 30,
-    color: "#61dafb",
+    color: "black",
     textAlign: "center",
   },
   input: {
@@ -119,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   buttonText: {
-    color: "#FFF",
+    color: "black",
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",

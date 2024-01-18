@@ -75,7 +75,6 @@ const LoginScreen = ({ navigation, route }) => {
       setCategoryNumber("");
       setEmployeeID("");
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
-      console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
       
@@ -88,13 +87,16 @@ const LoginScreen = ({ navigation, route }) => {
   try {
     setStoredEmployeeIDExample(modifiedEmployeeID);
     await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
-    console.log("변경된 식별번호",modifiedEmployeeID)  // 이게 떠야 Fix.js에서 수정된 employeeId를 잘 가져온겨
   } catch (error) {
     console.error("AsyncStorage error:", error);
     // 에러 처리 로직 추가
   }
 };
 
+// Fix.js에서 변경된 employeeID 값을 LoginScreen.js로 전달합니다.
+const onUpdateEmployeeID = (modifiedEmployeeID) => {
+  handleUpdateEmployeeID(modifiedEmployeeID);
+};
 
  // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
  useEffect(() => {
@@ -109,7 +111,6 @@ const LoginScreen = ({ navigation, route }) => {
     try {
       const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
       if (modifiedEmployeeID) {
-        console.log("AsyncStorage에서 받아온 수정된 식별번호:", modifiedEmployeeID);
         handleUpdateEmployeeID(modifiedEmployeeID);
       }
     } catch (error) {
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 30,
-    color: "#61dafb",
+    color: "black",
     textAlign: "center",
   },
   inputContainer: {
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   buttonText: {
-    color: "#FFF",
+    color: "black",
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
