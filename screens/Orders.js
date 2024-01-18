@@ -7,7 +7,7 @@ import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../components/OrdersNumbers";
 import { handlePending, onConfirm, onDecline, onSchedule, onImmediateReceipt } from "../store/store-slice";
-import Logout from "../components/Logout";
+import RefreshComponent from "../components/Refresh";
 
 // 상수 정의
 const REASONS = ["재료소진", "품절", "딴거 드셈"];
@@ -81,6 +81,7 @@ const Orders = ({ navigation }) => {
   };
 
 
+
   useEffect(() => {
     dispatch(handlePending());
   }, []);
@@ -88,6 +89,7 @@ const Orders = ({ navigation }) => {
   useEffect(() => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
+
 
  
 
@@ -98,7 +100,6 @@ const Orders = ({ navigation }) => {
     });
     setOrders([]);
   };
-  
 
   
   return (

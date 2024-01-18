@@ -29,7 +29,7 @@ const OrderCard = ({
 
   // 배달 시간 나타내주는 네모 창
   let dynamicChange = {
-    backgroundColor: "white",
+    backgroundColor: "skyblue",
     color: "black",
   };
 
@@ -137,11 +137,12 @@ const OrderCard = ({
         {orders.map((order, index) => {
           return (
             <View style={styles.orderItem} key={index}>
-              <Text style={{ color: colors.white }}>- {order}</Text>
+              <Text style={{ color: "black" }}>- {order}</Text>  
             </View>
           );
         })}
       </View>
+      {/* 주문카드에 버튼부분 */}
       <View style={styles.buttons}>
         {buttons.map((name, index) => {
           return (
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 15,
     marginVertical: 10,
-    backgroundColor:  colors.secondary,
+    backgroundColor:  "white",
     borderRadius: 20,
   },
   timer: {
@@ -193,7 +194,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: colors.darkGray,
+    color: "black",
+    fontWeight: "bold",
   },
   orderText: {
     color: colors.lightBlack,

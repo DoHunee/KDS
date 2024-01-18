@@ -66,7 +66,7 @@ export default function App() {
         <Tab.Navigator      
           activeColor={"black"}  //선택한 아이콘
           inactiveColor={"black"}  // 선택하지 않은 아이콘 
-          barStyle={{ backgroundColor: "skyblue" }} // 배경
+          barStyle={{ backgroundColor: "white" }} // 배경
         >  
           <Tab.Screen
             options={{
