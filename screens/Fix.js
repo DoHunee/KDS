@@ -1,83 +1,58 @@
 //Fix.js
-import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  Button,
-  Alert,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Button ,Alert } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 
-const Fix = ({ navigation, route }) => {
-  const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
-  const [categoryNumber, setCategoryNumber] = useState("");
-  const [employeeID, setEmployeeID] = useState("");
+const Fix = ({ route, navigation }) => {
 
-  const storedNumberRefs = [
-    useRef(),
-    useRef(),
-    useRef(),
-    useRef(),
-  ];
-  const categoryNumberRef = useRef();
-  const employeeIDRef = useRef();
+  const { employeeID } = route.params || {}; // route.params가 없을 경우 빈 객체로 초기화
+ 
 
-  // Variable to store the value entered by the user
-  const [userInput, setUserInput] = useState({
-    storedNumber: ["", "", "", ""],
-    categoryNumber: "",
-    employeeID: "",
-  });
+  // 사용자가 입력한 identification number를 저장할 state
+  const [modifiedEmployeeID, setModifiedEmployeeID] = useState("");
 
-  // Called when the user enters a number, stores the entered number in an array and moves focus to the next input box as needed.
-  const handleDigitInput = (text, index, nextRef) => {
-    const newStoredNumber = [...storedNumber];
-    newStoredNumber[index] = text;
-    setStoredNumber(newStoredNumber);
-
-    // Update the value entered by the user
-    setUserInput({
-      storedNumber: newStoredNumber,
-      categoryNumber,
-      employeeID,
-    });
-
-    if (text.length === 1 && nextRef && nextRef.current) {
-      nextRef.current.focus();
+  // AsyncStorage에 저장된 값을 가져와서 state에 반영하는 함수
+  const fetchModifiedEmployeeID = async () => {
+    try {
+      const storedModifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
+      if (storedModifiedEmployeeID) {
+        console.log("Modified identification number received from AsyncStorage:", storedModifiedEmployeeID);
+        setModifiedEmployeeID(storedModifiedEmployeeID);
+        Alert("식별번호가 변경되었습니다");
+      }
+    } catch (error) {
+      console.error("AsyncStorage error:", error);
+      // 에러 처리 로직 추가
     }
   };
 
-  // Function to update the value
-  const updateExampleValues = () => {
-    // Update the values entered by the user to exampleValues
-    const updatedExampleValues = {
-      storedNumber: storedNumber.join(""),
-      categoryNumber,
-      employeeID,
-    };
+  // 컴포넌트가 처음 마운트될 때 AsyncStorage에서 값을 가져와서 state에 반영
+  useEffect(() => {
+    fetchModifiedEmployeeID();
+  }, []);
 
-      // 초기화
-  navigation.setParams({
-    exampleValues: null,
-  });
 
-    if (navigation && navigation.setParams) {
-      navigation.setParams({
-        exampleValues: updatedExampleValues,
-      });
+  // 수정된 identification number를 AsyncStorage에 저장하고 state에 반영하는 함수
+const handleUpdateEmployeeID = async () => {
+  try {
+    await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
+    console.log("AsyncStorage에 변환된 식별번호를 저장했습니다!", modifiedEmployeeID);
 
-      Alert.alert("식별번호가 수정되었습니다");
-      console.log(updatedExampleValues);
-    }
-  };
+    // AsyncStorage에 값을 저장한 후에, fetchModifiedEmployeeID 함수를 호출하여 상태에 반영
+    fetchModifiedEmployeeID();
+  } catch (error) {
+    console.error("AsyncStorage error:", error);
+    // Add error handling logic
+  }
+};
 
+  
+
+  // LoginScreen으로 이동하는 함수
   const handleGoToLogin = () => {
     navigation.navigate("Login");
   };
+
 
   return (
     <KeyboardAvoidingView
@@ -87,44 +62,19 @@ const Fix = ({ navigation, route }) => {
       <View style={styles.container}>
         <Text style={styles.title}>🚀 식별번호 수정 🚀</Text>
 
-        <View style={styles.inputContainer}>
-          {storedNumber.map((digit, index) => (
-            <TextInput
-              key={index}
-              style={styles.digitInput}
-              keyboardType="numeric"
-              maxLength={1}
-              value={digit}
-              onChangeText={(text) =>
-                handleDigitInput(text, index, storedNumberRefs[index + 1])
-              }
-              ref={storedNumberRefs[index]}
-            />
-          ))}
-        </View>
-
-        <TextInput
-          style={styles.digitInput}
-          keyboardType="numeric"
-          maxLength={1}
-          value={categoryNumber}
-          onChangeText={(text) => setCategoryNumber(text)}
-          ref={categoryNumberRef}
-        />
 
         <TextInput
           style={styles.input}
           placeholder="식별번호 (7 자리)"
           keyboardType="numeric"
           maxLength={7}
-          value={employeeID}
-          onChangeText={(text) => setEmployeeID(text)}
-          ref={employeeIDRef}
+          value={modifiedEmployeeID}
+          onChangeText={(text) => setModifiedEmployeeID(text)}
         />
-
+          
         <TouchableOpacity
           style={styles.updateButton}
-          onPress={updateExampleValues}
+          onPress={handleUpdateEmployeeID}
         >
           <Text style={styles.buttonText}>식별번호 수정</Text>
         </TouchableOpacity>
@@ -135,6 +85,8 @@ const Fix = ({ navigation, route }) => {
   );
 };
 
+
+// 스타일 정의
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -150,26 +102,9 @@ const styles = StyleSheet.create({
     color: "#61dafb",
     textAlign: "center",
   },
-  inputContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  digitInput: {
-    height: 40,
-    width: 60,
-    borderColor: "#61dafb",
-    borderWidth: 2,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    color: "black",
-    textAlign: "center",
-    marginHorizontal: 5,
-    marginBottom: 20,
-  },
   input: {
     height: 40,
-    width: "80%",
+    width: 200,
     borderColor: "#61dafb",
     borderBottomWidth: 2,
     marginBottom: 10,

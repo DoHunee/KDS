@@ -3,17 +3,18 @@ import { TouchableOpacity, Text, StyleSheet , SafeAreaView ,Alert,Button , setIs
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../AuthContext";
 import { CommonActions } from "@react-navigation/native"; //reset을 위해 가져옴
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
 const Logout = () => {
 
   const navigation = useNavigation();
-  const { logout, isLoggedIn } = useAuth();
+  const { logout } = useAuth();
   const { dispatch } = navigation;
   
 
-  const handleLogout = () => {
+  const handleLogout =async ()  => {
     Alert.alert(
       "로그아웃",
       "정말로 로그아웃 하시겠습니까?",
@@ -24,8 +25,9 @@ const Logout = () => {
         },
         {
           text: "로그아웃",
-          onPress: () => {
-            // 사용자가 '로그아웃'을 선택한 경우에만 로그아웃 수행
+          onPress: async () => {
+            // Get the modified employee ID from AsyncStorage
+            const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
             logout();
             dispatch(
               CommonActions.reset({
@@ -33,8 +35,6 @@ const Logout = () => {
                 routes: [{ name: "Login" }],
               })
             );
-            console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
-           
           },
         },
       ],

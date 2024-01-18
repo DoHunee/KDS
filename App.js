@@ -129,7 +129,7 @@ export default function App() {
 
           <Tab.Screen
             options={{
-              tabBarLabel: "메뉴관리",
+              tabBarLabel: "관리자",
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   name="account-plus-outline"

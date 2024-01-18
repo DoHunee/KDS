@@ -13,7 +13,8 @@ import {
   Keyboard,
   SafeAreaView
 } from "react-native";
-import Logout from "../components/Logout";
+import Logout from "../components/Logout";  // 수정이 필요한 부분
+import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
 
 const LoginScreen = ({ navigation, route }) => {
   // 저장할 값들의 초기값 설정
@@ -62,66 +63,73 @@ const LoginScreen = ({ navigation, route }) => {
     );
   };
 
+
   // 로그인이 성공했는지 확인하는 로직
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-      // console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
       setIsLoggedIn(true);
-      // navigation.navigate("orders");
-
-        // 추가: 로그인 성공 시 사용자가 입력한 값들을 초기화
+      
+      // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
       setEmployeeID("");
- 
-    } 
-
-    else {
-      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
+      setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
       console.log("현재 식별번호 : ", storedNumberExample, "+", storedCategoryNumberExample, "+", storedEmployeeIDExample);
+    } else {
+      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
+      
     }
   };
 
  
-  //로그인 후 isLoggedIn = true로 설정되는거 확인하는!!! + 로그인 성공하면 orders.js 로!
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigation.navigate("orders");
-      console.log("로그인 후 isLoggedIn:", isLoggedIn);
-     
-    // 추가: 로그인 후에 isLoggedIn 상태를 초기화
-    // setIsLoggedIn(false);
+ // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를 updatedEmployeeID값에 할당
+ const handleUpdateEmployeeID = async (modifiedEmployeeID) => {
+  try {
+    setStoredEmployeeIDExample(modifiedEmployeeID);
+    await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
+    console.log("변경된 식별번호",modifiedEmployeeID)  // 이게 떠야 Fix.js에서 수정된 employeeId를 잘 가져온겨
+  } catch (error) {
+    console.error("AsyncStorage error:", error);
+    // 에러 처리 로직 추가
+  }
+};
+
+
+ // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
+ useEffect(() => {
+  // 로그인 여부 확인:
+  if (isLoggedIn) {
+    navigation.navigate("orders");
+    console.log("로그인 후 isLoggedIn:", isLoggedIn);
+  }
+
+  // AsyncStorage에서 수정된 값을 가져와서 반영
+  const fetchModifiedEmployeeID = async () => {
+    try {
+      const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
+      if (modifiedEmployeeID) {
+        console.log("AsyncStorage에서 받아온 수정된 식별번호:", modifiedEmployeeID);
+        handleUpdateEmployeeID(modifiedEmployeeID);
+      }
+    } catch (error) {
+      console.error("AsyncStorage 에러:", error);
+      // 에러 처리 로직 추가
     }
-  }, [isLoggedIn, navigation])
-  
+  };
+
+  fetchModifiedEmployeeID();
+}, [isLoggedIn, navigation]);
+
+
+
+
+
 
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
   };
-
-   // Fix.js에서 업데이트된 값들을 받아오기
-   const updatedExampleValues = route.params?.exampleValues;
-
-   // Fix.js에서 업데이트된 값들을 받아오기
-    const updateExampleValues = (values) => {
-      setStoredNumberExample(values.storedNumber);
-      setStoredCategoryNumberExample(values.categoryNumber);
-      setStoredEmployeeIDExample(values.employeeID);
-    };
-  
-  
-   //  Fix.js에서 업데이트된 값들이 존재하면 적용
-    useEffect(() => {
-      if (updatedExampleValues) {
-        console.log("Received updatedExampleValues:", updatedExampleValues);
-        updateExampleValues(updatedExampleValues);
-        console.log("바뀐식별번호!", updatedExampleValues.storedNumber);
-      }
-    }, [updatedExampleValues]);
-  
-
 
   return (
     <KeyboardAvoidingView
@@ -179,11 +187,17 @@ const LoginScreen = ({ navigation, route }) => {
                 onChangeText={(text) => setEmployeeID(text)}
                 ref={employeeIDRef}
               />
+
+              <Text style={{ color: 'gray', fontSize: 14, alignSelf: 'center', marginTop: 10 }}>
+                예시 값: {storedNumberExample} - {storedCategoryNumberExample} - {storedEmployeeIDExample}
+              </Text>
   
               {/* 로그인 버튼 */}
               <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                 <Text style={styles.buttonText}>로그인</Text>
               </TouchableOpacity>
+
+              
 
             </View>
           )}
