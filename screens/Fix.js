@@ -89,7 +89,6 @@ const handleUpdateEmployeeID = async () => {
 
         <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
       </View>
-      
     </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
   );

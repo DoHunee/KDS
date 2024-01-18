@@ -29,6 +29,13 @@ const LoginScreen = ({ navigation, route }) => {
   const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
   const [storedEmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
 
+    // storedNumber 및 categoryNumber 초기값 설정
+    useEffect(() => {
+      setStoredNumber([...storedNumberExample]);
+      setCategoryNumber(storedCategoryNumberExample);
+    }, [storedNumberExample, storedCategoryNumberExample]);
+  
+
   // storedNumberRefs 정의
   const storedNumberRefs = [
     useRef(),
@@ -93,10 +100,6 @@ const LoginScreen = ({ navigation, route }) => {
   }
 };
 
-// Fix.js에서 변경된 employeeID 값을 LoginScreen.js로 전달합니다.
-const onUpdateEmployeeID = (modifiedEmployeeID) => {
-  handleUpdateEmployeeID(modifiedEmployeeID);
-};
 
  // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
  useEffect(() => {
@@ -105,6 +108,7 @@ const onUpdateEmployeeID = (modifiedEmployeeID) => {
     navigation.navigate("orders");
     console.log("로그인 후 isLoggedIn:", isLoggedIn);
   }
+
 
   // AsyncStorage에서 수정된 값을 가져와서 반영
   const fetchModifiedEmployeeID = async () => {
@@ -121,9 +125,6 @@ const onUpdateEmployeeID = (modifiedEmployeeID) => {
 
   fetchModifiedEmployeeID();
 }, [isLoggedIn, navigation]);
-
-
-
 
 
 
