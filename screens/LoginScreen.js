@@ -22,6 +22,7 @@ const LoginScreen = ({ navigation, route }) => {
   const [categoryNumber, setCategoryNumber] = useState("");
   const [employeeID, setEmployeeID] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
 
 
   // 예제 값들을 useState로 관리
@@ -29,7 +30,7 @@ const LoginScreen = ({ navigation, route }) => {
   const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
   const [storedEmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
 
-    // storedNumber 및 categoryNumber 초기값 설정
+    // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
     useEffect(() => {
       setStoredNumber([...storedNumberExample]);
       setCategoryNumber(storedCategoryNumberExample);
@@ -89,19 +90,25 @@ const LoginScreen = ({ navigation, route }) => {
   };
 
  
- // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를 updatedEmployeeID값에 할당
- const handleUpdateEmployeeID = async (modifiedEmployeeID) => {
+// Fix.js,Manage.js에서 받아온 수정된 식별번호들을 해당하는값에 할당
+const handleUpdateValues = async (key, value, stateUpdater) => {
   try {
-    setStoredEmployeeIDExample(modifiedEmployeeID);
-    await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
+    stateUpdater(value);
+    await AsyncStorage.setItem(key, value);
   } catch (error) {
     console.error("AsyncStorage error:", error);
     // 에러 처리 로직 추가
   }
 };
 
-
  // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
+ // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
+// 예시: handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
+// Manager.js에서 받아온 storedNumberExample(수정된 매장번호)를  할당
+// 예시: handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
+// Manager.js에서 받아온 storedCategoryNumberExample(수정된 포스번호)를 할당
+// 예시: handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
+
  useEffect(() => {
   // 로그인 여부 확인:
   if (isLoggedIn) {
@@ -111,11 +118,22 @@ const LoginScreen = ({ navigation, route }) => {
 
 
   // AsyncStorage에서 수정된 값을 가져와서 반영
-  const fetchModifiedEmployeeID = async () => {
+  const fetchModified = async () => {
     try {
       const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
+      const storedNumberExample = await AsyncStorage.getItem("storedNumberExample");
+      const storedCategoryNumberExample = await AsyncStorage.getItem("storedCategoryNumberExample");
+      
       if (modifiedEmployeeID) {
-        handleUpdateEmployeeID(modifiedEmployeeID);
+        handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
+      }
+
+      if (storedNumberExample) {
+        handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
+      }
+
+      if (storedCategoryNumberExample) {
+        handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
       }
     } catch (error) {
       console.error("AsyncStorage 에러:", error);
@@ -123,9 +141,8 @@ const LoginScreen = ({ navigation, route }) => {
     }
   };
 
-  fetchModifiedEmployeeID();
+  fetchModified();
 }, [isLoggedIn, navigation]);
-
 
 
   // 키보드 내리기
