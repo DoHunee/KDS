@@ -1,29 +1,31 @@
 // Refresh.js
-import React from "react";
-import { FlatList, RefreshControl, TouchableOpacity, Text } from "react-native";
+import React, { useState } from "react";
+import { FlatList, RefreshControl, Text } from "react-native";
 
-const RefreshComponent = ({ onRefresh, children }) => {
-  const [refreshing, setRefreshing] = React.useState(false);
+const RefreshComponent = ({ onRefresh, data, renderItem }) => {
+  const [refreshing, setRefreshing] = useState(false);
 
-  const handleEmojiPress = () => {
+  const handleRefresh = () => {
     setRefreshing(true);
-    onRefresh && onRefresh();
+    onRefresh && onRefresh(() => setRefreshing(false)); // onRefresh 콜백 실행 후 refreshing 상태 변경
   };
 
   return (
     <FlatList
       style={{ flex: 1 }}
+      data={data}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={renderItem}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleEmojiPress} />
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
-      ListHeaderComponent={() => (
-        <TouchableOpacity onPress={handleEmojiPress}>
-          <Text>🔄</Text>
-        </TouchableOpacity>
+      onEndReached={handleRefresh} // 사용자가 스크롤을 아래로 내릴 때 새로 고침 수행
+      onEndReachedThreshold={0.1} // 스크롤의 10%가 남았을 때 onEndReached 호출
+      ListFooterComponent={() => (
+        <Text style={{ textAlign: "center", padding: 10 }}>
+          Loading more...
+        </Text>
       )}
-      data={[]}
-      keyExtractor={() => "dummyKey"}
-      renderItem={() => null}
     />
   );
 };

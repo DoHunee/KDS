@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Button ,Alert ,TouchableWithoutFeedback} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Keyboard } from "react-native"; 
+import Refresh from "../components/Refresh";
 
 const Fix = ({ route, navigation }) => {
 
@@ -88,6 +89,7 @@ const handleUpdateEmployeeID = async () => {
 
         <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
       </View>
+      
     </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
   );
