@@ -50,10 +50,45 @@ const Logout = () => {
     navigation.navigate("Orders");
   };
 
+  // 관리자만 접근할 수 있도록 비밀번호 설정!!
   const handleGoToManagerFix = () => {
-    navigation.navigate("Manager_fix");
+    const correctPassword = "0000"; // 여기에 특정 4자리 비밀번호를 설정합니다.
+  
+    // 비밀번호 입력을 받는 Prompt 창을 띄웁니다.
+    Alert.prompt(
+      "비밀번호 확인",
+      "비밀번호를 입력하세요:",
+      [
+        {
+          text: "취소",
+          style: "cancel",
+        },
+        {
+          text: "확인",
+          onPress: (password) => {
+            // 입력된 비밀번호가 4자리인지 확인합니다.
+            if (password.length === 4) {
+              // 입력된 비밀번호가 올바른지 확인합니다.
+              if (password === correctPassword) {
+                // 올바를 경우 "Manager_fix" 화면으로 이동합니다.
+                navigation.navigate("Manager_fix");
+              } else {
+                // 틀린 경우 알림을 표시합니다.
+                Alert.alert("비밀번호가 올바르지 않습니다.");
+              }
+            } else {
+              // 4자리가 아닌 경우 알림을 표시합니다.
+              Alert.alert("비밀번호는 4자리여야 합니다.");
+            }
+          },
+        },
+      ],
+      "secure-text", // 입력을 숨깁니다.
+      null, // 기본값은 null입니다.
+      "numeric", // 키패드를 숫자 전용으로 설정합니다.
+      4 // 최대 길이를 4로 설정합니다.
+    );
   };
-
 
   return (
     <SafeAreaView >
