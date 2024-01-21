@@ -43,11 +43,11 @@ const Logout = () => {
   };
 
   const handleGoToFix = () => {
-    navigation.navigate("fix");
+    navigation.navigate("Fix");
   };
 
   const handleGoToOrders = () => {
-    navigation.navigate("orders");
+    navigation.navigate("Orders");
   };
 
 

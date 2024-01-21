@@ -83,6 +83,7 @@ const LoginScreen = ({ navigation, route }) => {
       setCategoryNumber("");
       setEmployeeID("");
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
+     
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
       
@@ -112,7 +113,7 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
  useEffect(() => {
   // 로그인 여부 확인:
   if (isLoggedIn) {
-    navigation.navigate("orders");
+    navigation.navigate("Orders");
     console.log("로그인 후 isLoggedIn:", isLoggedIn);
   }
 
