@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from './AuthContext'; // AuthProvider 추가
 import Fix from "./screens/Fix";
 import LoginScreen from "./screens/LoginScreen"; 
 import Home from "./screens/Home"; // Home 추가
+import Manager_fix from "./screens/Manager_fix";
 
 const Stack = createNativeStackNavigator(); // 스택 네비게이터
 
@@ -24,13 +25,12 @@ export default function App() {
   );
 }
 
+//AppContent 은 (Login , Fix , Orders , Manager_fix)
 function AppContent() {
   const { isLoggedIn } = useAuth();
-
   return (
     <>
       <StatusBar style="light" />
-
       <Stack.Navigator>
         {isLoggedIn ? (
           <Stack.Screen
@@ -56,6 +56,12 @@ function AppContent() {
           options={{ headerShown: false }}
           name="Orders"
           component={Home}
+        />
+
+        <Stack.Screen
+          name="Manager_fix"
+          component={Manager_fix}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </>

@@ -50,14 +50,19 @@ const Logout = () => {
     navigation.navigate("Orders");
   };
 
+  const handleGoToManagerFix = () => {
+    navigation.navigate("Manager_fix");
+  };
+
 
   return (
     <SafeAreaView >
     <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
       <Text style={styles.buttonText}>로그아웃</Text>
     </TouchableOpacity>
-    <Button title="식별번호 수정" onPress={handleGoToFix} />
     <Button title="접수대기 목록으로!" onPress={handleGoToOrders} />
+    <Button title="식별번호 수정" onPress={handleGoToFix} />
+    <Button title="매장,포스 번호 수정" onPress={handleGoToManagerFix} />
     </SafeAreaView>
   );
 };
