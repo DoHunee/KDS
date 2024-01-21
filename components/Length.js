@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",  // 좌우로 정렬 변경
   },
   metadataText: {
-    color: colors.white,
+    color: "black",
     fontSize: 12,
   },
   boldText: {
