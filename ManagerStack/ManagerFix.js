@@ -62,6 +62,10 @@ const Managerfix = () => {
     navigation.navigate("Login");
   };
 
+  const handleGoToManagerScreen = () => {
+    navigation.navigate("ManagerScreen");
+  };
+
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -73,7 +77,7 @@ const Managerfix = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.container}>
-          <Text style={styles.title}>🚀 관리자 페이지 🚀</Text>
+          <Text style={styles.title}>🚀 매장,포스번호 수정 🚀</Text>
 
           <TextInput
             style={styles.input}
@@ -107,6 +111,7 @@ const Managerfix = () => {
             <Text style={styles.buttonText}>포스번호 수정</Text>
           </TouchableOpacity>
 
+          <Button title="관리자 페이지로!" onPress={handleGoToManagerScreen} />
           <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
         </View>
       </KeyboardAvoidingView>

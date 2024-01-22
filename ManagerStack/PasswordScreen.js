@@ -28,7 +28,7 @@ const PasswordScreen = ({ }) => {
       Alert.alert("비번이 맞슴당.");
       navigation.navigate("ManagerScreen");
     } else {
-      Alert.alert("비번이 틀렸슴당");
+      Alert.alert("WARNING", "관리자만 접근 가능합니다.");
     }
   };
 
