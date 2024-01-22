@@ -42,7 +42,7 @@ export default function App() {
                 tabBarLabel: "사용자",
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
-                    name="account-plus-outline"
+                    name="account"
                     color={focused ? colors.secondary : color}
                     size={26}
                   />
