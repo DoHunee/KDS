@@ -37,94 +37,58 @@ export default function App() {
             barStyle={{ backgroundColor: "white" }} // background
           >
 
-          <Tab.Screen
+            <Tab.Screen
               options={{
                 tabBarLabel: "사용자",
                 tabBarIcon: ({ color, focused }) => (
-                  <MaterialCommunityIcons
-                    name="account"
-                    color={focused ? colors.secondary : color}
-                    size={26}
-                  />
+                  <MaterialCommunityIcons name="account" color={focused ? colors.secondary : color} size={26} />
                 ),
-              }}
-              name="User"
-              component={LoginStack}
+              }} name="User" component={LoginStack}
             />
 
             <Tab.Screen
               options={{
                 tabBarLabel: "접수대기",
                 tabBarIcon: ({ color, focused }) => (
-                  <MaterialCommunityIcons
-                    name="clipboard-list-outline"
-                    color={focused ? colors.secondary : color}
-                    size={26}
-                  />
+                  <MaterialCommunityIcons name="clipboard-list-outline" color={focused ? colors.secondary : color} size={26}/>
                 ),
-              }}
-              name="Orders"
-              component={Orders}
+              }} name="Orders" component={Orders}
             />
+
             <Tab.Screen
               options={{
                 tabBarLabel: "접수 완료",
                 tabBarIcon: ({ color, focused }) => (
-                  <MaterialCommunityIcons
-                    name="bell-ring-outline"
-                    color={focused ? colors.secondary : color}
-                    size={26}
-                  />
+                  <MaterialCommunityIcons name="bell-ring-outline" color={focused ? colors.secondary : color} size={26}/>
                 ),
-              }}
-              name="Current"
-              component={Current}
+              }} name="Current" component={Current}
             />
 
             <Tab.Screen
               options={{
                 tabBarLabel: "처리 완료",
-                tabBarIcon: ({ color, focused }) => (
-                  <MaterialCommunityIcons
-                    name="checkbox-marked-circle-outline"
-                    color={focused ? colors.secondary : color}
-                    size={26}
-                  />
+                tabBarIcon: ({ color, focused }) => ( 
+                <MaterialCommunityIcons name="checkbox-marked-circle-outline" color={focused ? colors.secondary : color} size={26}/>
                 ),
-              }}
-              name="Complete"
-              component={Complete}
+              }} name="Complete" component={Complete}
             />
 
             <Tab.Screen
               options={{
-                tabBarLabel: "매출",
+                tabBarLabel: "매출", 
                 tabBarIcon: ({ color, focused }) => (
-                  <MaterialCommunityIcons
-                    name="timetable"
-                    color={focused ? colors.secondary : color}
-                    size={26}
-                  />
+                  <MaterialCommunityIcons name="timetable" color={focused ? colors.secondary : color} size={26} />
                 ),
-              }}
-              name="Schedule"
-              component={Schedule}
+              }} name="Schedule" component={Schedule}
             />
-            
 
             <Tab.Screen
               options={{
                 tabBarLabel: "관리자",
                 tabBarIcon: ({ color, focused }) => (
-                  <MaterialCommunityIcons
-                    name="lock"
-                    color={focused ? colors.secondary : color}
-                    size={26}
-                  />
+                  <MaterialCommunityIcons name="lock" color={focused ? colors.secondary : color} size={26} />
                 ),
-              }}
-              name="Manager"
-              component={ManagerStack}
+              }} name="Manager" component={ManagerStack}
             />
           </Tab.Navigator>
         </AuthProvider> 

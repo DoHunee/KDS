@@ -5,21 +5,15 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // console.log('AuthProvider is rendering');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login = () => {
-    // 로그인 로직 구현
-    setIsLoggedIn(true);
-  };
-
-  const logout = () => {
-    // 로그아웃 로직 구현
-    setIsLoggedIn(false);
+  const value = {
+    isLoggedIn,
+    setIsLoggedIn,
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
