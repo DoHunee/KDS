@@ -13,7 +13,11 @@ import Orders from "../screens/Orders";
 import Current from "../screens/Current";
 import Complete from "../screens/Complete";
 import Schedule from "../screens/Schedule";
-import Manager from "../screens/Manager";
+import User from "./User"
+
+import PasswordScreen from "../screens/PasswordScreen";
+import ManagerStackScreen from "../Stack/ManagerStackScreen";
+import Manager from "./Manager";  
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -91,7 +95,7 @@ export default function App() {
 
             <Tab.Screen
               options={{
-                tabBarLabel: "관리자",
+                tabBarLabel: "사용자",
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
                     name="account-plus-outline"
@@ -100,8 +104,23 @@ export default function App() {
                   />
                 ),
               }}
-              name="manager"
-              component={Manager}
+              name="User"
+              component={User}
+            />
+
+            <Tab.Screen
+              options={{
+                tabBarLabel: "관리자",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="lock"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="Manager"
+              component={ManagerStackScreen}
             />
           </Tab.Navigator>
         </AuthProvider>

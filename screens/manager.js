@@ -1,7 +1,34 @@
-import React from "react";
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from "react-native";
+// Manager.js
 
-const Schedule = () => {
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Button,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+
+const Stack = createNativeStackNavigator();
+
+const Manager = () => {
+  const navigation = useNavigation();
+
+  const handleDismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
+  // Manager_fix로 이동
+  const handleGoToManagerfix = () => {
+    navigation.navigate("Manager_fix");
+  };
+
   return (
     <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
       <KeyboardAvoidingView
@@ -10,14 +37,11 @@ const Schedule = () => {
       >
         <View style={styles.container}>
           <Text style={styles.title}>🚀 관리자 페이지 🚀</Text>
+          <Button title="포스번호 변경 등등 !" onPress={handleGoToManagerfix} />
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
-};
-
-const handleDismissKeyboard = () => {
-  // 키보드 dismiss 로직 추가
 };
 
 const styles = StyleSheet.create({
@@ -35,4 +59,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Schedule;
+
+export default Manager;

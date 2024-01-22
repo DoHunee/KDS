@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import {
   View,
   Text,
@@ -13,10 +13,13 @@ import {
   Keyboard,
   SafeAreaView
 } from "react-native";
-import Logout from "../components/Logout";  // 수정이 필요한 부분
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
+import { useAuth } from '../AuthContext';  // useAuth import 추가
 
 const LoginScreen = ({ navigation, route }) => {
+
+  const { logout } = useAuth();  // useAuth 훅을 통해 logout 함수 가져오기
+
   // 저장할 값들의 초기값 설정
   const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
   const [categoryNumber, setCategoryNumber] = useState("");
@@ -71,27 +74,14 @@ const LoginScreen = ({ navigation, route }) => {
     );
   };
 
-
-  // 로그인이 성공했는지 확인하는 로직
-  const handleLogin = () => {
-    if (validateCredentials()) {
-      Alert.alert("로그인 성공", "환영합니다!");
-      setIsLoggedIn(true);
-      
-      // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
-      setStoredNumber(["", "", "", ""]);
-      setCategoryNumber("");
-      setEmployeeID("");
-      setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
-     
-    } else {
-      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
-      
-    }
-  };
-
- 
-// Fix.js,Manage.js에서 받아온 수정된 식별번호들을 해당하는값에 할당
+// Fix.js,Manager.js에서 받아온 수정된 식별번호들을 해당하는값에 할당
+ // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
+ // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
+// 예시: handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
+// Manager.js에서 받아온 storedNumberExample(수정된 매장번호)를  할당
+// 예시: handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
+// Manager.js에서 받아온 storedCategoryNumberExample(수정된 포스번호)를 할당
+// 예시: handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
 const handleUpdateValues = async (key, value, stateUpdater) => {
   try {
     stateUpdater(value);
@@ -102,19 +92,58 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
   }
 };
 
- // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
- // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
-// 예시: handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
-// Manager.js에서 받아온 storedNumberExample(수정된 매장번호)를  할당
-// 예시: handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
-// Manager.js에서 받아온 storedCategoryNumberExample(수정된 포스번호)를 할당
-// 예시: handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
+  // 로그인 로직
+  const handleLogin = () => {
+    if (validateCredentials()) {
+      Alert.alert("로그인 성공", "환영합니다!");
+      setIsLoggedIn(true);
+      
+      // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
+      setStoredNumber(["", "", "", ""]);
+      setCategoryNumber("");
+      setEmployeeID("");
+      setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
+      console.log("로그인 상태 : ",isLoggedIn);
 
+      navigation.navigate("Orders"); // 여기서  orders로 이동!
+     
+    } else {
+      Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
+      
+    }
+  };
+
+  // 로그아웃 로직
+  const handleLogout = async () => {
+    Alert.alert(
+      "로그아웃",
+      "정말로 로그아웃 하시겠습니까?",
+      [
+        {
+          text: "취소",
+          style: "cancel",
+        },
+        {
+          text: "로그아웃",
+          onPress: async () => {
+            const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
+            logout();
+            setIsLoggedIn(false); // 로그아웃 후에 isLoggedIn 상태를 false로 설정
+            navigation.navigate("Login")
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+// 로그인,로그아웃 시 isLoggedIn 확인:
  useEffect(() => {
-  // 로그인 여부 확인:
   if (isLoggedIn) {
-    navigation.navigate("Orders");
+    // navigation.navigate("Orders"); //여기에 코드가 있어도 로그인시 orders로 이동
     console.log("로그인 후 isLoggedIn:", isLoggedIn);
+  }else{
+    console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
   }
 
 
@@ -146,13 +175,23 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
 }, [isLoggedIn, navigation]);
 
 
+  // Fix.js(식별번호 수정)으로 이동!!
+   const handleGoToFix = () => {
+    navigation.navigate("Fix");
+  };
+
+  // Orders.js(주문목록)으로 이동!!
+  const handleGoToOrders = () => {
+    navigation.navigate("Orders");
+  };
+
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
 
- 
+// Return 부분  
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -165,9 +204,12 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
           {isLoggedIn ? (
             // 로그인 후 화면
            <View>
-            {/* 로그아웃 + 식별번호 수정 버튼 */}
             <SafeAreaView style={styles.container}>
-            <Logout navigation={navigation} />
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.buttonText}>로그아웃</Text>
+            </TouchableOpacity>
+            <Button title="접수대기 목록으로!" onPress={handleGoToOrders} />
+            <Button title="식별번호 수정" onPress={handleGoToFix} />
             </SafeAreaView>         
           </View>
           ) : (
@@ -276,6 +318,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 10,
     marginTop: 30,
+  },
+  logoutButton: {
+    backgroundColor: "#61dafb",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginBottom: 20,
   },
   buttonText: {
     color: "black",

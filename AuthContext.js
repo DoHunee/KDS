@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // console.log('AuthProvider is rendering');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const login = () => {

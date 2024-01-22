@@ -54,39 +54,7 @@ const Logout = () => {
     navigation.navigate("Orders");
   };
 
-  const handleGoToManagerFix = () => {
-    const correctPassword = "0000";
-
-    Alert.prompt(
-      "비밀번호 확인",
-      "비밀번호를 입력하세요:",
-      [
-        {
-          text: "취소",
-          style: "cancel",
-        },
-        {
-          text: "확인",
-          onPress: (password) => {
-            if (password.length === 4) {
-              if (password === correctPassword) {
-                navigation.navigate("Manager_fix");
-              } else {
-                Alert.alert("비밀번호가 올바르지 않습니다.");
-              }
-            } else {
-              Alert.alert("비밀번호는 4자리여야 합니다.");
-            }
-          },
-        },
-      ],
-      "secure-text",
-      null,
-      "numeric",
-      4
-    );
-  };
-
+ 
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -94,7 +62,6 @@ const Logout = () => {
       </TouchableOpacity>
       <Button title="접수대기 목록으로!" onPress={handleGoToOrders} />
       <Button title="식별번호 수정" onPress={handleGoToFix} />
-      <Button title="매장, 포스 번호 수정" onPress={handleGoToManagerFix} />
     </SafeAreaView>
   );
 };
