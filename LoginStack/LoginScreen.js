@@ -1,3 +1,4 @@
+// LoginScreen.js
 import React, { useState, useEffect, useRef  } from "react";
 import {
   View,
@@ -180,11 +181,7 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
     navigation.navigate("Fix");
   };
 
-  // Orders.js(주문목록)으로 이동!!
-  const handleGoToOrders = () => {
-    navigation.navigate("Orders");
-  };
-
+  
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
@@ -208,7 +205,6 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.buttonText}>로그아웃</Text>
             </TouchableOpacity>
-            <Button title="접수대기 목록으로!" onPress={handleGoToOrders} />
             <Button title="식별번호 수정" onPress={handleGoToFix} />
             </SafeAreaView>         
           </View>

@@ -10,15 +10,13 @@ import { store } from "./store/store";
 import { AuthProvider, useAuth } from './AuthContext'; // AuthProvider 추가
 import colors from "./refs/colors"; // colors 추가
 
-import Orders from "./screens/Orders";
+import Orders from "./LoginStack/Orders";
 import Current from './screens/Current';
 import Complete from './screens/Complete';
 import Schedule from './screens/Schedule';
-import Manager from './screens/Manager';
-// import PasswordScreen from './screens/PasswordScreen';
 
-import LoginStack from './Stack/LoginStack';
-import ManagerStackScreen from './Stack/ManagerStackScreen';
+import LoginStack from './LoginStack/LoginStack';
+import ManagerStack from './ManagerStack/ManagerStack';
 
 
 
@@ -39,6 +37,22 @@ export default function App() {
             inactiveColor={"black"} // unselected icon
             barStyle={{ backgroundColor: "white" }} // background
           >
+
+          <Tab.Screen
+              options={{
+                tabBarLabel: "사용자",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="account-plus-outline"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="User"
+              component={LoginStack}
+            />
+
             <Tab.Screen
               options={{
                 tabBarLabel: "접수대기",
@@ -64,7 +78,7 @@ export default function App() {
                   />
                 ),
               }}
-              name="current"
+              name="Current"
               component={Current}
             />
 
@@ -79,7 +93,7 @@ export default function App() {
                   />
                 ),
               }}
-              name="complete"
+              name="Complete"
               component={Complete}
             />
 
@@ -94,26 +108,27 @@ export default function App() {
                   />
                 ),
               }}
-              name="schedule"
+              name="Schedule"
               component={Schedule}
             />
+            
 
             <Tab.Screen
               options={{
                 tabBarLabel: "관리자",
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
-                    name="account-plus-outline"
+                    name="lock"
                     color={focused ? colors.secondary : color}
                     size={26}
                   />
                 ),
               }}
-              name="manager"
-              component={Manager}
+              name="Manager"
+              component={ManagerStack}
             />
           </Tab.Navigator>
-        </AuthProvider>
+        </AuthProvider> 
       </NavigationContainer>
     </Provider>
   );

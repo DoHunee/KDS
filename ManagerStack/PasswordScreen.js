@@ -1,3 +1,4 @@
+// PassWordScreen.js
 import React, { useState } from "react";
 import {
   View,
@@ -7,16 +8,19 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const PasswordScreen = ({ navigation }) => {
+const PasswordScreen = ({ }) => {
+
+  const navigation = useNavigation();
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     const correctPassword = "0000"; // 여기에 실제 관리자 비밀번호를 입력하세요
 
     if (password === correctPassword) {
-      navigation.navigate("Manager");
       Alert.alert("비밀번호가 맞슴당.");
+      navigation.navigate("Manager_Screen");
       
     } else {
       Alert.alert("비밀번호가 올바르지 않습니다.");

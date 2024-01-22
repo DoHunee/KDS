@@ -1,11 +1,11 @@
-// Manager_fix.js
+// Managerfix.js
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Button, Alert, TouchableWithoutFeedback } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Keyboard } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
-const Manager_fix = () => {
+const Managerfix = () => {
   const [storedNumberExample, setStoredNumberExample] = useState("");
   const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("");
   const navigation = useNavigation();
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Manager_fix;
+export default Managerfix;
