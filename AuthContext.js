@@ -1,24 +1,27 @@
 // AuthContext.js
-
 import React, { createContext, useContext, useState } from 'react';
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // console.log('AuthProvider is rendering');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const value = {
-    isLoggedIn,
-    setIsLoggedIn,
+  const login = () => {
+    // 로그인 로직 구현
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    // 로그아웃 로직 구현
+    setIsLoggedIn(false);
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
