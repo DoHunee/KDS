@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   StyleSheet,
+  TouchableWithoutFeedback,
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -20,14 +21,19 @@ const PasswordScreen = ({ }) => {
 
     if (password === correctPassword) {
       Alert.alert("비밀번호가 맞슴당.");
-      navigation.navigate("Manager_Screen");
+      navigation.navigate("ManagerScreen");
       
     } else {
       Alert.alert("비밀번호가 올바르지 않습니다.");
     }
   };
 
+  const handleDismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
+    <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
     <View style={styles.container}>
       <Text>비밀번호를 입력하세요:</Text>
       <TextInput
@@ -38,6 +44,7 @@ const PasswordScreen = ({ }) => {
       />
       <Button title="확인" onPress={handleLogin} />
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 

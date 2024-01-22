@@ -21,7 +21,6 @@ import ManagerStack from './ManagerStack/ManagerStack';
 
 
 
-
 const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {

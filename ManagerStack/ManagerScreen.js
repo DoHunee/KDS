@@ -25,7 +25,7 @@ const ManagerScreen = () => {
 
   // Manager_fix로 이동
   const handleGoToManagerfix = () => {
-    navigation.navigate("Manager_fix");
+    navigation.navigate("ManagerFix");
   };
 
   return (
