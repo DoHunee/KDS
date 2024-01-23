@@ -16,10 +16,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
 import { useAuth } from '../AuthContext';  // useAuth import 추가
+import { login , logout } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation, route }) => {
 
   const { logout } = useAuth();  // useAuth 훅을 통해 logout 함수 가져오기
+  const dispatch = useDispatch();
 
   // 저장할 값들의 초기값 설정
   const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
@@ -98,15 +101,13 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
       setIsLoggedIn(true);
+      dispatch(login()); // Redux 스토어에 login 액션을 디스패치하여 isLoggedIn 값을 true로 업데이트
       
       // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
       setEmployeeID("");
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
-      console.log("로그인 상태 : ",isLoggedIn);
-
-      navigation.navigate("Orders"); // 여기서  orders로 이동!
      
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
@@ -138,10 +139,11 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
     );
   };
 
+
 // 로그인,로그아웃 시 isLoggedIn 확인:
  useEffect(() => {
   if (isLoggedIn) {
-    // navigation.navigate("Orders"); //여기에 코드가 있어도 로그인시 orders로 이동
+    navigation.navigate("Orders"); //여기에 코드가 있어도 로그인시 orders로 이동
     console.log("로그인 후 isLoggedIn:", isLoggedIn);
   }else{
     console.log("로그아웃 후 isLoggedIn:", isLoggedIn);

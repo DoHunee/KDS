@@ -13,8 +13,7 @@ import colors from "./refs/colors"; // colors 추가
 import Orders from "./LoginStack/Orders";
 import Current from './screens/Current';
 import Complete from './screens/Complete';
-import Schedule from './screens/Schedule';
-
+import Sales from "./screens/Sales"
 import LoginStack from './LoginStack/LoginStack';
 import ManagerStack from './ManagerStack/ManagerStack';
 
@@ -79,7 +78,7 @@ export default function App() {
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons name="timetable" color={focused ? colors.secondary : color} size={26} />
                 ),
-              }} name="Schedule" component={Schedule}
+              }} name="Schedule" component={Sales}
             />
 
             <Tab.Screen
