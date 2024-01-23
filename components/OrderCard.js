@@ -19,7 +19,7 @@ const OrderCard = ({
   buttons,
   readyTime,
 }) => {
-  const [timeElapse, setTimeElapsed] = useState(0);
+  const [timeElapse, setTimeElapsed] = useState(0);  // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
   const handleOnPress = (data) => {
     onPress({ action: data, id: id });
   };
@@ -27,7 +27,7 @@ const OrderCard = ({
 
     
 
-  // 배달 시간 나타내주는 네모 창
+  // 배달 시간 나타내주는 네모 창 => 계속 변하는 친구!!!
   let dynamicChange = {
     backgroundColor: "skyblue",
     color: "black",
@@ -44,52 +44,52 @@ const OrderCard = ({
   );
 
 
-    // 경과시간 갱신
-    useEffect(() => {
+    // timeElapse1초씩 경과시간 갱신
+  useEffect(() => {
       let timeout = setInterval(() => {
         setTimeElapsed(timeElapse + 1);
       }, 1000);
       return () => clearInterval(timeout);
-    }, [timeElapse]);
+  }, [timeElapse]);
 
     
 
-    let topLeft
 
-    // "주문대기중"
-    if (status === "pending") {
-      topLeft ="주문 대기중";
-    }
+  let topLeft  // 각 주문카드 왼쪽 상단에 뜨는 친구
 
-    // 경과 시간 : n분 m초
-    else if (status === "preparing") {
-      
-      const elapsedMinutes = Math.floor(timeElapse / 60); // 분 단위
-      const elapsedSeconds = Math.round(timeElapse) % 60; // 초 단위
+  // "주문대기중" 
+  if (status === "pending") {
+    topLeft ="주문 대기중";
+  }
+    
+  // "경과 시간 : n분 m초 ""
+  else if (status === "preparing") {
+    
+    const elapsedMinutes = Math.floor(timeElapse / 60); // 분 단위
+    const elapsedSeconds = Math.round(timeElapse) % 60; // 초 단
+    // 경과 시간에 따라 텍스트 생성
+    topLeft = `경과시간: ${
+      timeElapse < 60 ? `${elapsedSeconds} 초` : `${elapsedMinutes} 분 ${elapsedSeconds} 초`
+    }`;
+  } 
 
-      // 경과 시간에 따라 텍스트 생성
-      topLeft = `경과시간: ${
-        timeElapse < 60 ? `${elapsedSeconds} 초` : `${elapsedMinutes} 분 ${elapsedSeconds} 초`
-      }`;
-    } 
-
-    //즉시수령
+  // "즉시수령" Pink 
     else if (status === "fast_ready") {
       dynamicChange.backgroundColor = "pink";
       topLeft = "즉시수령";
     } 
 
-    // 취소처리
-    else if (status === "decline") {
-      dynamicChange.backgroundColor = "red";
-      topLeft = "취소처리";
-    } 
+  // "취소처리" Red
+  else if (status === "decline") {
+    dynamicChange.backgroundColor = "red";
+    topLeft = "취소처리";
+  } 
 
-    // 주문 준비 됐으면 그린
-    else if (status === "ready") {
-      dynamicChange.backgroundColor = "green";
-      topLeft = "주문처리완료"    
-    } 
+  // "주문처리완료" 됐으면 Green
+  else if (status === "ready") {
+    dynamicChange.backgroundColor = "green";
+    topLeft = "주문처리완료"    
+  } 
 
 
 

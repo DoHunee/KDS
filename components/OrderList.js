@@ -1,24 +1,23 @@
 import {
   FlatList,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import data from "../assets/data/orders.json";
 import OrderCard from "./OrderCard";
-import colors from "../refs/colors";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const OrderList = ({ itemsData, buttons, buttonPress }) => {
+  
   const [listItems, setListItems] = useState([]);
+  
   useEffect(() => {
     setListItems(itemsData);
   }, [listItems, itemsData]);
+
   const handleOnPress = (data) => {
     buttonPress(data);
   };
+
   return (
     <View>
       <FlatList
@@ -40,7 +39,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             scheduleFor={item.scheduleFor}
           />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id}  //고유키 추출 
       />
     </View>
   );

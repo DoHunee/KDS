@@ -10,7 +10,7 @@ import { store } from "./store/store";
 import { AuthProvider, useAuth } from './AuthContext'; // AuthProvider 추가
 import colors from "./refs/colors"; // colors 추가
 
-import Orders from "./LoginStack/Orders";
+import Orders from "./screens/Orders";
 import Current from './screens/Current';
 import Complete from './screens/Complete';
 import Sales from "./screens/Sales"

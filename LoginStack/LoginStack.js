@@ -7,7 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import Fix from "./Fix";
 import LoginScreen from "./LoginScreen"; 
-import Orders from "./Orders"; 
+import Orders from "../screens/Orders"; 
 
 const Stack = createNativeStackNavigator();
 
