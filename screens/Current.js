@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,6 +22,7 @@ import Length from "../components/Length";
 
 const Current = ({ navigation }) => {
 
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();  // Redux의 useDispatch를 사용하여 액션을 디스패치
   const currentOrders = useSelector((state) => state.OrdersDistrubutionSclie.current);  // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const [orders, setOrders] = useState([]);   // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
@@ -39,11 +41,20 @@ const Current = ({ navigation }) => {
     setOrders(currentOrders);
   }, [orders, currentOrders]);
 
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+    }
+  }, [isLoggedIn]);
+
  
 
 
   return (
     <View style={styles.container}>
+    {isLoggedIn ? (
+      <>
       {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
       {orders.length === 0 && <EmptyOrders name="Current" />}
       {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
@@ -56,13 +67,18 @@ const Current = ({ navigation }) => {
           buttonPress={buttonPress}
         />
       </SafeAreaView>
+      </>
+      ) : null}
     </View>
   );
 };
-export default Current;
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primary,
   },
 });
+
+export default Current;

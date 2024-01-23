@@ -17,6 +17,7 @@ const BUTTON_COLORS = {
 
 
 const Orders = ({ navigation }) => {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [scheduleId, setScheduleId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState([]);
@@ -79,8 +80,24 @@ const Orders = ({ navigation }) => {
     }
   };
 
+   
 
+  // 주문 모두승인
+  const handleAcceptAllOrders = () => {
+    orders.forEach((order) => {
+      dispatch(onConfirm({ id: order.id }));
+    });
+    setOrders([]);
+  };
+  
+  //isLoggined = false일때 로그인하세요!!
+  useEffect(() => {
+    if (!isLoggedIn) {
+      Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+    }
+  }, [isLoggedIn]);
 
+ 
   useEffect(() => {
     dispatch(handlePending());
   }, []);
@@ -90,19 +107,12 @@ const Orders = ({ navigation }) => {
   }, [pendingOrders]);
 
 
- 
-
-  // 주문 모두승인
-  const handleAcceptAllOrders = () => {
-    orders.forEach((order) => {
-      dispatch(onConfirm({ id: order.id }));
-    });
-    setOrders([]);
-  };
 
   
   return (
     <SafeAreaView style={styles.container}>
+       {isLoggedIn ? (
+      <>
         {orders.length === 0 && <EmptyOrders name="Pending" />}
         <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
         <OrderList
@@ -134,7 +144,8 @@ const Orders = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </Modal>  
-      
+        </>
+      ) : null}
     </SafeAreaView>
   );
 };
