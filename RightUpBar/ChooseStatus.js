@@ -1,19 +1,20 @@
 // ChooseStatus.js
-
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet, Platform, StatusBar } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
 
 const ChooseStatus = ({ length, onSelectStatus }) => {
-  const [selectedStatus, setSelectedStatus] = useState(null);
-
-  const toggleSelectedStatus = () => {
+  
+  const [selectedStatus, setSelectedStatus] = useState(null); //초기값은 null로 설정합니다. 이 상태는 드롭다운이 열려있는지 닫혀있는지를 나타냅니다.
+  
+  const toggleSelectedStatus = () => {  //드롭다운을 토글하는 함수!!
     setSelectedStatus((prev) => !prev);
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={toggleSelectedStatus}>
+    // 토글을 누르면!
+    <TouchableOpacity style={styles.container} onPress={toggleSelectedStatus}>  
       <View style={styles.metadataContainer}>
         <Text style={styles.metadataText}>
           <Text style={styles.boldText}>{length}</Text> : Item{length > 1 ? "s" : ""}

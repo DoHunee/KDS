@@ -23,7 +23,7 @@ const Complete = () => {
   // readyOrders가 업데이트될 때마다 orders를 업데이트
   useEffect(() => {
     setOrders(readyOrders);
-  }, [orders, readyOrders]);
+  }, [readyOrders]);
 
 
   useEffect(() => {
@@ -33,20 +33,13 @@ const Complete = () => {
   }, [isLoggedIn]);
 
   
-// onSelectStatus 함수 정의
-const onSelectStatus = (status) => {
-  // readyOrders 배열을 필터링하여 선택한 주문 상태와 일치하는 주문만 남깁니다.
-  const filteredOrders = readyOrders.filter((order) => order.status.toLowerCase() === status.toLowerCase());
-  
-  // 콘솔에 필터링된 주문 목록을 출력합니다.
-  console.log("Filtered Orders:", filteredOrders);
-  
-  // 로컬 상태인 orders를 필터링된 주문 목록으로 업데이트합니다.
-  setOrders(filteredOrders);
-  
-  // 선택한 주문 상태를 콘솔에 출력합니다.
-  console.log(`Selected status: ${status}`);
-};
+  // onSelectStatus 함수 정의
+  const onSelectStatus = (status) => {
+    const filteredOrders = readyOrders.filter((order) => order.status.toLowerCase() === status.toLowerCase());
+    console.log("Filtered Orders:", filteredOrders);
+    setOrders(filteredOrders);  // 필터링된 주문 목록을 로컬 state에 업데이트
+    console.log(`Selected status: ${status}`);
+  };
 
 
   return (
