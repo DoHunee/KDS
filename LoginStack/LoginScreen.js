@@ -15,13 +15,11 @@ import {
   SafeAreaView
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
-import { useAuth } from '../AuthContext';  // useAuth import 추가
 import { login , logout } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation, route }) => {
 
-  const { logout } = useAuth();  // useAuth 훅을 통해 logout 함수 가져오기
   const dispatch = useDispatch();
 
   // 저장할 값들의 초기값 설정
@@ -29,20 +27,13 @@ const LoginScreen = ({ navigation, route }) => {
   const [categoryNumber, setCategoryNumber] = useState("");
   const [employeeID, setEmployeeID] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
 
 
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
   const [storedCategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
   const [storedEmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
-
-    // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
-    useEffect(() => {
-      setStoredNumber([...storedNumberExample]);
-      setCategoryNumber(storedCategoryNumberExample);
-    }, [storedNumberExample, storedCategoryNumberExample]);
-  
+ 
 
   // storedNumberRefs 정의
   const storedNumberRefs = [
@@ -78,7 +69,7 @@ const LoginScreen = ({ navigation, route }) => {
     );
   };
 
-// Fix.js,Manager.js에서 받아온 수정된 식별번호들을 해당하는값에 할당
+// Fix.js,Manager.js에서 받아온 수정된 식별번호들 끌어오기!
  // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
  // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
 // 예시: handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
@@ -100,15 +91,18 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-      setIsLoggedIn(true);
-      dispatch(login()); // Redux 스토어에 login 액션을 디스패치하여 isLoggedIn 값을 true로 업데이트
       
+      
+      dispatch(login());   // 전역으로 업데이트
+      setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
+     
+
       // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
       setEmployeeID("");
-      setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
-     
+        
+      
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
       
@@ -128,9 +122,7 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
         {
           text: "로그아웃",
           onPress: async () => {
-            const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
-            logout();
-            setIsLoggedIn(false); // 로그아웃 후에 isLoggedIn 상태를 false로 설정
+            dispatch(logout());   // 전역으로 업데이트
             navigation.navigate("Login")
           },
         },
@@ -139,9 +131,14 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
     );
   };
 
+// storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
+  useEffect(() => {
+    setStoredNumber([...storedNumberExample]);             //매장번호
+    setCategoryNumber(storedCategoryNumberExample);        //포스번호
+  }, [storedNumberExample, storedCategoryNumberExample]);  
 
 // 로그인,로그아웃 시 isLoggedIn 확인:
- useEffect(() => {
+  useEffect(() => {
   if (isLoggedIn) {
     navigation.navigate("Orders"); //여기에 코드가 있어도 로그인시 orders로 이동
     console.log("로그인 후 isLoggedIn:", isLoggedIn);
@@ -337,15 +334,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20, // 수정된 부분: 기존보다 더 큰 간격으로 조정
   },
-
-  logoutButton: {
-    backgroundColor: "#61dafb", // 로그아웃 버튼과 비슷한 색상
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-
+ 
   updateButton: {
     backgroundColor: "#61dafb",
     paddingVertical: 15,
