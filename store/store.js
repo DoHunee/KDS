@@ -1,13 +1,13 @@
 // store.js
 
 import { configureStore } from '@reduxjs/toolkit';
-import OrdersDistrubutionSclie from './store-slice';
-import authSlice from './authSlice'; // authSlice 추가
+import OrdersDistrubutionSclie from './storeSlice';
+import authSlice from '../auth/authSlice'; // authSlice 추가
 
 export const store = configureStore({
   reducer: {
     OrdersDistrubutionSclie: OrdersDistrubutionSclie,
-    AuthSlice: authSlice, // authSlice 추가
+    auth: authSlice, // authSlice 추가
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

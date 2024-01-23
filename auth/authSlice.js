@@ -7,7 +7,7 @@ const authSlice = createSlice({
     // 다른 필요한 상태들 추가 가능
   },
   reducers: {
-    // 로그인, 로그아웃 관련 액션들 정의
+    // 로그인 및 로그아웃과 관련된 액션 정의
     login: (state) => {
       state.isLoggedIn = true;
     },

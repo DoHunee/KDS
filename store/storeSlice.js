@@ -90,11 +90,11 @@ export const OrdersDistrubutionSclie = createSlice({
     },
 
     // 주문을 예약하고 예약된 상태로 이동
-    onSchedule: (state, action) => {
+    onSales: (state, action) => {
       const orders = state.pending;
       const scheduleOrder = orders?.find((item) => item.id === action.payload.id);
 
-      scheduleOrder.status = "schedule";
+      scheduleOrder.status = "sales";
       scheduleOrder.confirmTime = getTimePassedSec();
       scheduleOrder.orderNumber = state.schedule.length + 1;
       scheduleOrder.scheduleFor = action.payload.schedule;
@@ -116,7 +116,7 @@ export const {
 
   onReady,
   onCancel,
-  onSchedule,
+  onSales,
   
 } = OrdersDistrubutionSclie.actions;
 

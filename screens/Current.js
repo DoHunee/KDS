@@ -13,7 +13,7 @@ import OrderCard from "../components/OrderCard";
 import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import { useDispatch, useSelector } from "react-redux";
-import { onReady , onCancel } from "../store/store-slice";
+import { onReady , onCancel } from "../store/storeSlice";
 import EmptyOrders from "../components/EmptyOrders";
 import Length from "../components/Length";
 

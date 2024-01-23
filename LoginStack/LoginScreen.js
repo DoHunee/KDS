@@ -15,7 +15,7 @@ import {
   SafeAreaView
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
-import { login , logout } from "../store/authSlice";
+import { login , logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation, route }) => {
@@ -94,6 +94,7 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
       
       
       dispatch(login());   // 전역으로 업데이트
+      setIsLoggedIn(true); // 로컬로 업데이트
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
      
 
@@ -101,6 +102,8 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
       setEmployeeID("");
+
+      navigation.navigate("Orders");
         
       
     } else {
@@ -123,7 +126,7 @@ const handleUpdateValues = async (key, value, stateUpdater) => {
           text: "로그아웃",
           onPress: async () => {
             dispatch(logout());   // 전역으로 업데이트
-            navigation.navigate("Login")
+            setIsLoggedIn(false);
           },
         },
       ],
