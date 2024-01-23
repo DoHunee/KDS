@@ -5,15 +5,15 @@ import colors from "../refs/colors";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
-import Length from "../components/Length";
+import ChooseStatus from "../RightUpBar/ChooseStatus"
 
 
 const Complete = () => {
   // Redux에서 상태를 가져오기 위해 useSelector를 사용
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); //로그인 전 후 접근제한을 위해
   const readyOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
   const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 readyOrders를 업데이트
-  
+
   
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
@@ -25,31 +25,41 @@ const Complete = () => {
     setOrders(readyOrders);
   }, [orders, readyOrders]);
 
+
   useEffect(() => {
     if (!isLoggedIn) {
       Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
 
+  
+// onSelectStatus 함수 정의
+const onSelectStatus = (status) => {
+  // readyOrders 배열을 필터링하여 선택한 주문 상태와 일치하는 주문만 남깁니다.
+  const filteredOrders = readyOrders.filter((order) => order.status.toLowerCase() === status.toLowerCase());
+  
+  // 콘솔에 필터링된 주문 목록을 출력합니다.
+  console.log("Filtered Orders:", filteredOrders);
+  
+  // 로컬 상태인 orders를 필터링된 주문 목록으로 업데이트합니다.
+  setOrders(filteredOrders);
+  
+  // 선택한 주문 상태를 콘솔에 출력합니다.
+  console.log(`Selected status: ${status}`);
+};
 
 
   return (
     <View style={styles.container}>
-     {isLoggedIn ? (
-      <>
-      {/* 주문이 없는 경우 EmptyOrders 컴포넌트를 표시 */}
-      {orders.length === 0 && <EmptyOrders name="Complete" />}
-      {/* OrdersNumbers 컴포넌트를 사용하여 주문 개수를 표시 */}
-      <Length length={orders.length} />
-      {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
-      <SafeAreaView>
-        <OrderList buttons={[]} 
-        itemsData={orders} 
-        buttonPress={buttonPress} 
-        />
-      </SafeAreaView>
-      </>
-     ) : null}
+      {isLoggedIn ? (
+        <>
+          {orders.length === 0 && <EmptyOrders name="Complete" />}
+          <ChooseStatus length={orders.length} onSelectStatus={onSelectStatus} />
+          <SafeAreaView>
+            <OrderList buttons={[]} itemsData={orders} buttonPress={buttonPress} />
+          </SafeAreaView>
+        </>
+      ) : null}
     </View>
   );
 };

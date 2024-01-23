@@ -1,7 +1,6 @@
 // OrdersNumbers.js
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet, Platform, StatusBar } from "react-native";
-import colors from "../refs/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 

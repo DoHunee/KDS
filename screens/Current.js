@@ -16,7 +16,7 @@ import OrderList from "../components/OrderList";
 import { useDispatch, useSelector } from "react-redux";
 import { onReady , onCancel } from "../store/storeSlice";
 import EmptyOrders from "../components/EmptyOrders";
-import Length from "../components/Length";
+import Length from "../RightUpBar/Length";
 
 
 

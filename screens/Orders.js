@@ -5,7 +5,7 @@ import Modal from "react-native-modal";
 import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
-import OrdersNumbers from "../components/OrdersNumbers";
+import OrdersNumbers from "../RightUpBar/OrdersNumbers";
 import { handlePending, onConfirm, onDecline, onSales, onImmediateReceipt } from "../store/storeSlice";
 
 // 상수 정의
