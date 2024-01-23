@@ -69,9 +69,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignSelf: "flex-end", // 우측 정렬
   },
-  acceptAllButtonText: {
-    color: "black",
-    fontSize: 15,
-  },
+ 
 });
 export default OrdersNumbers;

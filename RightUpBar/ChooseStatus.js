@@ -23,9 +23,9 @@ const ChooseStatus = ({ length, onSelectStatus }) => {
       </View>
       {selectedStatus && (
         <View style={styles.buttonsContainer}>
-          <Button onPress={() => onSelectStatus("fast_ready")}>즉시수령</Button>
-          <Button onPress={() => onSelectStatus("decline")}>취소처리</Button>
-          <Button onPress={() => onSelectStatus("ready")}>주문처리완료</Button>
+          <Button onPress={() => onSelectStatus("ready")}style={styles.customButton}>주문처리완료</Button>
+          <Button onPress={() => onSelectStatus("fast_ready")}style={styles.customButton}>즉시수령</Button>
+          <Button onPress={() => onSelectStatus("decline")}style={styles.customButton}>취소처리</Button>
         </View>
       )}
     </TouchableOpacity>
@@ -60,11 +60,20 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: "column",
     backgroundColor: "skyblue",
-    padding: 2,
-    marginTop: 4,
+    padding: 1,
+    marginTop: 2,
     marginRight: 4,
     borderRadius: 4,
     alignSelf: "flex-end", // 우측 정렬
+  },
+
+  customButton: {
+    backgroundColor: "skyblue",
+    alignItems: "center",
+    padding: 0,
+    marginTop: 2,
+    marginRight : 4,
+    borderRadius: 4,
   },
 });
 
