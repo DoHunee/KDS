@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Text,
   View,
-  Alert
+  Modal,
+  Button
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Calendar, LocaleConfig } from "react-native-calendars";
@@ -32,8 +33,11 @@ LocaleConfig.defaultLocale = 'ko'; // 기본 언어 설정
 
 const CalendarComp = ({ onPress }) => {
 
-  const [markedDates, setMarkedDates] = useState({});
   const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
+  const [markedDates, setMarkedDates] = useState({});
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  
   
   useEffect(() => {
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
@@ -58,14 +62,21 @@ const CalendarComp = ({ onPress }) => {
   
         // 선택한 날짜의 주문 목록의 SumPrice 계산
         const sumPrice = selectedOrders.reduce((total, order) => total + order.sumPrice, 0);
-      
         // Alert 창에 SumPrice 정보 출력
-        Alert.alert("총매출액은 : ", `${sumPrice}원 입니다!!`);
+       //  Alert.alert("총매출액은 : ", `${sumPrice}원 입니다!!`);
+
+       setSelectedOrders(selectedOrders);
+
+       setModalVisible(true);
       
 
     // 캘린더에서 날짜를 선택할 때 수행할 로직을 구현
     // 예를 들어 다른 화면으로 이동하거나 일부 상태를 업데이트할 수 있습니다.
     //console.log("Selected day:", day);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -85,7 +96,28 @@ const CalendarComp = ({ onPress }) => {
           handleCalenderDay(day);
         }}
       />
-    </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >  
+     <View style={{ marginTop: 50, padding: 20, backgroundColor: "white", flex: 1 }}>
+        {selectedOrders.map(order => (
+          <View key={order.id} style={{ marginBottom: 20 }}>
+            <Text>이름: {order.name}</Text>
+            <Text>고객번호: {order.number}</Text>
+            <Text>가격: {order.sumPrice} won</Text>
+            <Text>주문목록: {order.orders.join(", ")}</Text>
+            <Button title="Close" onPress={closeModal} />
+          </View>
+        ))}
+      </View>
+    </Modal>
+  </View>
   );
 };
 

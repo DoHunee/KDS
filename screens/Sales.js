@@ -17,12 +17,14 @@ const Salse = () => {
   
     // useEffect를 사용하여 completeOrders의 변경을 계속 확인
       useEffect(() => {
+        if (completeOrders && completeOrders.length > 0) {
         // completeOrders 배열의 각 항목에서 필요한 정보만 출력
         completeOrders.forEach(order => {
           const { date, name, sumPrice, status } = order;
           console.log("Order Details:", { date, name, sumPrice, status });
           console.log("----------------------------------------------------------")
         });
+      }
       }, [completeOrders]);
 
   
