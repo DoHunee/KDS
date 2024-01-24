@@ -174,6 +174,11 @@ const CalendarComp = ({ onPress }) => {
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
+          <View style={styles.selectedDateInfoContainer}>
+          <Text style={styles.totalSalesText}>
+          🔴 선택한 날짜의 총 매출: {totalSales} 원
+          </Text>
+          </View>
         </View>
       </Modal>
     </View>
