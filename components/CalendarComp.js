@@ -57,6 +57,8 @@ const CalendarComp = ({ onPress }) => {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [totalSales, setTotalSales] = useState(0); // 총 판매 금액 상태 추가
+
 
   useEffect(() => {
      // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
@@ -81,13 +83,12 @@ const CalendarComp = ({ onPress }) => {
 
   const handleCalenderDay = (day) => {
     // 선택한 날짜에 해당하는 주문 목록 가져오기
-    const selectedOrders = completeOrders.filter(
-      (order) => order.date === day.dateString
-    );
+    const selectedOrders = completeOrders.filter((order) => order.date === day.dateString);
 
     // 선택한 날짜의 주문 목록의 총매출액 계산
     const Final_Price = selectedOrders.reduce((total, order) => total + order.sumPrice, 0);      
-    Alert.alert("총매출액은 ", `${Final_Price} 원!!`);
+    
+    setTotalSales(Final_Price); // 총 판매 금액 상태 업데이트
 
     setSelectedOrders(selectedOrders);
     setModalVisible(true);
@@ -129,6 +130,11 @@ const CalendarComp = ({ onPress }) => {
               </View>
             </View>
           ))}
+
+          <Text style={styles.totalSalesText}>
+            총매출: {totalSales} 원
+          </Text>
+
           {/* Place the button at the end, separate from the last order list */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={closeModal}>
@@ -184,6 +190,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  
+  totalSalesText: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    color : "red" ,
   },
 
 });
