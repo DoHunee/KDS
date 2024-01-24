@@ -126,8 +126,7 @@ const OrderCard = ({
       */}
       <View style={styles.namePhone}>
         <View>
-          <Text style={styles.text}>{name}</Text>
-          <Text style={styles.text}>{number}</Text>
+          <Text style={styles.text}>{name} 【{number}】</Text>
         </View>
         <View>
           <Text style={styles.orderText}>
@@ -139,7 +138,7 @@ const OrderCard = ({
         {orders.map((order, index) => {
           return (
             <View style={styles.orderItem} key={index}>
-              <Text style={{ color: "black" }}>- {order}</Text>  
+              <Text style={{ color: "black" }}> ▶ {order}</Text>  
             </View>
           );
         })}

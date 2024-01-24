@@ -27,23 +27,23 @@ const Salse = () => {
 
   
     
-  // const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
-  //   }
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+    }
+  }, [isLoggedIn]);
 
 
   return (
     <View style={styles.container}>
-    {/* {isLoggedIn ? (
-      <> */}
+    {isLoggedIn ? (
+      <>
     <EmptyOrders name="Sales" />
     <CalendarComp completeOrders={completeOrders} />
-    {/* </>
-    ) : null} */}
+    </>
+    ) : null}
     </View>
   );
 };
