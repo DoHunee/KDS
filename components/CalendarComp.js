@@ -1,4 +1,4 @@
-// 캘린더를 표시하는 화면
+// Screen that displays the calendar
 import {
   Dimensions,
   Platform,
@@ -7,95 +7,106 @@ import {
   Text,
   View,
   Modal,
-  Button
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Calendar, LocaleConfig } from "react-native-calendars";
+import { Calendar, LocaleConfig , Agenda } from "react-native-calendars";
 import { useSelector } from "react-redux";
 import { OrdersDistrubutionSclie } from "../store/storeSlice";
 
-// 한국어 설정 추가
-LocaleConfig.locales['ko'] = {
+//한국어 세팅
+LocaleConfig.locales["ko"] = {
   monthNames: [
-    '1월', '2월', '3월', '4월', '5월', '6월',
-    '7월', '8월', '9월', '10월', '11월', '12월'
+    "1월",
+    "2월",
+    "3월",
+    "4월",
+    "5월",
+    "6월",
+    "7월",
+    "8월",
+    "9월",
+    "10월",
+    "11월",
+    "12월",
   ],
   monthNamesShort: [
-    '1월', '2월', '3월', '4월', '5월', '6월',
-    '7월', '8월', '9월', '10월', '11월', '12월'
+    "1월",
+    "2월",
+    "3월",
+    "4월",
+    "5월",
+    "6월",
+    "7월",
+    "8월",
+    "9월",
+    "10월",
+    "11월",
+    "12월",
   ],
-  dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토']
+  dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+  dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
 };
-
-LocaleConfig.defaultLocale = 'ko'; // 기본 언어 설정
-
+LocaleConfig.defaultLocale = "ko"; // set default language
 
 const CalendarComp = ({ onPress }) => {
-
-  const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
+  const completeOrders = useSelector(
+    (state) => state.OrdersDistrubutionSclie.complete
+  );
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  
-  
-  useEffect(() => {
-    // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
-    const readyOrders = completeOrders.filter(order => order.status === "fast_ready" || order.status === "ready");
 
+  useEffect(() => {
+     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
+     const readyOrders = completeOrders.filter(order => order.status === "fast_ready" || order.status === "ready");
     // markedDates 객체 초기화
     const initialMarkedDates = {};
 
     // 각 주문에 대해 "date" 속성 값에 해당하는 캘린더 상자에 "sumPrice" 값을 표시
-    readyOrders.forEach(order => {
+    readyOrders.forEach((order) => {
       const { date, sumPrice } = order;
-      initialMarkedDates[date] = { marked: true, dotColor: 'green', sumPrice }; // 적절한 dotColor 및 sumPrice로 설정
+
+      // Ensure the markedDates[date] object exists
+      initialMarkedDates[date] = initialMarkedDates[date] || {};
+
+      // 달력에 표시할 색 
+      initialMarkedDates[date] = { marked: true, dotColor: "blue", sumPrice,};
     });
 
-    // markedDates 상태 업데이트
+      // markedDates 상태 업데이트
     setMarkedDates(initialMarkedDates);
   }, [completeOrders]);
 
   const handleCalenderDay = (day) => {
-        // 선택한 날짜에 해당하는 주문 목록 가져오기
-        const selectedOrders = completeOrders.filter(order => order.date === day.dateString);
-  
-        // 선택한 날짜의 주문 목록의 SumPrice 계산
-        const sumPrice = selectedOrders.reduce((total, order) => total + order.sumPrice, 0);
-        // Alert 창에 SumPrice 정보 출력
-       //  Alert.alert("총매출액은 : ", `${sumPrice}원 입니다!!`);
+    // 선택한 날짜에 해당하는 주문 목록 가져오기
+    const selectedOrders = completeOrders.filter(
+      (order) => order.date === day.dateString
+    );
 
-       setSelectedOrders(selectedOrders);
+    // 선택한 날짜의 주문 목록의 총매출액 계산
+    const Final_Price = selectedOrders.reduce((total, order) => total + order.sumPrice, 0);      
+    Alert.alert("총매출액은 ", `${Final_Price} 원!!`);
 
-       setModalVisible(true);
-      
-
-    // 캘린더에서 날짜를 선택할 때 수행할 로직을 구현
-    // 예를 들어 다른 화면으로 이동하거나 일부 상태를 업데이트할 수 있습니다.
-    //console.log("Selected day:", day);
+    setSelectedOrders(selectedOrders);
+    setModalVisible(true);
   };
 
+  // 모달 닫는 부분
   const closeModal = () => {
     setModalVisible(false);
   };
 
   return (
-    <View
-      style={{
-        padding: 10,
-        zIndex: 20000,
-        position: "absolute",
-        width: Dimensions.get("window").width,
-        top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
+    <View style={styles.container}>
+    <Calendar
+      style={styles.calendar}
+      markedDates={markedDates}
+      onDayPress={(day) => {
+        handleCalenderDay(day);
       }}
-    >
-      <Calendar
-        style={{ borderRadius: 10 }}
-        markedDates={markedDates}  // 업데이트된 markedDates 객체로 markedDates prop 설정
-        onDayPress={(day) => {
-          handleCalenderDay(day);
-        }}
-      />
+    />
 
       <Modal
         animationType="slide"
@@ -104,25 +115,78 @@ const CalendarComp = ({ onPress }) => {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}
-      >  
-     <View style={{ marginTop: 50, padding: 20, backgroundColor: "white", flex: 1 }}>
-        {selectedOrders.map(order => (
-          <View key={order.id} style={{ marginBottom: 20 }}>
-            <Text>이름: {order.name}</Text>
-            <Text>고객번호: {order.number}</Text>
-            <Text>가격: {order.sumPrice} won</Text>
-            <Text>주문목록: {order.orders.join(", ")}</Text>
-            <Button title="Close" onPress={closeModal} />
+      >
+        <View style={styles.modalContainer}>
+          {selectedOrders.map((order) => (
+            <View key={order.id} style={styles.orderContainer}>
+              <View style={styles.orderBackground}>
+                <Text style={styles.orderText}>이름: {order.name}</Text>
+                <Text style={styles.orderText}>고객번호: {order.number}</Text>
+                <Text style={styles.orderText}>가격: {order.sumPrice} 원</Text>
+                <Text style={styles.orderText}>
+                  주문 목록: {order.orders.join(", ")}
+                </Text>
+              </View>
+            </View>
+          ))}
+          {/* Place the button at the end, separate from the last order list */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={closeModal}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
           </View>
-        ))}
-      </View>
-    </Modal>
-  </View>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    zIndex: 20000,
+    position: "absolute",
+    width: Dimensions.get("window").width,
+    top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
+  },
+  calendar: {
+    borderRadius: 10,
+  },
+  modalContainer: {
+    marginTop: 50,
+    padding: 20,
+    backgroundColor: "white",
+    flex: 1,
+    borderRadius: 10, // Add border property to surround the shape with a rectangle
+  },
+  orderContainer: {
+    marginBottom: 20,
+    borderWidth: 1, // Add border between order lists to distinguish them
+    borderRadius: 10, // Add border-radius property to enclose the shape of the rectangle surrounding the order list.
+  },
+  orderText: {
+    marginBottom: 5,
+  },
+  orderBackground: {
+    backgroundColor: "skyblue", // Set the background color of the square surrounding each spell to sky blue
+    borderRadius: 10,
+    padding: 10,
+  },
 
-const styles = StyleSheet.create({});
+  buttonContainer: {
+    marginTop: 20,
+    backgroundColor: 'skyblue', // 버튼을 감싸는 부분을 skyblue로 설정
+    padding: 10,
+    borderRadius: 10, // border-radius 속성 추가
+  },
+    buttonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
+});
 
 
 export default CalendarComp;
