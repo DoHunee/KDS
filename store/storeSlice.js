@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import getTimePassedSec from "../refs/getTime";
 import data from "../assets/data/orders.json";
-import { Alert } from "react-native";
 
 // 초기 상태 정의
 const initialState = {
@@ -58,34 +57,17 @@ export const OrdersDistrubutionSclie = createSlice({
         },
     // "즉시 수령"에 대한 액션 및 리듀서  state fast_ready
     onImmediateReceipt: (state, action) => {
-      // 확인 창 표시
-      Alert.alert(
-        "주문 즉시 수령 확인",
-        "정말로 이 주문을 즉시 수령하시겠습니까?",
-        [
-          {
-            text: "취소",
-            style: "cancel",
-          },
-          {
-            text: "확인",
-            onPress: () => {
-              // 확인 버튼이 눌렸을 때의 로직 수행
-              const orders = state.pending;
-              const immediateReceiptOrder = orders?.find((item) => item.id === action.payload.id);
-              
-              immediateReceiptOrder.status = "fast_ready"; 
-              immediateReceiptOrder.completeTime = getTimePassedSec();
-              immediateReceiptOrder.orderNumber = state.complete.length + 1;
-              
-              state.complete = [...state.complete, immediateReceiptOrder];
-              state.pending = state.pending.filter((item) => item.id !== action.payload.id);
-            },
-          },
-        ],
-        { cancelable: false } // 화면의 다른 영역 터치로 창 닫기 방지
-      );
-    },
+          const orders = state.pending;
+          const immediateReceiptOrder = orders?.find((item) => item.id === action.payload.id);
+    
+          immediateReceiptOrder.status = "fast_ready"; 
+    
+          immediateReceiptOrder.completeTime = getTimePassedSec();
+          immediateReceiptOrder.orderNumber = state.complete.length + 1;
+    
+          state.complete = [...state.complete, immediateReceiptOrder];
+          state.pending = state.pending.filter((item) => item.id !== action.payload.id);
+        },
     
     // 주문이 완료되었음을 나타내고 완료 상태로 이동
     onReady: (state, action) => {

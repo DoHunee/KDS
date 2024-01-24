@@ -102,6 +102,33 @@
       "orders": ["Cheesburger"],
       "date": "2024-01-09", 
       "sumPrice": 8000
+    },
+    {
+      "id": 9,
+      "name": "공윤상",
+      "number": 38724,
+      "orderNumber": null,
+      "readyTime": null,
+      "scheduleFor": null,
+      "confirmTime": null,
+      "status": "pending",
+      "orders": ["Cheesburger","Pizza"],
+      "date": "2024-02-01", 
+      "sumPrice": 20000
+    },
+    {
+      "id": 10,
+      "name": "홍승택",
+      "number": 1284,
+      "orderNumber": null,
+      "readyTime": null,
+      "scheduleFor": null,
+      "confirmTime": null,
+      "status": "pending",
+      "orders": ["Cheesburger"],
+      "date": "2024-02-08", 
+      "sumPrice": 8000
     }
+    
   ]
 }
