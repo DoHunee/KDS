@@ -12,20 +12,18 @@ import { OrdersDistrubutionSclie } from "../store/storeSlice";
 
 const Salse = () => {
 
-    // useSelector를 사용하여 complete 상태 가져오기
-    const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
-    
-    
-     // useEffect를 사용하여 completeOrders의 변경을 계속 확인
-  useEffect(() => {
-    // completeOrders 배열의 각 항목에서 필요한 정보만 출력
-    completeOrders.forEach(order => {
-      const { date, name, sumPrice, status } = order;
-      console.log("Order Details:", { date, name, sumPrice, status });
-      console.log("----------------------------------------------------------")
-      console.log("Complete Orders Updated:", completeOrders);
-    });
-  }, [completeOrders]);
+  // useSelector를 사용하여 complete 상태 가져오기
+  const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete);
+  
+    // useEffect를 사용하여 completeOrders의 변경을 계속 확인
+      useEffect(() => {
+        // completeOrders 배열의 각 항목에서 필요한 정보만 출력
+        completeOrders.forEach(order => {
+          const { date, name, sumPrice, status } = order;
+          console.log("Order Details:", { date, name, sumPrice, status });
+          console.log("----------------------------------------------------------")
+        });
+      }, [completeOrders]);
 
   
     
@@ -43,7 +41,7 @@ const Salse = () => {
     {/* {isLoggedIn ? (
       <> */}
     <EmptyOrders name="Sales" />
-    <CalendarComp/>
+    <CalendarComp completeOrders={completeOrders} />
     {/* </>
     ) : null} */}
     </View>
