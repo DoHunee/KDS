@@ -59,11 +59,10 @@ const CalendarComp = ({ onPress }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [totalSales, setTotalSales] = useState(0); // 총 판매 금액 상태 추가
   const [selectedMonthSales, setSelectedMonthSales] = useState(0);
+  const [selectedDateInfo, setSelectedDateInfo] = useState(null);
 
 
   useEffect(() => {
-
-    
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
     const readyOrders = completeOrders.filter(order => order.status === "fast_ready" || order.status === "ready");
     
@@ -96,20 +95,23 @@ const CalendarComp = ({ onPress }) => {
     setSelectedMonthSales(totalSales);
   };
 
-
   const handleCalenderDay = (day) => {
-    
     // 선택한 날짜에 해당하는 주문 목록 가져오기
     const selectedMonth = day.dateString.substring(0, 7);
-
     calculateSelectedMonthSales(selectedMonth);
-    
-    const selectedOrders = completeOrders.filter((order) => order.date === day.dateString);
-    const Final_Price = selectedOrders.reduce((total, order) => total + order.sumPrice, 0);     // 선택한 날짜의 주문 목록의 총매출액 계산
-    
-    setTotalSales(Final_Price); // 총 판매 금액 상태 업데이트
+
+    const selectedOrders = completeOrders.filter(
+      (order) => order.date === day.dateString
+    );
+
+    const Final_Price = selectedOrders.reduce(
+      (total, order) => total + order.sumPrice,
+      0
+    );
+
+    setTotalSales(Final_Price);// 총 판매 금액 상태 업데이트
     setSelectedOrders(selectedOrders);
-    setModalVisible(true);
+      setModalVisible(true);
   };
 
   // 모달 닫는 부분
@@ -122,12 +124,30 @@ const CalendarComp = ({ onPress }) => {
     <View style={styles.container}>
       <Calendar
         style={styles.calendar}
-        markedDates={markedDates}
+        markedDates={{
+          ...markedDates,
+          [selectedDateInfo?.orders[0]?.date]: {
+            ...markedDates[selectedDateInfo?.orders[0]?.date],
+            selected: true,
+            selectedColor: "skyblue",
+          },
+        }}
         onDayPress={(day) => {
           handleCalenderDay(day);
         }}
       />
 
+      
+        <View style={styles.selectedDateInfoContainer}>
+        <Text style={styles.totalSalesText}>
+          🔴 선택한 날짜의 총 매출: {totalSales} 원
+          </Text>
+          <Text style={styles.monthlySalesText}>
+          🟢 선택한 날짜의 총 월간 매출: {selectedMonthSales} 원
+          </Text>
+          {/* 여기에 선택된 주문 목록 등을 추가할 수 있습니다. */}
+        </View>
+     
       <Modal
         animationType="slide"
         transparent={true}
@@ -154,14 +174,6 @@ const CalendarComp = ({ onPress }) => {
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.totalSalesText}>
-            선택한 날짜의 총 매출: {totalSales} 원
-          </Text>
-
-          <Text style={styles.monthlySalesText}>
-            선택한 월의 총 매출: {selectedMonthSales} 원
-          </Text>
-
         </View>
       </Modal>
     </View>
@@ -229,6 +241,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "green",
   },
+
+  selectedDateInfoContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+
 });
+
 
 export default CalendarComp;

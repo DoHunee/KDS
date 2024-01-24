@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import colors from "../refs/colors";
 import EmptyOrders from "../components/EmptyOrders";
 import CalendarComp from "../components/CalendarComp"
-import CalendarScreen from "../components/CalendarScreen"; 
+// import CalendarList from "../components/CalendarList"; 
 import { OrdersDistrubutionSclie } from "../store/storeSlice";
 
 
@@ -44,6 +44,7 @@ const Salse = () => {
       <>
     <EmptyOrders name="Sales" />
     <CalendarComp completeOrders={completeOrders} />
+    
     </>
     ) : null}
     </View>
