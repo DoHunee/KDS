@@ -1,3 +1,4 @@
+// 모든 버튼 클릭했을때 이벤트
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 

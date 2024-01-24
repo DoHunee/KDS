@@ -1,4 +1,5 @@
 // OrderCard.js
+// 주문 카드 나타내주는 칸!
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import colors from "../refs/colors";

@@ -10,10 +10,17 @@ const initialState = {
 
 };
 
+// 새로운 전역 상태 추가
+const globalState = {
+  // 다른 전역 상태 (예: pending, current)...
+  complete: initialState.complete,
+};
+
 // Redux slice 생성
 export const OrdersDistrubutionSclie = createSlice({
   name: "ordersDistribution",
-  initialState,
+  initialState: { ...initialState, ...globalState },
+  // initialState,
   reducers: {
 
     // 대기 중인 주문 목록을 초기 데이터로 설정
@@ -61,8 +68,6 @@ export const OrdersDistrubutionSclie = createSlice({
           state.complete = [...state.complete, immediateReceiptOrder];
           state.pending = state.pending.filter((item) => item.id !== action.payload.id);
         },
-
-
     
     // 주문이 완료되었음을 나타내고 완료 상태로 이동
     onReady: (state, action) => {
@@ -89,19 +94,6 @@ export const OrdersDistrubutionSclie = createSlice({
       state.current = state.current.filter((order) => order.id !== orderId);
     },
 
-    // 주문을 예약하고 예약된 상태로 이동
-    onSales: (state, action) => {
-      const orders = state.pending;
-      const scheduleOrder = orders?.find((item) => item.id === action.payload.id);
-
-      scheduleOrder.status = "sales";
-      scheduleOrder.confirmTime = getTimePassedSec();
-      scheduleOrder.orderNumber = state.schedule.length + 1;
-      scheduleOrder.scheduleFor = action.payload.schedule;
-
-      state.schedule = [...state.schedule, scheduleOrder];
-      state.pending = state.pending.filter((item) => item.id !== action.payload.id);
-    },
    
   
   },
@@ -113,10 +105,8 @@ export const {
   onConfirm,
   onDecline,
   onImmediateReceipt,
-
   onReady,
   onCancel,
-  onSales,
   
 } = OrdersDistrubutionSclie.actions;
 

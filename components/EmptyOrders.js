@@ -1,3 +1,5 @@
+// 하단탭이 비어있으면 나타내주는 화면
+
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import colors from "../refs/colors";

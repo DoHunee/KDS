@@ -1,3 +1,4 @@
+// 캘린더 띄워주는 화면
 import {
   Dimensions,
   Platform,
