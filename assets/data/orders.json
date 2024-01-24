@@ -10,7 +10,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 14,
-      "orders": ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"]
+      "orders": ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"],
+      "date": "2024-01-02", 
+      "sumPrice": 30500
     },
     {
       "id": 2,
@@ -22,7 +24,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 10,
-      "orders": ["Pizza", "Cheesburger", "Hamburger", "Coca-Cola", "Rice"]
+      "orders": ["Pizza", "Cheesburger", "Hamburger", "Coca-Cola", "Rice"],
+      "date": "2024-01-21", 
+      "sumPrice": 37000
     },
     {
       "id": 3,
@@ -34,7 +38,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 9,
-      "orders": ["Hamburger", "Cheesburger", "Coca-Cola", "Pizza"]
+      "orders": ["Hamburger", "Cheesburger", "Coca-Cola", "Pizza"],
+      "date": "2024-01-13", 
+      "sumPrice": 28000
     },
     {
       "id": 4,
@@ -46,7 +52,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 6,
-      "orders": ["Cheesburger", "Pizza", "Coca-Cola"]
+      "orders": ["Cheesburger", "Pizza", "Coca-Cola"],
+      "date": "2024-01-07", 
+      "sumPrice": 22000
     },
     {
       "id": 5,
@@ -58,7 +66,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 20,
-      "orders": ["Coca-Cola", "Pizza"]
+      "orders": ["Coca-Cola", "Pizza"],
+      "date": "2024-01-09", 
+      "sumPrice": 17000
     },
     {
       "id": 6,
@@ -70,7 +80,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 14,
-      "orders": ["Pizza"]
+      "orders": ["Pizza"],
+      "date": "2024-01-14", 
+      "sumPrice": 12000
     },
     {
       "id": 7,
@@ -81,7 +93,9 @@
       "scheduleFor": null,
       "status": "pending",
       "timeRequire": 6,
-      "orders": ["Cheesburger"]
+      "orders": ["Cheesburger"],
+      "date": "2024-01-02", 
+      "sumPrice": 8000
     },
     {
       "id": 8,
@@ -93,7 +107,9 @@
       "confirmTime": null,
       "status": "pending",
       "timeRequire": 1,
-      "orders": ["Cheesburger"]
+      "orders": ["Cheesburger"],
+      "date": "2024-01-09", 
+      "sumPrice": 8000
     }
   ]
 }
