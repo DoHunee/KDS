@@ -33,9 +33,26 @@ const Orders = ({ navigation }) => {
       setScheduleId(data.id);
       setModalVisible(true);
     } else if (data.action === "즉시수령") {
-      dispatch(onImmediateReceipt({ id: data.id })); // 새로 추가된 부분
-    }
-  };
+      // "즉시수령" 버튼을 눌렀을 때 알림 표시
+    Alert.alert(
+      "즉시 수령 확인",
+      "정말로 즉시 수령하시겠습니까?",
+      [
+        {
+          text: "아니오",
+          style: "cancel",
+        },
+        {
+          text: "예",
+          onPress: () => {
+            dispatch(onImmediateReceipt({ id: data.id }));
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+};
 
    //경고 알람!
    const showAlert = (title, message, buttons = [{ text: 'OK' }]) => {

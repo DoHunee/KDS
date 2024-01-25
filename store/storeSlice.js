@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import getTimePassedSec from "../refs/getTime";
 import data from "../assets/data/orders.json";
+import { Alert } from "react-native";
 
 // 초기 상태 정의
 const initialState = {
@@ -40,6 +41,7 @@ export const OrdersDistrubutionSclie = createSlice({
       state.current = [...state.current, confirmOrder];
       state.pending = state.pending.filter((item) => item.id !== action.payload.id);
     },
+
     // "Decline "주문을 거절하고 대기 중 목록에서 제거  state = decline
     onDecline: (state, action) => {
           const orders = state.pending;
@@ -54,7 +56,8 @@ export const OrdersDistrubutionSclie = createSlice({
           state.pending = state.pending.filter((item) => item.id !== action.payload.id);
           
           
-        },
+    },
+
     // "즉시 수령"에 대한 액션 및 리듀서  state fast_ready
     onImmediateReceipt: (state, action) => {
           const orders = state.pending;
@@ -67,7 +70,7 @@ export const OrdersDistrubutionSclie = createSlice({
     
           state.complete = [...state.complete, immediateReceiptOrder];
           state.pending = state.pending.filter((item) => item.id !== action.payload.id);
-        },
+    },
     
     // 주문이 완료되었음을 나타내고 완료 상태로 이동
     onReady: (state, action) => {

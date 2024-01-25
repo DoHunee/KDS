@@ -10,7 +10,6 @@ const Fix = ({ route, navigation }) => {
 
   // 사용자가 입력한 identification number를 저장할 state
   const [modifiedEmployeeID, setModifiedEmployeeID] = useState("");
-
   // AsyncStorage에 저장된 값을 가져와서 state에 반영하는 함수
   const fetchModifiedEmployeeID = async () => {
     try {
