@@ -8,7 +8,7 @@ import {
   View,
   Modal,
   TouchableOpacity,
-  Alert
+  Button
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Calendar, LocaleConfig , Agenda } from "react-native-calendars";
@@ -56,31 +56,32 @@ const CalendarComp = ({ onPress }) => {
   );
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const [selectedMonthOrders, setselectedMonthOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [totalSales, setTotalSales] = useState(0); // 총 판매 금액 상태 추가
   const [selectedMonthSales, setSelectedMonthSales] = useState(0);
-  const [selectedDateInfo, setSelectedDateInfo] = useState(null);
+  
 
-
+  // 해당되는 주문목록 날짜에 dot표시 해주는 부분
   useEffect(() => {
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
     const readyOrders = completeOrders.filter(order => order.status === "fast_ready" || order.status === "ready");
-    
      
     // markedDates 객체 초기화
     const initialMarkedDates = {};
 
-    // 각 주문에 대해 "date" 속성 값에 해당하는 캘린더 상자에 "sumPrice" 값을 표시
+    // 각 주문에 대해 "date" 속성 값에 해당하는 캘린더 상자에 dot 표시하기! (텍스트 표현은 할 수 없네ㅠㅠ )
     readyOrders.forEach((order) => {
-      const { date, sumPrice } = order;
-     
+      const { date } = order;
+
       initialMarkedDates[date] = initialMarkedDates[date] || {};  // Ensure the markedDates[date] object exists
-      initialMarkedDates[date] = { marked: true, dotColor: "blue", sumPrice,}; // 달력에 표시할 색 
+      initialMarkedDates[date] = { marked: true, dotColor: "blue"}; // 달력에 표시할 색 
     });
-      
     setMarkedDates(initialMarkedDates); // markedDates 상태 업데이트
   }, [completeOrders]);
 
+
+  //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
     let totalSales = 0;
 
@@ -95,23 +96,44 @@ const CalendarComp = ({ onPress }) => {
     setSelectedMonthSales(totalSales);
   };
 
+  // 캘린더에 특정 날짜를 선택하면 실행되는 부분! (당일총액 계산,월총액 계산,선택한 날짜 강조 표시)
   const handleCalenderDay = (day) => {
-    // 선택한 날짜에 해당하는 주문 목록 가져오기
-    const selectedMonth = day.dateString.substring(0, 7);
-    calculateSelectedMonthSales(selectedMonth);
+    const selectedMonth = day.dateString.substring(0, 7); //선택된 날짜에서 연도와 월 정보를 추출
+    calculateSelectedMonthSales(selectedMonth); // 해당 월의 매출 총액을 계산하는 부분입니다.
 
-    const selectedOrders = completeOrders.filter(
-      (order) => order.date === day.dateString
-    );
+    const selectedOrders = completeOrders.filter((order) => order.date === day.dateString);
+    const selectedMonthOrders = completeOrders.filter((order) => {
+      return order.date.substring(0, 7) === selectedMonth;
+    });
+    const Final_Price = selectedOrders.reduce((total, order) => total + order.sumPrice,0);
 
-    const Final_Price = selectedOrders.reduce(
-      (total, order) => total + order.sumPrice,
-      0
-    );
+    setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트
+    setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
+    setTotalSales(Final_Price);// 당일총매출(Final_Price) 업데이트
+   
+    
+    // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
+    const updatedMarkedDates = {};
+    Object.keys(markedDates).forEach((date) => {
+    updatedMarkedDates[date] = {
+      ...markedDates[date],
+      selected: false,
+      selectedColor: undefined,
+    };
+    });
+    updatedMarkedDates[day.dateString] = {
+    ...updatedMarkedDates[day.dateString],
+    selected: true,
+    selectedColor: "black",
+    };
 
-    setTotalSales(Final_Price);// 총 판매 금액 상태 업데이트
-    setSelectedOrders(selectedOrders);
-      setModalVisible(true);
+  setMarkedDates(updatedMarkedDates);
+
+  };
+
+  // 모달창 띄우기!!
+  const handleModal= (day) => {
+    setModalVisible(true); //모달창이 뜨게 된다!!
   };
 
   // 모달 닫는 부분
@@ -124,28 +146,21 @@ const CalendarComp = ({ onPress }) => {
     <View style={styles.container}>
       <Calendar
         style={styles.calendar}
-        markedDates={{
-          ...markedDates,
-          [selectedDateInfo?.orders[0]?.date]: {
-            ...markedDates[selectedDateInfo?.orders[0]?.date],
-            selected: true,
-            selectedColor: "skyblue",
-          },
-        }}
+        markedDates={markedDates} // 변경된 markedDates 객체 전달
         onDayPress={(day) => {
-          handleCalenderDay(day);
+          handleCalenderDay(day); //선택한 날짜의 handleCalenderDay함수 실행
         }}
       />
 
       
         <View style={styles.selectedDateInfoContainer}>
         <Text style={styles.totalSalesText}>
-          🔴 선택한 날짜의 총 매출: {totalSales} 원
+          🔴 선택한 날짜의 총 매출({selectedOrders.length}건): {totalSales} 원  
           </Text>
           <Text style={styles.monthlySalesText}>
-          🟢 선택한 날짜의 총 월간 매출: {selectedMonthSales} 원
+          🟢 선택한 날짜의 총 월간 매출({selectedMonthOrders.length}건): {selectedMonthSales} 원 
           </Text>
-          {/* 여기에 선택된 주문 목록 등을 추가할 수 있습니다. */}
+          <Button title="상세보기!" onPress={handleModal} />
         </View>
      
       <Modal
@@ -175,9 +190,6 @@ const CalendarComp = ({ onPress }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.selectedDateInfoContainer}>
-          <Text style={styles.totalSalesText}>
-          🔴 선택한 날짜의 총 매출: {totalSales} 원
-          </Text>
           </View>
         </View>
       </Modal>

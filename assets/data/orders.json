@@ -128,6 +128,32 @@
       "orders": ["Cheesburger"],
       "date": "2024-02-08", 
       "sumPrice": 8000
+    },
+    {
+      "id": 11,
+      "name": "신부님",
+      "number": 1284456,
+      "orderNumber": null,
+      "readyTime": null,
+      "scheduleFor": null,
+      "confirmTime": null,
+      "status": "pending",
+      "orders": ["applepie"],
+      "date": "2024-03-02", 
+      "sumPrice": 6000
+    },
+    {
+      "id": 12,
+      "name": "부제님",
+      "number": 1288744,
+      "orderNumber": null,
+      "readyTime": null,
+      "scheduleFor": null,
+      "confirmTime": null,
+      "status": "pending",
+      "orders": ["potato pizza"],
+      "date": "2024-03-08", 
+      "sumPrice": 9000
     }
     
   ]
