@@ -74,8 +74,11 @@ const CalendarComp = ({ onPress }) => {
     readyOrders.forEach((order) => {
       const { date } = order;
 
-      initialMarkedDates[date] = initialMarkedDates[date] || {};  // Ensure the markedDates[date] object exists
-      initialMarkedDates[date] = { marked: true, dotColor: "blue"}; // 달력에 표시할 색 
+       // Extract only the date part from the timestamp
+      const dateOnly = date.split(' ')[0];
+
+      initialMarkedDates[dateOnly] = initialMarkedDates[dateOnly] || {};  // Ensure the markedDates[date] object exists
+      initialMarkedDates[dateOnly] = { marked: true, dotColor: "blue"}; // 달력에 표시할 색 
     });
     setMarkedDates(initialMarkedDates); // markedDates 상태 업데이트
   }, [completeOrders]);
@@ -101,7 +104,11 @@ const CalendarComp = ({ onPress }) => {
     const selectedMonth = day.dateString.substring(0, 7); //선택된 날짜에서 연도와 월 정보를 추출
     calculateSelectedMonthSales(selectedMonth); // 해당 월의 매출 총액을 계산하는 부분입니다.
 
-    const selectedOrders = completeOrders.filter((order) => order.date === day.dateString);
+    const selectedOrders = completeOrders.filter((order) => {
+      // Extract only the date part from the timestamp
+      const dateOnly = order.date.split(' ')[0];
+      return dateOnly === day.dateString;
+    });
     const selectedMonthOrders = completeOrders.filter((order) => {
       return order.date.substring(0, 7) === selectedMonth;
     });

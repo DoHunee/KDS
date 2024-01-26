@@ -5,21 +5,17 @@ import React, { useEffect, useState } from "react";
 import colors from "../refs/colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Button from "./Button";
-import getTimePassedSec from "../refs/getTime";
 
 
 const OrderCard = ({
   name,
-  number,
+  hp,
   orderNumber,
   orders,
-  confirmTime,
   status,
   id,
   onPress,
-  timeRequire,
   buttons,
-  readyTime,
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0);  // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
   const handleOnPress = (data) => {
@@ -126,7 +122,7 @@ const OrderCard = ({
       */}
       <View style={styles.namePhone}>
         <View>
-          <Text style={styles.text}>{name} 【{number}】</Text>
+          <Text style={styles.text}>{name} 【{hp}】</Text>
         </View>
         <View>
           <Text style={styles.orderText}>
