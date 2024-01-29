@@ -10,9 +10,10 @@ import { store } from "./store/store";
 import { AuthProvider, useAuth } from "./AuthContext"; // AuthProvider 추가
 import colors from "./refs/colors"; // colors 추가
 
+import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";
 import Current from "./Bottom_screens/Current";
-import SettingStack from "./SettingStack/SettingStack";
+import Soldout from "./Bottom_screens/soldout";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -35,7 +36,7 @@ export default function App() {
                 tabBarLabel: "설정",
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
-                    name="account-cog"
+                    name="account-cog-outline"
                     color={focused ? colors.secondary : color}
                     size={26}
                   />
@@ -74,6 +75,21 @@ export default function App() {
               component={Current}
             />
 
+            <Tab.Screen
+              options={{
+                tabBarLabel: "품절처리",
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons
+                    name="basket-off-outline"
+                    color={focused ? colors.secondary : color}
+                    size={26}
+                  />
+                ),
+              }}
+              name="Soldout"
+              component={Soldout}
+            />
+            
           </Tab.Navigator>
         </AuthProvider>
       </NavigationContainer>
