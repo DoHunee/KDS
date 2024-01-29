@@ -14,7 +14,7 @@ import ManagerStack from "./ManagerStack/ManagerStack";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import LoginStack from "./LoginStack/LoginStack";
-import Complete from "../Bottom_screens/Complete";
+import Complete from "./Complete";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -40,6 +40,21 @@ const SettingTabs = () => {
         }}
         name="LoginStack"
         component={LoginStack}
+      />
+
+      <Tab.Screen
+        options={{
+          tabBarLabel: "처리 완료",
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name="checkbox-marked-circle-outline"
+              color={focused ? colors.secondary : color}
+              size={26}
+            />
+          ),
+        }}
+        name="Complete"
+        component={Complete}
       />
 
       <Tab.Screen
