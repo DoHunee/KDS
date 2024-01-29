@@ -13,7 +13,8 @@ import colors from "./refs/colors"; // colors 추가
 import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";
 import Current from "./Bottom_screens/Current";
-import Soldout from "./Bottom_screens/soldout";
+
+import Stock from "./Bottom_screens/Stock"
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -86,10 +87,9 @@ export default function App() {
                   />
                 ),
               }}
-              name="Soldout"
-              component={Soldout}
+              name="Stock"
+              component={Stock}
             />
-            
           </Tab.Navigator>
         </AuthProvider>
       </NavigationContainer>
