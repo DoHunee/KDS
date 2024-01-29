@@ -83,10 +83,7 @@ const Managerfix = () => {
     }
   };
 
-  const handleGoToLogin = () => {
-    navigation.navigate("Login");
-  };
-
+  
   const handleGoToManagerScreen = () => {
     navigation.navigate("ManagerScreen");
   };
@@ -104,6 +101,7 @@ const Managerfix = () => {
         <View style={styles.container}>
           <Text style={styles.title}>🚀 매장,포스번호 수정 🚀</Text>
 
+          <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder="매장번호 (4 자리)"
@@ -119,7 +117,9 @@ const Managerfix = () => {
           >
             <Text style={styles.buttonText}>매장번호 수정</Text>
           </TouchableOpacity>
+          </View>
 
+          <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder="포스번호 (1~2자리)"
@@ -135,9 +135,9 @@ const Managerfix = () => {
           >
             <Text style={styles.buttonText}>포스번호 수정</Text>
           </TouchableOpacity>
+          </View>
 
           <Button title="관리자 페이지로!" onPress={handleGoToManagerScreen} />
-          <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 20,
     color: "black",
     textAlign: "center",
   },
   input: {
     height: 40,
-    width: 200,
+    flex: 1, // 수정: width 속성 제거, flex 추가
     borderColor: "#61dafb",
     borderBottomWidth: 2,
     marginBottom: 10,
@@ -170,16 +170,21 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     backgroundColor: "#61dafb",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 30,
+    marginLeft: 10, 
   },
   buttonText: {
     color: "black",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20, // 수정: 기존 10에서 20으로 변경
   },
 });
 

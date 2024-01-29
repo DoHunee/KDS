@@ -33,7 +33,7 @@ const ManagerScreen = () => {
       >
         <View style={styles.container}>
           <Text style={styles.title}>🚀 관리자 페이지 🚀</Text>
-          <Button title="포스번호 변경 등등 !" onPress={handleGoToManagerfix} />
+          <Button title="매장 ,포스번호 수정" onPress={handleGoToManagerfix} />
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
