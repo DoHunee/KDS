@@ -10,17 +10,22 @@ const Stock = () => {
   const MENU_DATA = {
     Menu: [
       { name: "Cheeseburger", isSoldOut: false },
+      { name: "1955burger", isSoldOut: false },
+      { name: "Big Mac", isSoldOut: false },
       { name: "Hamburger", isSoldOut: false },
-      { name: "Coca-Cola", isSoldOut: false },
+      { name: "Supremeburger", isSoldOut: false },
       { name: "Pizza", isSoldOut: false },
+      { name: "Patato Pizza", isSoldOut: false },
       { name: "sweet-Potato Pizza", isSoldOut: false },
-      { name: "Ham Pizza", isSoldOut: false },
-      { name: "Dotree Pizza", isSoldOut: false },
-      { name: "redd Pizza", isSoldOut: false },
-      { name: "redddd Pizza", isSoldOut: false },
-      { name: "reddddddd Pizza", isSoldOut: false },
-      { name: "reddd Pizza", isSoldOut: false },
-      { name: "reddddd Pizza", isSoldOut: false },
+      { name: "pepperoni Pizza", isSoldOut: false },
+      { name: "Cheese Pizza", isSoldOut: false },
+      { name: "Hawaiian Pizza", isSoldOut: false },
+      { name: "Hot Pizza", isSoldOut: false },
+      { name: "chicago Pizza", isSoldOut: false },
+      { name: "Napolitana Pizza", isSoldOut: false },
+      { name: "Pepsi", isSoldOut: false },
+      { name: "Coca-Cola", isSoldOut: false },
+      
       // ... 더 많은 데이터 추가 가능
     ],
   };
@@ -83,7 +88,7 @@ const Stock = () => {
           {item.name}
         </Text>
         <Button
-          title={item.isSoldOut ? "Sale is stopped" : "On Sale"}
+          title={item.isSoldOut ? "품절" : "판매중"}
           onPress={() => confirmSoldOut(item.name, item.isSoldOut)}
         />
       </View>
