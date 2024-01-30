@@ -1,13 +1,11 @@
 // Sales.js
 import React, { useEffect } from "react";
-import { Text } from "react-native-paper";
 import { SafeAreaView, StyleSheet, Alert, View } from "react-native";
 import { useSelector } from "react-redux";
 import colors from "../refs/colors";
 import EmptyOrders from "../components/EmptyOrders";
 import CalendarComp from "../components/CalendarComp";
 // import CalendarList from "../components/CalendarList";
-import { OrdersDistrubutionSclie } from "../store/storeSlice";
 
 const Salse = () => {
   // useSelector를 사용하여 complete 상태 가져오기

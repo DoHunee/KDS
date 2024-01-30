@@ -8,10 +8,11 @@ import {
   View,
   Modal,
   TouchableOpacity,
-  Button
+  Button,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Calendar, LocaleConfig , Agenda } from "react-native-calendars";
+import { Calendar, LocaleConfig, Agenda } from "react-native-calendars";
 import { useSelector } from "react-redux";
 import { OrdersDistrubutionSclie } from "../store/storeSlice";
 
@@ -45,7 +46,15 @@ LocaleConfig.locales["ko"] = {
     "11월",
     "12월",
   ],
-  dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+  dayNames: [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ],
   dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
 };
 LocaleConfig.defaultLocale = "ko"; // set default language
@@ -60,13 +69,14 @@ const CalendarComp = ({ onPress }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [totalSales, setTotalSales] = useState(0); // 총 판매 금액 상태 추가
   const [selectedMonthSales, setSelectedMonthSales] = useState(0);
-  
 
   // 해당되는 주문목록 날짜에 dot표시 해주는 부분
   useEffect(() => {
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
-    const readyOrders = completeOrders.filter(order => order.status === "fast_ready" || order.status === "ready");
-     
+    const readyOrders = completeOrders.filter(
+      (order) => order.status === "fast_ready" || order.status === "ready"
+    );
+
     // markedDates 객체 초기화
     const initialMarkedDates = {};
 
@@ -74,15 +84,14 @@ const CalendarComp = ({ onPress }) => {
     readyOrders.forEach((order) => {
       const { date } = order;
 
-       // Extract only the date part from the timestamp
-      const dateOnly = date.split(' ')[0];
+      // Extract only the date part from the timestamp
+      const dateOnly = date.split(" ")[0];
 
-      initialMarkedDates[dateOnly] = initialMarkedDates[dateOnly] || {};  // Ensure the markedDates[date] object exists
-      initialMarkedDates[dateOnly] = { marked: true, dotColor: "blue"}; // 달력에 표시할 색 
+      initialMarkedDates[dateOnly] = initialMarkedDates[dateOnly] || {}; // Ensure the markedDates[date] object exists
+      initialMarkedDates[dateOnly] = { marked: true, dotColor: "blue" }; // 달력에 표시할 색
     });
     setMarkedDates(initialMarkedDates); // markedDates 상태 업데이트
   }, [completeOrders]);
-
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
@@ -106,40 +115,41 @@ const CalendarComp = ({ onPress }) => {
 
     const selectedOrders = completeOrders.filter((order) => {
       // Extract only the date part from the timestamp
-      const dateOnly = order.date.split(' ')[0];
+      const dateOnly = order.date.split(" ")[0];
       return dateOnly === day.dateString;
     });
     const selectedMonthOrders = completeOrders.filter((order) => {
       return order.date.substring(0, 7) === selectedMonth;
     });
-    const Final_Price = selectedOrders.reduce((total, order) => total + order.sumPrice,0);
+    const Final_Price = selectedOrders.reduce(
+      (total, order) => total + order.sumPrice,
+      0
+    );
 
     setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트
     setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
-    setTotalSales(Final_Price);// 당일총매출(Final_Price) 업데이트
-   
-    
+    setTotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
+
     // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
     const updatedMarkedDates = {};
     Object.keys(markedDates).forEach((date) => {
-    updatedMarkedDates[date] = {
-      ...markedDates[date],
-      selected: false,
-      selectedColor: undefined,
-    };
+      updatedMarkedDates[date] = {
+        ...markedDates[date],
+        selected: false,
+        selectedColor: undefined,
+      };
     });
     updatedMarkedDates[day.dateString] = {
-    ...updatedMarkedDates[day.dateString],
-    selected: true,
-    selectedColor: "black",
+      ...updatedMarkedDates[day.dateString],
+      selected: true,
+      selectedColor: "black",
     };
 
-  setMarkedDates(updatedMarkedDates);
-
+    setMarkedDates(updatedMarkedDates);
   };
 
   // 모달창 띄우기!!
-  const handleModal= (day) => {
+  const handleModal = (day) => {
     setModalVisible(true); //모달창이 뜨게 된다!!
   };
 
@@ -159,17 +169,17 @@ const CalendarComp = ({ onPress }) => {
         }}
       />
 
-      
-        <View style={styles.selectedDateInfoContainer}>
+      <View style={styles.selectedDateInfoContainer}>
         <Text style={styles.totalSalesText}>
-          🔴 선택한 날짜의 총 매출({selectedOrders.length}건): {totalSales} 원  
-          </Text>
-          <Text style={styles.monthlySalesText}>
-          🟢 선택한 날짜의 총 월간 매출({selectedMonthOrders.length}건): {selectedMonthSales} 원 
-          </Text>
-          <Button title="상세보기!" onPress={handleModal} />
-        </View>
-     
+          🔴 선택한 날짜의 총 매출({selectedOrders.length}건): {totalSales} 원
+        </Text>
+        <Text style={styles.monthlySalesText}>
+          🟢 선택한 날짜의 총 월간 매출({selectedMonthOrders.length}건):{" "}
+          {selectedMonthSales} 원
+        </Text>
+        <Button title="상세보기!" onPress={handleModal} />
+      </View>
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -178,12 +188,14 @@ const CalendarComp = ({ onPress }) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalContainer}>
+        <ScrollView style={styles.modalContainer}>
           {selectedOrders.map((order) => (
             <View key={order.id} style={styles.orderContainer}>
               <View style={styles.orderBackground}>
                 <Text style={styles.orderText}>Name: {order.name}</Text>
-                <Text style={styles.orderText}>Customer number: {order.number}</Text>
+                <Text style={styles.orderText}>
+                  Customer number: {order.number}
+                </Text>
                 <Text style={styles.orderText}>Price: {order.sumPrice} 원</Text>
                 <Text style={styles.orderText}>
                   Order list: {order.orders.join(", ")}
@@ -196,14 +208,12 @@ const CalendarComp = ({ onPress }) => {
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.selectedDateInfoContainer}>
-          </View>
-        </View>
+          <View style={styles.selectedDateInfoContainer}></View>
+        </ScrollView>
       </Modal>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -272,8 +282,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
   },
-
 });
-
 
 export default CalendarComp;

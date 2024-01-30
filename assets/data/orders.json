@@ -27,7 +27,7 @@
       "confirmTime": null,
       "status": "pending",
       "orders": ["Pizza", "Cheesburger", "Hamburger", "Coca-Cola", "Rice"],
-      "date": "2024-01-02 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 37000
     },
     {
@@ -42,7 +42,7 @@
       "confirmTime": null,
       "status": "pending",
       "orders": ["Hamburger", "Cheesburger", "Coca-Cola", "Pizza"],
-      "date": "2024-01-13 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 28000
     },
     {
@@ -57,7 +57,7 @@
       "confirmTime": null,
       "status": "pending",
       "orders": ["Cheesburger", "Pizza", "Coca-Cola"],
-      "date": "2024-01-07 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 22000
     },
     {
@@ -72,7 +72,7 @@
       "confirmTime": null,
       "status": "pending",
       "orders": ["Coca-Cola", "Pizza"],
-      "date": "2024-01-09 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 17000
     },
     {
@@ -87,7 +87,7 @@
       "confirmTime": null,
       "status": "pending",
       "orders": ["Pizza"],
-      "date": "2024-01-14 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 12000
     },
     {
@@ -101,7 +101,7 @@
       "scheduleFor": null,
       "status": "pending",
       "orders": ["Cheesburger"],
-      "date": "2024-01-02 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 8000
     },
     {
@@ -116,7 +116,7 @@
       "confirmTime": null,
       "status": "pending",
       "orders": ["Cheesburger"],
-      "date": "2024-01-09 12:00:00", 
+      "date": "2024-01-23 12:00:00", 
       "sumPrice": 8000
     },
     {
