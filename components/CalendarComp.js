@@ -11,6 +11,8 @@ import {
   Button,
   ScrollView,
   TextInput,
+  TouchableWithoutFeedback, 
+  Keyboard
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Calendar, LocaleConfig, Agenda } from "react-native-calendars";
@@ -168,7 +170,7 @@ const CalendarComp = ({ onPress }) => {
     setModalVisible(false);
   };
 
-  // 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
+  // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
     // 입력된 주문 번호가 없을 경우, 전체 주문 목록을 표시
     if (!searchOrder) {
@@ -189,6 +191,7 @@ const CalendarComp = ({ onPress }) => {
 
   //Return
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <ScrollView style={styles.container}>
       <Calendar
         style={styles.calendar}
@@ -282,6 +285,7 @@ const CalendarComp = ({ onPress }) => {
         </ScrollView>
       </Modal>
     </ScrollView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -304,7 +308,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "white",
     flex: 1,
-    borderRadius: 10,
   },
   orderContainer: {
     marginBottom: 20,
@@ -318,7 +321,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   orderBackground: {
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "white",
     borderRadius: 10,
     padding: 15,
   },
