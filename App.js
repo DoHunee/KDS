@@ -13,8 +13,7 @@ import colors from "./refs/colors"; // colors 추가
 import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";
 import Current from "./Bottom_screens/Current";
-
-import Stock from "./Bottom_screens/Stock"
+import Complete from "./Bottom_screens/Complete";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -78,17 +77,17 @@ export default function App() {
 
             <Tab.Screen
               options={{
-                tabBarLabel: "품절처리",
+                tabBarLabel: "처리 완료",
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
-                    name="basket-off-outline"
+                    name="checkbox-marked-circle-outline"
                     color={focused ? colors.secondary : color}
                     size={26}
                   />
                 ),
               }}
-              name="Stock"
-              component={Stock}
+              name="Complete"
+              component={Complete}
             />
           </Tab.Navigator>
         </AuthProvider>

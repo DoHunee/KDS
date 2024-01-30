@@ -6,15 +6,11 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { StatusBar } from "expo-status-bar";
 import Sales from "./Sales";
 import colors from "../refs/colors"; // colors 추가
-
-import PasswordScreen from "./ManagerStack/PasswordScreen";
-import ManagerScreen from "./ManagerStack/ManagerScreen";
-import ManagerFix from "./ManagerStack/ManagerFix";
-import ManagerStack from "./ManagerStack/ManagerStack";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import ManagerStack from "./ManagerStack/ManagerStack";
 import LoginStack from "./LoginStack/LoginStack";
-import Complete from "./Complete";
+import Stock from "./Stock";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -44,17 +40,17 @@ const SettingTabs = () => {
 
       <Tab.Screen
         options={{
-          tabBarLabel: "처리 완료",
+          tabBarLabel: "품절처리",
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
-              name="checkbox-marked-circle-outline"
+              name="basket-off-outline"
               color={focused ? colors.secondary : color}
               size={26}
             />
           ),
         }}
-        name="Complete"
-        component={Complete}
+        name="Stock"
+        component={Stock}
       />
 
       <Tab.Screen
@@ -71,6 +67,7 @@ const SettingTabs = () => {
         name="Schedule"
         component={Sales}
       />
+      
       <Tab.Screen
         options={{
           tabBarLabel: "관리자",
