@@ -15,7 +15,7 @@ const Stock = () => {
       { name: "Hamburger", isSoldOut: false },
       { name: "Supremeburger", isSoldOut: false },
       { name: "Pizza", isSoldOut: false },
-      { name: "Patato Pizza", isSoldOut: false },
+      { name: "Potato Pizza", isSoldOut: false },
       { name: "sweet-Potato Pizza", isSoldOut: false },
       { name: "pepperoni Pizza", isSoldOut: false },
       { name: "Cheese Pizza", isSoldOut: false },
@@ -95,7 +95,7 @@ const Stock = () => {
     );
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
         {isLoggedIn ? (
           <FlatList
@@ -105,7 +105,7 @@ const Stock = () => {
             contentContainerStyle={styles.listContainer}
           />
         ) : null}
-      </View>
+        </SafeAreaView>
     );
   };
 

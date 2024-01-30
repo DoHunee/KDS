@@ -16,8 +16,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Keyboard } from "react-native";
 
 const Fix = ({ route, navigation }) => {
-  // 사용자가 입력한 identification number를 저장할 state
-  const [modifiedEmployeeID, setModifiedEmployeeID] = useState("");
+  
+  const [modifiedEmployeeID, setModifiedEmployeeID] = useState("");  // 사용자가 입력한 identification number를 저장할 state
+  const [originalEmployeeID, setOriginalEmployeeID] = useState("");  // 이전 식별 번호 저장하는 state 추가
+
+
   // AsyncStorage에 저장된 값을 가져와서 state에 반영하는 함수
   const fetchModifiedEmployeeID = async () => {
     try {
@@ -26,6 +29,7 @@ const Fix = ({ route, navigation }) => {
       );
       if (storedModifiedEmployeeID) {
         setModifiedEmployeeID(storedModifiedEmployeeID);
+        setOriginalEmployeeID(storedModifiedEmployeeID);
       }
     } catch (error) {
       console.error("AsyncStorage error:", error);
@@ -42,6 +46,11 @@ const Fix = ({ route, navigation }) => {
   // 식별번호를 수정하는 함수!
   const handleUpdateEmployeeID = async () => {
     try {
+      if (modifiedEmployeeID === originalEmployeeID) {
+        Alert.alert("알림", "이전과 동일한 식별 번호입니다.");
+        return;
+      }
+      
       await AsyncStorage.setItem("modifiedEmployeeID", modifiedEmployeeID);
       console.log(
         "AsyncStorage에 변환된 식별번호를 저장했습니다!",
