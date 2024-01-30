@@ -67,7 +67,7 @@ const SettingTabs = () => {
         name="Schedule"
         component={Sales}
       />
-      
+
       <Tab.Screen
         options={{
           tabBarLabel: "관리자",
@@ -89,7 +89,7 @@ const SettingTabs = () => {
 export default function SettingStack() {
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
       <Stack.Navigator initialRouteName="PasswordScreen">
         {/* <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
          */}

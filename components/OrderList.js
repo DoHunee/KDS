@@ -52,7 +52,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             scheduleFor={item.scheduleFor}
           />
         )}
-        keyExtractor={(item) => item.id}  //고유키 추출 
+        keyExtractor={(item) => item.id.toString()} // 고유한 키 추출  //고유키 추출 
       />
     </View>
   );

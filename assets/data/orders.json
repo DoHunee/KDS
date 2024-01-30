@@ -11,9 +11,13 @@
       "scheduleFor": null,
       "confirmTime": null,
       "status": "pending",
-      "orders": ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 30500
+      "orders": [
+        {"name": "Cheesburger", "price": 8000 , "quantity" : 2}, 
+        {"name": "Hamburger", "price": 7500, "quantity" : 1},
+        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}, 
+        {"name": "Pizza", "price": 15500, "quantity" : 1} 
+      ],
+      "date": "2024-01-23 12:00:00"
     },
     {
       "id": 2,
@@ -26,10 +30,17 @@
       "scheduleFor": null,
       "confirmTime": null,
       "status": "pending",
-      "orders": ["Pizza", "Cheesburger", "Hamburger", "Coca-Cola", "Rice"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 37000
+      "orders": [
+        {"name": "Cheesburger", "price": 8000, "quantity" : 2}, 
+        {"name": "Hamburger", "price": 7500, "quantity" : 1},
+        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}, 
+        {"name": "Pizza", "price": 15500, "quantity" : 1},
+        {"name": "rice", "price": 1000, "quantity" : 1}
+      ],
+      "date": "2024-01-23 12:00:00"
+      
     },
+    
     {
       "id": 3,
       "name": "김준성",
@@ -41,143 +52,12 @@
       "scheduleFor": null,
       "confirmTime": null,
       "status": "pending",
-      "orders": ["Hamburger", "Cheesburger", "Coca-Cola", "Pizza"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 28000
-    },
-    {
-      "id": 4,
-      "name": "류태정",
-      "hp": "010-0246-4567",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["Cheesburger", "Pizza", "Coca-Cola"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 22000
-    },
-    {
-      "id": 5,
-      "name": "봉수진",
-      "hp": "010-9645-3247",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["Coca-Cola", "Pizza"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 17000
-    },
-    {
-      "id": 6,
-      "name": "김다정",
-      "hp": "010-2584-4568",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["Pizza"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 12000
-    },
-    {
-      "id": 7,
-      "name": "이연지",
-      "hp": "010-8520-7799",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "status": "pending",
-      "orders": ["Cheesburger"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 8000
-    },
-    {
-      "id": 8,
-      "name": "권영주",
-      "hp": "010-9998-5477",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["Cheesburger"],
-      "date": "2024-01-23 12:00:00", 
-      "sumPrice": 8000
-    },
-    {
-      "id": 9,
-      "name": "공윤상",
-      "hp": "010-3660-0564",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["Cheesburger","Pizza"],
-      "date": "2024-02-01 12:00:00", 
-      "sumPrice": 20000
-    },
-    {
-      "id": 10,
-      "name": "홍승택",
-      "hp": "010-4141-5010",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["Cheesburger"],
-      "date": "2024-02-08 12:00:00", 
-      "sumPrice": 8000
-    },
-    {
-      "id": 11,
-      "name": "신부님",
-      "hp": "010-3654-4477",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["applepie"],
-      "date": "2024-03-02 12:00:00", 
-      "sumPrice": 6000
-    },
-    {
-      "id": 12,
-      "name": "부제님",
-      "hp": "010-4567-8742",
-      "title": "Mom's Touch",
-      "title_cd": "0076",
-      "orderNumber": null,
-      "readyTime": null,
-      "scheduleFor": null,
-      "confirmTime": null,
-      "status": "pending",
-      "orders": ["potato pizza"],
-      "date": "2024-03-08 12:00:00", 
-      "sumPrice": 9000
+      "orders": [
+        {"name": "Cheesburger", "price": 8000, "quantity" : 1}, 
+        {"name": "Hamburger", "price": 7500, "quantity" : 1},
+        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}
+      ],
+      "date": "2024-01-23 12:00:00"
     }
     
   ]
