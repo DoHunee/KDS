@@ -168,6 +168,23 @@ export const commonStyles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
+
+  switchButtonContainerModal: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  switchButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: "#3498db",
+    marginHorizontal: 5,
+  },
+
 });
 
 export default commonStyles;

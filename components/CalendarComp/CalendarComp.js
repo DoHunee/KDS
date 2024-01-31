@@ -78,13 +78,13 @@ const CalendarComp = ({ onPress }) => {
   const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
   const [selectedDate, setSelectedDate] = useState(""); // 이제 selectedDate를 상태로 관리합니다.
 
+  // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
+  const readyOrders = completeOrders.filter(
+    (order) => order.status === "fast_ready" || order.status === "ready"
+  );
+
   // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
-    // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
-    const readyOrders = completeOrders.filter(
-      (order) => order.status === "fast_ready" || order.status === "ready"
-    );
-
     const initialMarkedDates = {}; // markedDates 객체 초기화
 
     // 각 주문에 대해 "date" 속성 값에 해당하는 캘린더 상자에 dot 표시하기! (텍스트 표현은 할 수 없네ㅠㅠ )
@@ -178,7 +178,7 @@ const CalendarComp = ({ onPress }) => {
     setseletedtotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
     setselecteddeclineSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
 
-    setSelectedDate(day.dateString);  // Set the selected date
+    setSelectedDate(day.dateString); // Set the selected date
 
     // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
     const updatedMarkedDates = {};
@@ -233,11 +233,11 @@ const CalendarComp = ({ onPress }) => {
       setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
       return;
     }
-  
+
     const foundOrder = completeOrders.find(
       (order) => order.id.toString() === searchOrder
     );
-  
+
     if (foundOrder) {
       setSelectedOrders([foundOrder]);
       setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
@@ -245,6 +245,33 @@ const CalendarComp = ({ onPress }) => {
       alert("주문을 찾을 수 없습니다.");
     }
   };
+
+
+  // 선택한 날짜에 해당되는 주문 목록 가져오기
+const getOrdersByDate = (status) => {
+  // 해당 상태의 주문 목록 필터링
+  const filteredOrders = completeOrders.filter(
+    (order) => order.status === status
+  );
+
+  // 선택한 날짜에 해당되는 주문 목록만 반환
+  return filteredOrders.filter((order) => {
+    const dateOnly = order.date.split(" ")[0];
+    return dateOnly === selectedDate;
+  });
+};
+
+  // 버튼 클릭에 대한 처리 함수
+const handleOrderStatusButtonClick = (status) => {
+  if (status === "ready") {
+    setSelectedOrders(getOrdersByDate("fast_ready").concat(getOrdersByDate("ready")));
+    setselecteddeclineOrders([]);
+  } else if (status === "decline") {
+    setSelectedOrders([]);
+    setselecteddeclineOrders(getOrdersByDate("decline"));
+  }
+};
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -309,8 +336,73 @@ const CalendarComp = ({ onPress }) => {
               </TouchableOpacity>
             </View>
 
-            {/* 모달창안에 주문내역을 나타내는 부분!! (취소처리도 함께 나오게 수정!!)*/}
-            {selectedOrders.concat(selecteddeclineOrders).map((order) => (
+            {/* 각 주문목록을 볼 수 있는 버튼 생성 */}
+            <View style={commonStyles.switchButtonContainerModal}>
+              <TouchableOpacity
+                onPress={() => handleOrderStatusButtonClick("ready")}
+              >
+                <Text style={commonStyles.switchButtonText}>즉시수령/완료</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleOrderStatusButtonClick("decline")}
+              >
+                <Text style={commonStyles.switchButtonText}>취소</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* 모달창안에 주문내역을 나타내는 부분!! (fast-ready , ready)*/}
+            {/* {selectedOrders.concat(selecteddeclineOrders).map((order) => ( */}
+            {selectedOrders.map((order) => (
+              <View key={order.id} style={commonStyles.orderContainer}>
+                <View style={commonStyles.orderBackground}>
+                  <Text style={commonStyles.orderText}>
+                    이름: {order.name} [{order.hp}]
+                  </Text>
+                  <View style={commonStyles.lineStyle}></View>
+                  <Text style={commonStyles.orderText}>
+                    주문번호 : {order.id}{" "}
+                  </Text>
+                  <Text style={commonStyles.orderText}>
+                    판매시간 : {order.date}{" "}
+                  </Text>
+                  <Text style={commonStyles.orderText}>
+                    주문상태 : {order.status}{" "}
+                  </Text>
+                  <View style={commonStyles.lineStyle}></View>
+
+                  <Text style={commonStyles.orderText}>
+                    [주문 목록]:{"\n\n"}
+                    {order.orders.map((item, index) => (
+                      <View
+                        key={item.name}
+                        style={commonStyles.menuItemContainer}
+                      >
+                        <Text style={commonStyles.menuItemName}>
+                          메뉴명: {item.name}
+                        </Text>
+                        <Text style={commonStyles.menuItemDetail}>
+                          수량: {item.quantity} | 금액:{" "}
+                          {item.price * item.quantity} 원
+                        </Text>
+                      </View>
+                    ))}
+                  </Text>
+
+                  <View style={commonStyles.lineStyle}></View>
+                  <Text style={commonStyles.orderText}>
+                    총 가격 :{" "}
+                    {order.orders.reduce(
+                      (sum, item) => sum + item.price * item.quantity,
+                      0
+                    )}{" "}
+                    원
+                  </Text>
+                </View>
+              </View>
+            ))}
+
+            {/* 모달창안에 주문내역을 나타내는 부분!! (decline)*/}
+            {selecteddeclineOrders.map((order) => (
               <View key={order.id} style={commonStyles.orderContainer}>
                 <View style={commonStyles.orderBackground}>
                   <Text style={commonStyles.orderText}>
