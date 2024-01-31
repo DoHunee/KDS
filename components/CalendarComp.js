@@ -68,19 +68,21 @@ const CalendarComp = ({ onPress }) => {
     (state) => state.OrdersDistrubutionSclie.complete
   );
   const [markedDates, setMarkedDates] = useState({});
-  const [selectedOrders, setSelectedOrders] = useState([]);
-  const [selectedMonthOrders, setselectedMonthOrders] = useState([]);
-  const [CancellationAmount, setCancellationAmount] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [totalSales, setTotalSales] = useState(0); // 총 판매 금액 상태 추가
+  
+  const [selectedOrders, setSelectedOrders] = useState([]);  //선택한날의 주문완료,즉시수령 주문목록
+  const [selecteddeclineOrders , setselecteddeclineOrders] = useState([]); //선택한날의 취소처리 주문목록
+  const [selectedMonthOrders, setselectedMonthOrders] = useState([]); //선택한날이 포함되는 월에 해당되는 주문목록
+  
+
+  const [seletedtotalSales, setseletedtotalSales] = useState(0); // 총 판매 금액 상태 추가
   const [selectedMonthSales, setSelectedMonthSales] = useState(0);
+  const [selecteddeclineSales , setselecteddeclineSales] = useState(0);
+
+  
+  const [modalVisible, setModalVisible] = useState(false);
   const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
   const scrollViewRef = useRef(null); // scrollViewRef를 선언 및 초기화
   
-  const declineOrdersForSelectedDate = selectedOrders.filter(
-    (order) => order.status === "decline"
-  ); // 취소목록 갯수
-
   // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
@@ -106,7 +108,7 @@ const CalendarComp = ({ onPress }) => {
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
-    let totalSales = 0;
+    let Month_Final_Price = 0;
 
     const readyOrders = completeOrders.filter(
       (order) => order.status === "fast_ready" || order.status === "ready"
@@ -116,15 +118,16 @@ const CalendarComp = ({ onPress }) => {
       const month = order.date.substring(0, 7);
 
       if (month === selectedMonth) {
-        totalSales += order.orders.reduce(
+        Month_Final_Price += order.orders.reduce(
           (sum, item) => sum + item.price * item.quantity,
           0
         );
       }
     });
 
-    setSelectedMonthSales(totalSales);
+    setSelectedMonthSales(Month_Final_Price);
   };
+
 
   // 캘린더에 특정 날짜를 선택하면 실행되는 부분! (당일총액 계산,월총액 계산,선택한 날짜 강조 표시)
   const handleCalenderDay = (day) => {
@@ -140,29 +143,35 @@ const CalendarComp = ({ onPress }) => {
     const declineOrders = completeOrders.filter(
       (order) => order.status === "decline"
     );
+    
 
+    // "fast_ready" 및 "ready" 상태 +  선택한 날짜
     const selectedOrders = readyOrders.filter((order) => {
-      // Extract only the date part from the timestamp
       const dateOnly = order.date.split(" ")[0];
       return dateOnly === day.dateString;
     });
 
+    // "decline" 상태의 주문 목록 필터링 + 선택한 날짜
+    const selecteddeclineOrders = declineOrders.filter((order) => {
+    const dateOnly = order.date.split(" ")[0];
+    return dateOnly === day.dateString;
+    });
+
+    // 선택된 월에 해당하는 주문들
     const selectedMonthOrders = readyOrders.filter((order) => {
       return order.date.substring(0, 7) === selectedMonth;
     });
 
-    const declineOrdersForSelectedDate = declineOrders.filter((order) => {
-      const dateOnly = order.date.split(" ")[0];
-      return dateOnly === day.dateString;
-    });
 
-    const totalCancellationAmount = declineOrdersForSelectedDate.reduce(
+    //선택된 날짜에 대한 "decline" 상태의 주문들의 전체 취소 금액
+    const Decline_Final_Price = selecteddeclineOrders.reduce(
       (total, order) =>
         total +
         order.orders.reduce((sum, item) => sum + item.price * item.quantity, 0),
       0
     );
 
+    //선택된 날짜에 대한 주문 목록(selectedOrders)에서 총 주문 가격
     const Final_Price = selectedOrders.reduce(
       (total, order) =>
         total +
@@ -170,10 +179,15 @@ const CalendarComp = ({ onPress }) => {
       0
     );
 
-    setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트
+    
+
+    setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + fast-Ready + Ready
     setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
-    setTotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
-    setCancellationAmount(totalCancellationAmount); // 당일총취소금액(totalCancellationAmount) 업데이트
+    setselecteddeclineOrders(selecteddeclineOrders) ; //당일에 해당하는 주문목록(selectedOrders) 업데이트 + decline
+    
+    setseletedtotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
+    setselecteddeclineSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
+    
 
     // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
     const updatedMarkedDates = {};
@@ -243,16 +257,16 @@ const CalendarComp = ({ onPress }) => {
         <View style={styles.selectedDateInfoContainer}>
           <Text style={styles.totalSalesText}>
             ■ 당일매출금액({selectedOrders.length}건):{"              "}
-            {totalSales} 원
+            {seletedtotalSales} 원
+          </Text>
+          <Text style={styles.monthlySalesText}>
+            ■ 당일취소금액({selecteddeclineOrders.length}건):
+            {"              "}
+            {selecteddeclineSales} 원
           </Text>
           <Text style={styles.monthlySalesText}>
             ■ 당월매출금액({selectedMonthOrders.length}건):{"              "}
             {selectedMonthSales} 원
-          </Text>
-          <Text style={styles.monthlySalesText}>
-            ■ 당일취소금액({declineOrdersForSelectedDate.length}건):
-            {"              "}
-            {CancellationAmount} 원
           </Text>
           <Button title="상세보기!" onPress={handleModal} />
         </View>
@@ -298,8 +312,7 @@ const CalendarComp = ({ onPress }) => {
             </View>
 
              {/* 모달창안에 주문내역을 나타내는 부분!! (취소처리도 함께 나오게 수정!!)*/}
-            {[...selectedOrders, ...declineOrdersForSelectedDate].map(
-              (order) => (
+             {selectedOrders.map((order) => (
                 <View key={order.id} style={styles.orderContainer}>
                   <View style={styles.orderBackground}>
                     <Text style={styles.orderText}>
