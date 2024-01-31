@@ -3,9 +3,7 @@ import React, { useEffect } from "react";
 import { SafeAreaView, StyleSheet, Alert, View } from "react-native";
 import { useSelector } from "react-redux";
 import colors from "../refs/colors";
-import EmptyOrders from "../components/EmptyOrders";
-import CalendarComp from "../components/CalendarComp";
-// import CalendarList from "../components/CalendarList";
+import CalendarComp from "../components/CalendarComp/CalendarComp";
 
 const Salse = () => {
   // useSelector를 사용하여 complete 상태 가져오기
@@ -39,7 +37,6 @@ const Salse = () => {
     <View style={styles.container}>
       {isLoggedIn ? (
         <>
-          {/* <EmptyOrders name="Sales" />*/}
           <CalendarComp completeOrders={completeOrders} />
         </>
       ) : null}
