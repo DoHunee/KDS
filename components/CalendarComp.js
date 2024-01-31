@@ -80,6 +80,7 @@ const CalendarComp = ({ onPress }) => {
   const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
   const scrollViewRef = useRef(null); // scrollViewRef를 선언 및 초기화
 
+  
   // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
@@ -223,6 +224,7 @@ const CalendarComp = ({ onPress }) => {
 
     if (foundOrder) {
       setSelectedOrders([foundOrder]);
+      setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나온다!!
     } else {
       alert("주문을 찾을 수 없습니다.");
     }
@@ -243,7 +245,6 @@ const CalendarComp = ({ onPress }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
-        
         {/* 매출 나타내는 부분 */}
         <View style={styles.selectedDateInfoContainer}>
           <Text style={styles.totalSalesText}>
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height, // 모달이 올라올 때 화면 전체를 꽉 채우도록 설정
     top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
-    
+
   },
 
   selectedDateInfoContainer: {
