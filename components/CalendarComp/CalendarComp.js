@@ -74,35 +74,32 @@ const CalendarComp = ({ onPress }) => {
   const [selecteddeclineSales, setselecteddeclineSales] = useState(0);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
   const scrollViewRef = useRef(null); // scrollViewRef를 선언 및 초기화
+  const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
+  const [selectedDate, setSelectedDate] = useState(""); // 이제 selectedDate를 상태로 관리합니다.
 
-  
   // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
-     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
+    // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
     const readyOrders = completeOrders.filter(
       (order) => order.status === "fast_ready" || order.status === "ready"
     );
-  
+
     const initialMarkedDates = {}; // markedDates 객체 초기화
-  
+
     // 각 주문에 대해 "date" 속성 값에 해당하는 캘린더 상자에 dot 표시하기! (텍스트 표현은 할 수 없네ㅠㅠ )
     readyOrders.forEach((order) => {
       const { date } = order;
       const dateOnly = date.split(" ")[0];
-  
+
       initialMarkedDates[dateOnly] = {
         marked: true,
         dotColor: order.id.toString() === searchOrder ? "red" : "blue",
       };
-
     });
-  
+
     setMarkedDates(initialMarkedDates); // Update markedDates status
   }, [completeOrders, searchOrder]);
-  
-
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
@@ -181,6 +178,8 @@ const CalendarComp = ({ onPress }) => {
     setseletedtotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
     setselecteddeclineSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
 
+    setSelectedDate(day.dateString);  // Set the selected date
+
     // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
     const updatedMarkedDates = {};
     Object.keys(markedDates).forEach((date) => {
@@ -200,8 +199,6 @@ const CalendarComp = ({ onPress }) => {
     setMarkedDates(updatedMarkedDates);
   };
 
-
-
   // 모달창 띄우기!!
   const handleModal = (day) => {
     setModalVisible(true); //모달창이 뜨게 된다!!
@@ -210,26 +207,6 @@ const CalendarComp = ({ onPress }) => {
   // 모달 닫는 부분
   const closeModal = () => {
     setModalVisible(false);
-  };
-
-  // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
-  const handleSearchOrder = () => {
-    // 입력된 주문 번호가 없을 경우, 전체 주문 목록을 표시
-    if (!searchOrder) {
-      setSelectedOrders(completeOrders);
-      return;
-    }
-
-    const foundOrder = completeOrders.find(
-      (order) => order.id.toString() === searchOrder
-    );
-
-    if (foundOrder) {
-      setSelectedOrders([foundOrder]);
-      setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나온다!!
-    } else {
-      alert("주문을 찾을 수 없습니다.");
-    }
   };
 
   // 스크롤 내리는 함수 정의
@@ -242,6 +219,31 @@ const CalendarComp = ({ onPress }) => {
   const scrollToTop = () => {
     scrollViewRef.current.scrollTo({ y: 0, animated: true });
     // console.log("위로 이동합니다!");
+  };
+
+  // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
+  const handleSearchOrder = () => {
+    // 만약 주문 번호가 입력되지 않았다면, 선택한 날짜의 전체 주문 목록을 표시합니다.
+    if (!searchOrder) {
+      const selectedDateOrders = completeOrders.filter((order) => {
+        const dateOnly = order.date.split(" ")[0];
+        return dateOnly === selectedDate; // selectedDate는 선택한 날짜에 해당합니다.
+      });
+      setSelectedOrders(selectedDateOrders);
+      setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
+      return;
+    }
+  
+    const foundOrder = completeOrders.find(
+      (order) => order.id.toString() === searchOrder
+    );
+  
+    if (foundOrder) {
+      setSelectedOrders([foundOrder]);
+      setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
+    } else {
+      alert("주문을 찾을 수 없습니다.");
+    }
   };
 
   return (
