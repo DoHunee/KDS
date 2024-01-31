@@ -70,13 +70,18 @@ const CalendarComp = ({ onPress }) => {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectedMonthOrders, setselectedMonthOrders] = useState([]);
+  const [CancellationAmount, setCancellationAmount] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [totalSales, setTotalSales] = useState(0); // 총 판매 금액 상태 추가
   const [selectedMonthSales, setSelectedMonthSales] = useState(0);
   const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
   const scrollViewRef = useRef(null); // scrollViewRef를 선언 및 초기화
+  
+  const declineOrdersForSelectedDate = selectedOrders.filter(
+    (order) => order.status === "decline"
+  ); // 취소목록 갯수
 
-  // 해당되는 주문목록 날짜에 dot표시 해주는 부분
+  // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
     const readyOrders = completeOrders.filter(
@@ -103,7 +108,11 @@ const CalendarComp = ({ onPress }) => {
   const calculateSelectedMonthSales = (selectedMonth) => {
     let totalSales = 0;
 
-    completeOrders.forEach((order) => {
+    const readyOrders = completeOrders.filter(
+      (order) => order.status === "fast_ready" || order.status === "ready"
+    );
+
+    readyOrders.forEach((order) => {
       const month = order.date.substring(0, 7);
 
       if (month === selectedMonth) {
@@ -122,15 +131,37 @@ const CalendarComp = ({ onPress }) => {
     const selectedMonth = day.dateString.substring(0, 7); //선택된 날짜에서 연도와 월 정보를 추출
     calculateSelectedMonthSales(selectedMonth); // 해당 월의 매출 총액을 계산하는 부분입니다.
 
-    const selectedOrders = completeOrders.filter((order) => {
+    // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
+    const readyOrders = completeOrders.filter(
+      (order) => order.status === "fast_ready" || order.status === "ready"
+    );
+
+    // "decline" 상태의 주문 목록 필터링
+    const declineOrders = completeOrders.filter(
+      (order) => order.status === "decline"
+    );
+
+    const selectedOrders = readyOrders.filter((order) => {
       // Extract only the date part from the timestamp
       const dateOnly = order.date.split(" ")[0];
       return dateOnly === day.dateString;
     });
 
-    const selectedMonthOrders = completeOrders.filter((order) => {
+    const selectedMonthOrders = readyOrders.filter((order) => {
       return order.date.substring(0, 7) === selectedMonth;
     });
+
+    const declineOrdersForSelectedDate = declineOrders.filter((order) => {
+      const dateOnly = order.date.split(" ")[0];
+      return dateOnly === day.dateString;
+    });
+
+    const totalCancellationAmount = declineOrdersForSelectedDate.reduce(
+      (total, order) =>
+        total +
+        order.orders.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      0
+    );
 
     const Final_Price = selectedOrders.reduce(
       (total, order) =>
@@ -142,6 +173,7 @@ const CalendarComp = ({ onPress }) => {
     setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트
     setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
     setTotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
+    setCancellationAmount(totalCancellationAmount); // 당일총취소금액(totalCancellationAmount) 업데이트
 
     // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
     const updatedMarkedDates = {};
@@ -206,14 +238,21 @@ const CalendarComp = ({ onPress }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
+      
         {/* 매출 나타내는 부분 */}
         <View style={styles.selectedDateInfoContainer}>
           <Text style={styles.totalSalesText}>
-            🔴 선택한 날짜의 총 매출({selectedOrders.length}건): {totalSales} 원
+            ■ 당일매출금액({selectedOrders.length}건):{"              "}
+            {totalSales} 원
           </Text>
           <Text style={styles.monthlySalesText}>
-            🟢 선택한 날짜의 총 월간 매출({selectedMonthOrders.length}건):{" "}
+            ■ 당월매출금액({selectedMonthOrders.length}건):{"              "}
             {selectedMonthSales} 원
+          </Text>
+          <Text style={styles.monthlySalesText}>
+            ■ 당일취소금액({declineOrdersForSelectedDate.length}건):
+            {"              "}
+            {CancellationAmount} 원
           </Text>
           <Button title="상세보기!" onPress={handleModal} />
         </View>
@@ -258,44 +297,54 @@ const CalendarComp = ({ onPress }) => {
               </TouchableOpacity>
             </View>
 
-            {selectedOrders.map((order) => (
-              <View key={order.id} style={styles.orderContainer}>
-                <View style={styles.orderBackground}>
-                  <Text style={styles.orderText}>
-                    이름: {order.name} [{order.hp}]
-                  </Text>
-                  <View style={styles.lineStyle}></View>
-                  <Text style={styles.orderText}>주문번호 : {order.id} </Text>
-                  <Text style={styles.orderText}>판매시간 : {order.date} </Text>
-                  <View style={styles.lineStyle}></View>
+             {/* 모달창안에 주문내역을 나타내는 부분!! (취소처리도 함께 나오게 수정!!)*/}
+            {[...selectedOrders, ...declineOrdersForSelectedDate].map(
+              (order) => (
+                <View key={order.id} style={styles.orderContainer}>
+                  <View style={styles.orderBackground}>
+                    <Text style={styles.orderText}>
+                      이름: {order.name} [{order.hp}]
+                    </Text>
+                    <View style={styles.lineStyle}></View>
+                    <Text style={styles.orderText}>주문번호 : {order.id} </Text>
+                    <Text style={styles.orderText}>
+                      판매시간 : {order.date}{" "}
+                    </Text>
+                    <Text style={styles.orderText}>
+                      주문상태 : {order.status}{" "}
+                    </Text>
+                    <View style={styles.lineStyle}></View>
 
-                  <Text style={styles.orderText}>
-                    [주문 목록]:{"\n\n"}
-                    {order.orders.map((item, index) => (
-                      <View key={item.name} style={styles.menuItemContainer}>
-                        <Text style={styles.menuItemName}>
-                          메뉴명: {item.name}
-                        </Text>
-                        <Text style={styles.menuItemDetail}>
-                          수량: {item.quantity} | 금액:{" "}
-                          {item.price * item.quantity} 원
-                        </Text>
-                      </View>
-                    ))}
-                  </Text>
+                    <Text style={styles.orderText}>
+                      [주문 목록]:{"\n\n"}
+                      {order.orders.map((item, index) => (
+                        <View key={item.name} style={styles.menuItemContainer}>
+                          <Text style={styles.menuItemName}>
+                            메뉴명: {item.name}
+                          </Text>
+                          <Text style={styles.menuItemDetail}>
+                            수량: {item.quantity} | 금액:{" "}
+                            {item.price * item.quantity} 원
+                          </Text>
+                        </View>
+                      ))}
+                    </Text>
 
-                  <View style={styles.lineStyle}></View>
-                  <Text style={styles.orderText}>
-                    총 가격 :{" "}
-                    {order.orders.reduce(
-                      (sum, item) => sum + item.price * item.quantity,
-                      0
-                    )}{" "}
-                    원
-                  </Text>
+                    <View style={styles.lineStyle}></View>
+                    <Text style={styles.orderText}>
+                      총 가격 :{" "}
+                      {order.orders.reduce(
+                        (sum, item) => sum + item.price * item.quantity,
+                        0
+                      )}{" "}
+                      원
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            ))}
+              )
+            )}
+
+            {/* 모달 닫는 부분*/}
             <View style={styles.buttonContainerModal}>
               <TouchableOpacity onPress={closeModal}>
                 <Text style={styles.buttonText}>Close</Text>

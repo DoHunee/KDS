@@ -46,6 +46,55 @@
       "orders": [
         {"name": "Cheesburger", "price": 8000, "quantity" : 1}, 
         {"name": "Hamburger", "price": 7500, "quantity" : 1},
+        {"name": "Coca-Cola", "price": 1500, "quantity" : 2}
+      ]
+      
+    },
+
+    {
+      "id": 4,
+      "name": "김다정",
+      "hp": "010-7894-4456",
+      "title": "Mom's Touch",
+      "title_cd": "0076",
+      "status": "pending",
+      "date": "2024-01-24 15:00:00",
+      "orders": [
+        {"name": "Cheesburger", "price": 8000, "quantity" : 1}, 
+        {"name": "Hamburger", "price": 7500, "quantity" : 3},
+        {"name": "pizza", "price": 8000, "quantity" : 1},
+        {"name": "Coca-Cola", "price": 1500, "quantity" : 2}
+      ]
+      
+    },
+
+    {
+      "id": 5,
+      "name": "이연지",
+      "hp": "010-7894-4456",
+      "title": "Mom's Touch",
+      "title_cd": "0076",
+      "status": "pending",
+      "date": "2024-01-24 17:00:00",
+      "orders": [
+        {"name": "Cheesburger", "price": 8000, "quantity" : 2}, 
+        {"name": "Hamburger", "price": 7500, "quantity" : 2},
+        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}
+      ]
+      
+    },
+
+    {
+      "id": 6,
+      "name": "장도엽",
+      "hp": "010-7894-4456",
+      "title": "Mom's Touch",
+      "title_cd": "0076",
+      "status": "pending",
+      "date": "2024-01-27 17:00:00",
+      "orders": [
+        {"name": "Cheesburger", "price": 8000, "quantity" : 2}, 
+        {"name": "Hamburger", "price": 7500, "quantity" : 2},
         {"name": "Coca-Cola", "price": 1500, "quantity" : 1}
       ]
       
