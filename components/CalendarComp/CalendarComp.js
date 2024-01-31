@@ -246,32 +246,42 @@ const CalendarComp = ({ onPress }) => {
     }
   };
 
-
   // 선택한 날짜에 해당되는 주문 목록 가져오기
-const getOrdersByDate = (status) => {
-  // 해당 상태의 주문 목록 필터링
-  const filteredOrders = completeOrders.filter(
-    (order) => order.status === status
-  );
+  const getOrdersByDate = (status) => {
+    // 해당 상태의 주문 목록 필터링
+    const filteredOrders = completeOrders.filter(
+      (order) => order.status === status
+    );
 
-  // 선택한 날짜에 해당되는 주문 목록만 반환
-  return filteredOrders.filter((order) => {
-    const dateOnly = order.date.split(" ")[0];
-    return dateOnly === selectedDate;
-  });
-};
+    // 선택한 날짜에 해당되는 주문 목록만 반환
+    return filteredOrders.filter((order) => {
+      const dateOnly = order.date.split(" ")[0];
+      return dateOnly === selectedDate;
+    });
+  };
 
   // 버튼 클릭에 대한 처리 함수
-const handleOrderStatusButtonClick = (status) => {
-  if (status === "ready") {
-    setSelectedOrders(getOrdersByDate("fast_ready").concat(getOrdersByDate("ready")));
-    setselecteddeclineOrders([]);
-  } else if (status === "decline") {
-    setSelectedOrders([]);
-    setselecteddeclineOrders(getOrdersByDate("decline"));
-  }
-};
+  const handleOrderStatusButtonClick = (status) => {
+    if (status === "ready") {
+      setSelectedOrders(
+        getOrdersByDate("fast_ready").concat(getOrdersByDate("ready"))
+      );
+      setselecteddeclineOrders([]);
+    } else if (status === "decline") {
+      setSelectedOrders([]);
+      setselecteddeclineOrders(getOrdersByDate("decline"));
+    }
+  };
 
+  // 클릭한 버튼 색 변하게!!
+  const switchButtonStyles = {
+    ready: {
+      backgroundColor: selectedOrders.length > 0 ? "green" : "lightgreen", // 선택된 주문이 있을 때와 없을 때의 배경색을 다르게 설정
+    },
+    decline: {
+      backgroundColor: selecteddeclineOrders.length > 0 ? "red" : "lightcoral", // 선택된 주문이 있을 때와 없을 때의 배경색을 다르게 설정
+    },
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -341,19 +351,23 @@ const handleOrderStatusButtonClick = (status) => {
               <TouchableOpacity
                 onPress={() => handleOrderStatusButtonClick("ready")}
               >
-                <Text style={commonStyles.switchButtonText}>즉시수령/완료</Text>
+                <Text style={commonStyles.switchButton1Text}>
+                  즉시수령,완료
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleOrderStatusButtonClick("decline")}
               >
-                <Text style={commonStyles.switchButtonText}>취소</Text>
+                <Text style={commonStyles.switchButton2Text}>취소목록</Text>
               </TouchableOpacity>
             </View>
 
             {/* 모달창안에 주문내역을 나타내는 부분!! (fast-ready , ready)*/}
-            {/* {selectedOrders.concat(selecteddeclineOrders).map((order) => ( */}
             {selectedOrders.map((order) => (
-              <View key={order.id} style={commonStyles.orderContainer}>
+              <View
+                key={order.id}
+                style={[commonStyles.orderContainer, switchButtonStyles.ready]}
+              >
                 <View style={commonStyles.orderBackground}>
                   <Text style={commonStyles.orderText}>
                     이름: {order.name} [{order.hp}]
@@ -403,7 +417,13 @@ const handleOrderStatusButtonClick = (status) => {
 
             {/* 모달창안에 주문내역을 나타내는 부분!! (decline)*/}
             {selecteddeclineOrders.map((order) => (
-              <View key={order.id} style={commonStyles.orderContainer}>
+              <View
+                key={order.id}
+                style={[
+                  commonStyles.orderContainer,
+                  switchButtonStyles.decline,
+                ]}
+              >
                 <View style={commonStyles.orderBackground}>
                   <Text style={commonStyles.orderText}>
                     이름: {order.name} [{order.hp}]

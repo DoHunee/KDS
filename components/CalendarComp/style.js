@@ -169,22 +169,32 @@ export const commonStyles = StyleSheet.create({
     borderRadius: 10,
   },
 
+
   switchButtonContainerModal: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     marginVertical: 10,
   },
-  switchButtonText: {
+  switchButton1Text: {
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor: "#3498db",
-    marginHorizontal: 5,
+    backgroundColor: "green",
+    marginRight: 10,
   },
-
+  switchButton2Text: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+    paddingHorizontal: 40,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: "lightgreen",
+    marginLeft: 10,
+  },
 });
 
 export default commonStyles;
