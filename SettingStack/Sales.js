@@ -39,7 +39,7 @@ const Salse = () => {
     <View style={styles.container}>
       {isLoggedIn ? (
         <>
-          <EmptyOrders name="Sales" />
+          {/* <EmptyOrders name="Sales" />*/}
           <CalendarComp completeOrders={completeOrders} />
         </>
       ) : null}
