@@ -229,6 +229,8 @@ const CalendarComp = ({ onPress }) => {
         const dateOnly = order.date.split(" ")[0];
         return dateOnly === selectedDate; // selectedDate는 선택한 날짜에 해당합니다.
       });
+
+      // 필터링된 주문 목록 업데이트
       setSelectedOrders(selectedDateOrders);
       setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
       return;
@@ -239,8 +241,27 @@ const CalendarComp = ({ onPress }) => {
     );
 
     if (foundOrder) {
-      setSelectedOrders([foundOrder]);
-      setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
+      // 검색된 주문이 선택한 날짜에 해당하는 경우에만 업데이트
+      if (foundOrder.date.split(" ")[0] === selectedDate) {
+        setSelectedOrders([foundOrder]);
+        setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
+      } else {
+        alert("해당 날짜에 주문을 찾을 수 없습니다.");
+      }
+
+      // 검색된 주문의 상태에 따라 배경 색상 동적으로 설정
+      const backgroundColor = foundOrder.status === "decline" ? "red" : "green";
+
+      // 스타일 수정: switchButtonStyles에 직접 접근하여 변경
+      commonStyles.switchButton1Text = {
+        ...commonStyles.switchButton1Text,
+        backgroundColor:
+          foundOrder.status === "ready" ? backgroundColor : "green",
+      };
+      commonStyles.switchButton2Text = {
+        ...commonStyles.switchButton2Text,
+        backgroundColor: foundOrder.status === "decline" ? "red" : "lightcoral",
+      };
     } else {
       alert("주문을 찾을 수 없습니다.");
     }

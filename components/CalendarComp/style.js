@@ -176,7 +176,7 @@ export const commonStyles = StyleSheet.create({
     marginVertical: 10,
   },
   switchButton1Text: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: "white",
     paddingHorizontal: 40,
@@ -192,7 +192,7 @@ export const commonStyles = StyleSheet.create({
     paddingHorizontal: 40,
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor: "lightgreen",
+    backgroundColor: "red",
     marginLeft: 10,
   },
 });
