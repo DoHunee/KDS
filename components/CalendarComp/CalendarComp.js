@@ -387,7 +387,19 @@ const CalendarComp = ({ onPress }) => {
             {selectedOrders.map((order) => (
               <View
                 key={order.id}
-                style={[commonStyles.orderContainer, switchButtonStyles.ready]}
+                style={[
+                  commonStyles.orderContainer,
+                  switchButtonStyles.ready,
+                  {
+                    // 추가 시작: 주문 상태에 따라 배경 색 변경
+                    backgroundColor:
+                      order.id.toString() === searchOrder &&
+                      order.status === "decline"
+                        ? "red"
+                        : "green",
+                    // 추가 끝
+                  },
+                ]}
               >
                 <View style={commonStyles.orderBackground}>
                   <Text style={commonStyles.orderText}>
