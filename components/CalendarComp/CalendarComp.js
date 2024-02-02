@@ -65,18 +65,18 @@ const CalendarComp = ({ onPress }) => {
   );
   const [markedDates, setMarkedDates] = useState({});
 
-  const [selectedOrders, setSelectedOrders] = useState([]); //선택한날의 주문완료,즉시수령 주문목록
-  const [selecteddeclineOrders, setselecteddeclineOrders] = useState([]); //선택한날의 취소처리 주문목록
-  const [selectedMonthOrders, setselectedMonthOrders] = useState([]); //선택한날이 포함되는 월에 해당되는 주문목록
+  const [selectedOrders, setSelectedOrders] = useState([]); //선택한날짜의 모든 주문 목록
+  const [selecteddeclineOrders, setselecteddeclineOrders] = useState([]); //선택한날짜의 취소처리 주문목록
+  const [selectedMonthOrders, setselectedMonthOrders] = useState([]); //선택한날짜가 속한 월에 해당되는 주문목록
 
-  const [seletedtotalSales, setseletedtotalSales] = useState(0); // 총 판매 금액 상태 추가
-  const [selectedMonthSales, setSelectedMonthSales] = useState(0);
-  const [selecteddeclineSales, setselecteddeclineSales] = useState(0);
+  const [seletedtotalSales, setseletedtotalSales] = useState(0); // 선택한 날짜에 대한 전체 판매 금액을 나타내는 변수입니다.
+  const [selectedMonthSales, setSelectedMonthSales] = useState(0); // 선택한 월에 대한 전체 판매 금액을 나타내는 변수입니다.
+  const [selecteddeclineSales, setselecteddeclineSales] = useState(0); //선택한 날짜에 대한 전체 주문 취소 금액을 나타내는 변수입니다.
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const scrollViewRef = useRef(null); // scrollViewRef를 선언 및 초기화
-  const [searchOrder, setSearchOrder] = useState(""); // 추가: 주문 번호 검색 상태값
-  const [selectedDate, setSelectedDate] = useState(""); // 이제 selectedDate를 상태로 관리합니다.
+  const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
+  const scrollViewRef = useRef(null); // 스크롤 위치를 조작할 때 사용됩니다.
+  const [searchOrder, setSearchOrder] = useState(""); // 주문 번호 검색 상태값으로, 주문 번호를 검색하는데 사용됩니다
+  const [selectedDate, setSelectedDate] = useState(""); // 선택한 날짜를 나타내는 변수
 
   // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
   const readyOrders = completeOrders.filter(
@@ -232,7 +232,7 @@ const CalendarComp = ({ onPress }) => {
 
       // 필터링된 주문 목록 업데이트
       setSelectedOrders(selectedDateOrders);
-      setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
+      setselecteddeclineOrders([]); // 취소된 주문 목록을 초기화 하여 다음 검색때 중복된 값이 안나오게!!
       return;
     }
 
@@ -244,26 +244,10 @@ const CalendarComp = ({ onPress }) => {
       // 검색된 주문이 선택한 날짜에 해당하는 경우에만 업데이트
       if (foundOrder.date.split(" ")[0] === selectedDate) {
         setSelectedOrders([foundOrder]);
-        setselecteddeclineOrders([]); // 이 부분이 있어야 검색한 목록만 나옵니다!
+        setselecteddeclineOrders([]);
       } else {
-        alert("해당 날짜에 주문을 찾을 수 없습니다.");
+        alert("주문을 찾을 수 없습니다.");
       }
-
-      // 검색된 주문의 상태에 따라 배경 색상 동적으로 설정
-      const backgroundColor = foundOrder.status === "decline" ? "red" : "green";
-
-      // 스타일 수정: switchButtonStyles에 직접 접근하여 변경
-      commonStyles.switchButton1Text = {
-        ...commonStyles.switchButton1Text,
-        backgroundColor:
-          foundOrder.status === "ready" ? backgroundColor : "green",
-      };
-      commonStyles.switchButton2Text = {
-        ...commonStyles.switchButton2Text,
-        backgroundColor: foundOrder.status === "decline" ? "red" : "lightcoral",
-      };
-    } else {
-      alert("주문을 찾을 수 없습니다.");
     }
   };
 
@@ -292,16 +276,6 @@ const CalendarComp = ({ onPress }) => {
       setSelectedOrders([]);
       setselecteddeclineOrders(getOrdersByDate("decline"));
     }
-  };
-
-  // 클릭한 버튼 색 변하게!!
-  const switchButtonStyles = {
-    ready: {
-      backgroundColor: selectedOrders.length > 0 ? "green" : "lightgreen", // 선택된 주문이 있을 때와 없을 때의 배경색을 다르게 설정
-    },
-    decline: {
-      backgroundColor: selecteddeclineOrders.length > 0 ? "red" : "lightcoral", // 선택된 주문이 있을 때와 없을 때의 배경색을 다르게 설정
-    },
   };
 
   return (
@@ -383,78 +357,22 @@ const CalendarComp = ({ onPress }) => {
               </TouchableOpacity>
             </View>
 
-            {/* 모달창안에 주문내역을 나타내는 부분!! (fast-ready , ready)*/}
-            {selectedOrders.map((order) => (
+            {/* 모달창안에 주문내역을 나타내는 부분!! */}
+            {selectedOrders.concat(selecteddeclineOrders).map((order) => (
               <View
                 key={order.id}
+                //  주문내역 배경을 설정하는 부분!!
                 style={[
                   commonStyles.orderContainer,
-                  switchButtonStyles.ready,
                   {
-                    // 추가 시작: 주문 상태에 따라 배경 색 변경
                     backgroundColor:
-                      order.id.toString() === searchOrder &&
                       order.status === "decline"
                         ? "red"
-                        : "green",
-                    // 추가 끝
+                        : order.status === "ready" ||
+                          order.status === "fast_ready"
+                        ? "green"
+                        : "lightgreen",
                   },
-                ]}
-              >
-                <View style={commonStyles.orderBackground}>
-                  <Text style={commonStyles.orderText}>
-                    이름: {order.name} [{order.hp}]
-                  </Text>
-                  <View style={commonStyles.lineStyle}></View>
-                  <Text style={commonStyles.orderText}>
-                    주문번호 : {order.id}{" "}
-                  </Text>
-                  <Text style={commonStyles.orderText}>
-                    판매시간 : {order.date}{" "}
-                  </Text>
-                  <Text style={commonStyles.orderText}>
-                    주문상태 : {order.status}{" "}
-                  </Text>
-                  <View style={commonStyles.lineStyle}></View>
-
-                  <Text style={commonStyles.orderText}>
-                    [주문 목록]:{"\n\n"}
-                    {order.orders.map((item, index) => (
-                      <View
-                        key={item.name}
-                        style={commonStyles.menuItemContainer}
-                      >
-                        <Text style={commonStyles.menuItemName}>
-                          메뉴명: {item.name}
-                        </Text>
-                        <Text style={commonStyles.menuItemDetail}>
-                          수량: {item.quantity} | 금액:{" "}
-                          {item.price * item.quantity} 원
-                        </Text>
-                      </View>
-                    ))}
-                  </Text>
-
-                  <View style={commonStyles.lineStyle}></View>
-                  <Text style={commonStyles.orderText}>
-                    총 가격 :{" "}
-                    {order.orders.reduce(
-                      (sum, item) => sum + item.price * item.quantity,
-                      0
-                    )}{" "}
-                    원
-                  </Text>
-                </View>
-              </View>
-            ))}
-
-            {/* 모달창안에 주문내역을 나타내는 부분!! (decline)*/}
-            {selecteddeclineOrders.map((order) => (
-              <View
-                key={order.id}
-                style={[
-                  commonStyles.orderContainer,
-                  switchButtonStyles.decline,
                 ]}
               >
                 <View style={commonStyles.orderBackground}>
@@ -520,6 +438,7 @@ const CalendarComp = ({ onPress }) => {
             >
               <Ionicons name="arrow-up" size={24} color="white" />
             </TouchableOpacity>
+
             {/* 아래로 이동하는 버튼 */}
             <TouchableOpacity
               style={commonStyles.scrollToBottomButton}
