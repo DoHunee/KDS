@@ -233,28 +233,46 @@ const CalendarComp = ({ onPress }) => {
         const dateOnly = order.date.split(" ")[0];
         return dateOnly === selectedDate; // selectedDate는 선택한 날짜에 해당합니다.
       });
-
+  
       // 필터링된 주문 목록 업데이트
       setSelectedOrders(selectedDateOrders);
       setselecteddeclineOrders([]); // 취소된 주문 목록을 초기화 하여 다음 검색때 중복된 값이 안나오게!!
+  
+      // 버튼 투명도 설정
+      setReadyButtonTranslucent(false);
+      setDeclineButtonTranslucent(false);
+  
       return;
     }
-
+  
     const foundOrder = completeOrders.find(
       (order) => order.id.toString() === searchOrder
     );
-
+  
     if (foundOrder) {
       // 검색된 주문이 선택한 날짜에 해당하는 경우에만 업데이트
       if (foundOrder.date.split(" ")[0] === selectedDate) {
         setSelectedOrders([foundOrder]);
         setselecteddeclineOrders([]);
+  
+        // 버튼 투명도 설정
+        if (foundOrder.status === "ready" || foundOrder.status === "fast_ready") {
+          setReadyButtonTranslucent(false);
+          setDeclineButtonTranslucent(true);
+        } else if (foundOrder.status === "decline") {
+          setReadyButtonTranslucent(true);
+          setDeclineButtonTranslucent(false);
+        }
       } else {
         alert("주문을 찾을 수 없습니다.");
       }
     } else {
       // 검색된 주문이 없는 경우 알림 표시
       alert("주문을 찾을 수 없습니다.");
+  
+      // 버튼 투명도 초기화
+      setReadyButtonTranslucent(false);
+      setDeclineButtonTranslucent(false);
     }
   };
 
