@@ -321,7 +321,6 @@ const CalendarComp = ({ onPress }) => {
             {"              "}
             {selecteddeclineSales} 원
           </Text>
-          <View style={commonStyles.lineStyle}></View>
           <Text style={commonStyles.monthlySalesText}>
             ■ 당월매출금액({selectedMonthOrders.length}건):{"              "}
             {selectedMonthSales} 원

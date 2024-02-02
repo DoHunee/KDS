@@ -16,12 +16,13 @@ const OrderCard = ({
   id,
   onPress,
   buttons,
+  date
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0);  // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
   const handleOnPress = (data) => {
     onPress({ action: data, id: id });
   };
-  // let tempOrder = ["Cheesburger", "Hamburger", "Coca-Cola", "Pizza"];
+  const formattedTime = new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     
 
@@ -49,8 +50,6 @@ const OrderCard = ({
       }, 1000);
       return () => clearInterval(timeout);
   }, [timeElapse]);
-
-    
 
 
   let topLeft  // 각 주문카드 왼쪽 상단에 뜨는 친구
@@ -123,6 +122,7 @@ const OrderCard = ({
       <View style={styles.namePhone}>
         <View>
           <Text style={styles.text}>{name} 【{hp}】</Text>
+          <Text>{formattedTime}</Text>
         </View>
         <View>
           <Text style={styles.orderText}>
