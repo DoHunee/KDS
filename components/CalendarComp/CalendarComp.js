@@ -78,6 +78,10 @@ const CalendarComp = ({ onPress }) => {
   const [searchOrder, setSearchOrder] = useState(""); // 주문 번호 검색 상태값으로, 주문 번호를 검색하는데 사용됩니다
   const [selectedDate, setSelectedDate] = useState(""); // 선택한 날짜를 나타내는 변수
 
+  const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
+  const [declineButtonTranslucent, setDeclineButtonTranslucent] =
+    useState(false);
+
   // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
   const readyOrders = completeOrders.filter(
     (order) => order.status === "fast_ready" || order.status === "ready"
@@ -248,6 +252,9 @@ const CalendarComp = ({ onPress }) => {
       } else {
         alert("주문을 찾을 수 없습니다.");
       }
+    } else {
+      // 검색된 주문이 없는 경우 알림 표시
+      alert("주문을 찾을 수 없습니다.");
     }
   };
 
@@ -265,16 +272,20 @@ const CalendarComp = ({ onPress }) => {
     });
   };
 
-  // 버튼 클릭에 대한 처리 함수
+  // 모달창 status 필터링 버튼 클릭에 대한 처리 함수
   const handleOrderStatusButtonClick = (status) => {
     if (status === "ready") {
       setSelectedOrders(
         getOrdersByDate("fast_ready").concat(getOrdersByDate("ready"))
       );
       setselecteddeclineOrders([]);
+      setDeclineButtonTranslucent(true); // "취소목록" 버튼을 투명하게 만듭니다.
+      setReadyButtonTranslucent(false); // "즉시수령,완료" 버튼의 투명도를 다시 1로 변경합니다.
     } else if (status === "decline") {
       setSelectedOrders([]);
       setselecteddeclineOrders(getOrdersByDate("decline"));
+      setReadyButtonTranslucent(true); // "즉시수령,완료" 버튼을 투명하게 만듭니다.
+      setDeclineButtonTranslucent(false); // "취소목록" 버튼의 투명도를 다시 1로 변경합니다.
     }
   };
 
@@ -345,13 +356,22 @@ const CalendarComp = ({ onPress }) => {
             <View style={commonStyles.switchButtonContainerModal}>
               <TouchableOpacity
                 onPress={() => handleOrderStatusButtonClick("ready")}
+                style={[
+                  commonStyles.switchButton1Text,
+                  readyButtonTranslucent && { opacity: 0.5 }, // 버튼이 투명할 때의 스타일
+                ]}
               >
                 <Text style={commonStyles.switchButton1Text}>
                   즉시수령,완료
                 </Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => handleOrderStatusButtonClick("decline")}
+                style={[
+                  commonStyles.switchButton2Text,
+                  declineButtonTranslucent && { opacity: 0.5 }, // 버튼이 투명할 때의 스타일
+                ]}
               >
                 <Text style={commonStyles.switchButton2Text}>취소목록</Text>
               </TouchableOpacity>
