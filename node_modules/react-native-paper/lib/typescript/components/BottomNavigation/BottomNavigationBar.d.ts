@@ -198,6 +198,7 @@ export declare type Props<Route extends BaseRoute> = {
  * import React from 'react';
  * import { View, StyleSheet } from 'react-native';
  *
+ * import { CommonActions } from '@react-navigation/native';
  * import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
  * import { Text, BottomNavigation } from 'react-native-paper';
  * import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
