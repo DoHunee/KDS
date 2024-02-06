@@ -56,7 +56,7 @@ LocaleConfig.locales["ko"] = {
 };
 LocaleConfig.defaultLocale = "ko"; // set default language
 
-const Salse = () => {
+const Sales = () => {
   // // useEffect를 사용하여 completeOrders의 변경을 계속 확인
   // useEffect(() => {
   //   if (completeOrders && completeOrders.length > 0) {
@@ -369,4 +369,4 @@ const Salse = () => {
   );
 };
 
-export default Salse;
+export default Sales;

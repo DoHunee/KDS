@@ -73,7 +73,6 @@ const Orders = ({ navigation }) => {
       // console.log("거절 이유 추가: " + reason);
     }
   };
-  
 
     //모달창 => 거절사유 띄울때!!
   const toggleModal = () => {
@@ -91,8 +90,6 @@ const Orders = ({ navigation }) => {
     }
   };
 
-   
-
   // 주문 모두승인
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
@@ -104,7 +101,7 @@ const Orders = ({ navigation }) => {
   //isLoggined = false일때 로그인하세요!!
   useEffect(() => {
     if (!isLoggedIn) {
-      Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+      // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
 

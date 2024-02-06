@@ -37,7 +37,7 @@ const Current = ({ navigation }) => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+      // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
 
