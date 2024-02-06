@@ -2,7 +2,6 @@
 // 주문 카드 나타내주는 칸!
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import colors from "../refs/colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Button from "./Button";
 
@@ -37,7 +36,7 @@ const OrderCard = ({
     <MaterialCommunityIcons
       style={[styles.timerText, { color: dynamicChange.color }]}
       name="truck-fast"
-      color={colors.white}
+      color="white"
       size={26}
     />
   );
@@ -195,7 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   orderText: {
-    color: colors.lightBlack,
+    color: "#111",
     fontSize: 20,
     fontWeight: "bold",
   },

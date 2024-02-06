@@ -1,7 +1,6 @@
 // Length.js
 import React from "react";
 import { Text, View, StyleSheet, Platform, StatusBar } from "react-native";
-import colors from "../refs/colors";
 
 const Length = ({ length }) => {
   return (

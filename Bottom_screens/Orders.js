@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FlatList, View, StyleSheet, SafeAreaView, Text, TouchableOpacity, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
-import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../RightUpBar/OrdersNumbers";
@@ -10,11 +9,6 @@ import { handlePending, onConfirm, onDecline, onSales, onImmediateReceipt } from
 
 // 상수 정의
 const REASONS = ["재료소진", "품절", "딴거 드셈"];
-const BUTTON_COLORS = {
-  primary: colors.primary,
-  secondary: colors.secondary,
-};
-
 
 const Orders = ({ navigation }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -147,7 +141,7 @@ const Orders = ({ navigation }) => {
                   style={[
                     styles.reasonButton,
                     {
-                      backgroundColor: selectedReasons.includes(item) ? BUTTON_COLORS.secondary : BUTTON_COLORS.primary,
+                      backgroundColor: selectedReasons.includes(item) ? "#694fad" : "#AFA8BA",
                     },
                   ]}
                   onPress={() => toggleSelectedReason(item)}  // 거절사유 선택하는 부분!!!
@@ -171,7 +165,7 @@ const Orders = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: "#AFA8BA" 
   },
   modalContainer: {
     backgroundColor: "white",
@@ -182,7 +176,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0, 0, 0, 0.1)",
   },
   button: {
-    backgroundColor: BUTTON_COLORS.secondary,
+    backgroundColor: "#694fad",
     padding: 10,
     marginTop: 10,
     borderRadius: 4,
@@ -192,7 +186,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   reasonButton: {
-    backgroundColor: BUTTON_COLORS.primary,
+    backgroundColor: "#AFA8BA",
     padding: 10,
     marginVertical: 5,
     borderRadius: 4,

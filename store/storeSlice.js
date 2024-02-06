@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import getTimePassedSec from "../refs/getTime";
 import data from "../assets/data/orders.json";
-import { Alert } from "react-native";
 
 // 초기 상태 정의
 const initialState = {

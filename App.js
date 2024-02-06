@@ -1,14 +1,11 @@
 import React from "react";
-
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text } from "react-native"; // View, Text 추가
+import { StyleSheet } from "react-native"; // View, Text 추가
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { AuthProvider, useAuth } from "./AuthContext"; // AuthProvider 추가
-import colors from "./refs/colors"; // colors 추가
 
 import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";
@@ -22,8 +19,6 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer independent={true}>
         <AuthProvider>
-          <StatusBar style="white" />
-
           {/* Color when clicking on the bottom tab navigator */}
           <Tab.Navigator
             initialRouteName="SettingStack"
@@ -37,7 +32,7 @@ export default function App() {
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
                     name="account-cog-outline"
-                    color={focused ? colors.secondary : color}
+                    color="black"
                     size={26}
                   />
                 ),
@@ -51,7 +46,7 @@ export default function App() {
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
                     name="clipboard-list-outline"
-                    color={focused ? colors.secondary : color}
+                    color="black"
                     size={26}
                   />
                 ),
@@ -66,7 +61,7 @@ export default function App() {
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
                     name="bell-ring-outline"
-                    color={focused ? colors.secondary : color}
+                    color="black"
                     size={26}
                   />
                 ),
@@ -81,7 +76,7 @@ export default function App() {
                 tabBarIcon: ({ color, focused }) => (
                   <MaterialCommunityIcons
                     name="checkbox-marked-circle-outline"
-                    color={focused ? colors.secondary : color}
+                    color="black"
                     size={26}
                   />
                 ),
@@ -99,7 +94,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },

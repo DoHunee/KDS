@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, StatusBar, FlatList } from "react-native";
-import colors from "../refs/colors";
 
 const Stock = () => {
   // 메뉴 데이터 초기화
@@ -72,11 +71,12 @@ const Stock = () => {
       );
     };
 
+    // 여기서 색 변환 다 되는거야!!
     const renderItem = ({ item }) => (
       <View
         style={[
           styles.menuItem,
-          { borderColor: item.isSoldOut ? "red" : "#ccc" },
+          { borderColor: item.isSoldOut ? "red" : "skyblue" },
         ]}
       >
         <Text
@@ -89,6 +89,7 @@ const Stock = () => {
         </Text>
         <Button
           title={item.isSoldOut ? "품절" : "판매중"}
+          color={item.isSoldOut ? "red" : "blue"}
           onPress={() => confirmSoldOut(item.name, item.isSoldOut)}
         />
       </View>
@@ -96,7 +97,6 @@ const Stock = () => {
 
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
         {isLoggedIn ? (
           <FlatList
             data={menuData.Menu}
@@ -112,8 +112,6 @@ const Stock = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.primary,
-      paddingTop: StatusBar.currentHeight || 0, // 상태 표시줄 고려한 paddingTop 추가
     },
 
     listContainer: {
@@ -128,15 +126,12 @@ const Stock = () => {
       alignItems: "center",
       padding: 15, // 여백을 더 늘렸습니다
       borderBottomWidth: 2, // 더 굵은 하단 경계선으로 변경했습니다
-      borderBottomColor: colors.secondary, // 다양한 색상을 활용했습니다
-      backgroundColor: colors.lightBackground, // 밝은 배경색을 추가했습니다
       borderRadius: 10, // 둥근 모서리를 추가했습니다
       marginVertical: 5, // 수직 마진을 추가하여 항목 간격을 더 조절했습니다
     },
     menuName: {
       fontSize: 18, // 폰트 크기를 더 크게 조절했습니다
       fontWeight: "bold", // 굵은 폰트로 변경했습니다
-      color: colors.darkText, // 어두운 텍스트 색상을 적용했습니다
     },
   });
 

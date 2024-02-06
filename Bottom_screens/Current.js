@@ -1,17 +1,10 @@
 import {
-  FlatList,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
   Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import OrderCard from "../components/OrderCard";
-import colors from "../refs/colors";
 import OrderList from "../components/OrderList";
 import { useDispatch, useSelector } from "react-redux";
 import { onReady , onCancel } from "../store/storeSlice";
@@ -77,7 +70,7 @@ const Current = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: "#AFA8BA",
   },
 });
 

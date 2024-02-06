@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StatusBar} from "expo-status-bar";
 import Sales from "./Sales";
-import colors from "../refs/colors"; // colors 추가
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ManagerStack from "./ManagerStack/ManagerStack";
@@ -18,7 +17,7 @@ const Tab = createMaterialTopTabNavigator();
 const SettingTabs = () => {
   return (
     <>
-    <StatusBar hidden />
+    <StatusBar hidden />  
     <Tab.Navigator
       initialRouteName="사용자"
       activeColor={"black"} //selected icon
@@ -31,7 +30,7 @@ const SettingTabs = () => {
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name="account"
-              color={focused ? colors.secondary : color}
+              color="black"
               size={26}
             />
           ),
@@ -46,7 +45,7 @@ const SettingTabs = () => {
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name="basket-off-outline"
-              color={focused ? colors.secondary : color}
+              color="black"
               size={26}
             />
           ),
@@ -61,7 +60,7 @@ const SettingTabs = () => {
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name="timetable"
-              color={focused ? colors.secondary : color}
+              color="black"
               size={26}
             />
           ),
@@ -76,7 +75,7 @@ const SettingTabs = () => {
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name="account-lock"
-              color={focused ? colors.secondary : color}
+              color="black"
               size={26}
             />
           ),
