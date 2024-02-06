@@ -9,7 +9,6 @@ export const commonStyles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height, // 모달이 올라올 때 화면 전체를 꽉 채우도록 설정
     top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
-
   },
 
   selectedDateInfoContainer: {
