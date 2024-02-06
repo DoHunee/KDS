@@ -21,8 +21,10 @@ const OrderCard = ({
   const handleOnPress = (data) => {
     onPress({ action: data, id: id });
   };
-  const formattedTime = new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+  const formattedDate = new Date(date).toLocaleDateString([], { month: '2-digit', day: '2-digit'  });
+  const formattedTime = new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
     
 
   // 배달 시간 나타내주는 네모 창 => 계속 변하는 친구!!!
@@ -121,6 +123,7 @@ const OrderCard = ({
       <View style={styles.namePhone}>
         <View>
           <Text style={styles.text}>{name} 【{hp}】</Text>
+          <Text>{formattedDate}</Text>
           <Text>{formattedTime}</Text>
         </View>
         <View>
