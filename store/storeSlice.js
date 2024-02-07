@@ -16,7 +16,7 @@ const globalState = {
 };
 
 // Redux slice 생성
-export const OrdersDistrubutionSclie = createSlice({
+export const OrdersDistrubutionSlice = createSlice({
   name: "ordersDistribution",
   initialState: { ...initialState, ...globalState },
   // initialState,
@@ -46,16 +46,25 @@ export const OrdersDistrubutionSclie = createSlice({
     // "Decline "주문을 거절하고 대기 중 목록에서 제거  state = decline
     onDecline: (state, action) => {
       const orders = state.pending;
-      const immediateReceiptOrder = orders?.find(
-        (item) => item.id === action.payload.id
-      );
+      const declineOrder = orders?.find((item) => item.id === action.payload.id);
 
-      immediateReceiptOrder.status = "decline";
+       // 거절 사유를 받아옴
+       const declineReason = action.payload?.declineReason;
 
-      immediateReceiptOrder.completeTime = getTimePassedSec();
-      immediateReceiptOrder.orderNumber = state.complete.length + 1;
+      // 취소 사유에 따라 상태 설정
+      if (
+        declineReason === "재료소진" ||
+        declineReason === "품절"
+      ) {
+        declineOrder.status = "decline";
+      }
+      declineOrder.cancelTime = getTimePassedSec();
+      declineOrder.orderNumber = state.complete.length + 1;
+      
+      // 취소 사유 저장
+      declineOrder.declineReason = declineReason;
 
-      state.complete = [...state.complete, immediateReceiptOrder];
+      state.complete = [...state.complete, declineOrder];
       state.pending = state.pending.filter(
         (item) => item.id !== action.payload.id
       );
@@ -135,8 +144,8 @@ export const {
   onDecline,
   onImmediateReceipt,
   onReady,
-  onCancel,
-} = OrdersDistrubutionSclie.actions;
+  onCancel
+} = OrdersDistrubutionSlice.actions;
 
 // Reducer를 내보냄
-export default OrdersDistrubutionSclie.reducer;
+export default OrdersDistrubutionSlice.reducer;

@@ -38,6 +38,7 @@ const Stock = () => {
     }
   }, [isLoggedIn]);
 
+  
   const StockScreen = () => {
     const [menuData, setMenuData] = useState(MENU_DATA);
 
@@ -45,7 +46,9 @@ const Stock = () => {
     const confirmSoldOut = (menuName, isSoldOut) => {
       Alert.alert(
         "확인",
-        `'${menuName}'을(를) 판매 중지하시겠습니까?`,
+        isSoldOut
+        ? `'${menuName}'을(를) 다시 판매하시겠습니까?`
+        : `'${menuName}'을(를) 판매 중지하시겠습니까?`,
         [
           {
             text: "취소",

@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Button from "./Button";
 
-
 const OrderCard = ({
   name,
   hp,
@@ -15,17 +14,23 @@ const OrderCard = ({
   id,
   onPress,
   buttons,
-  date
+  date,
 }) => {
-  const [timeElapse, setTimeElapsed] = useState(0);  // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
-  const handleOnPress = (data) => {
-    onPress({ action: data, id: id });
-  };
+  const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
+  const handleOnPress = (data) => {onPress({ action: data, id: id });};
 
-  const formattedDate = new Date(date).toLocaleDateString([], { month: '2-digit', day: '2-digit'  });
-  const formattedTime = new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
-    
+
+  //날짜
+  const formattedDate = new Date(date).toLocaleDateString([], {
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  //시간
+  const formattedTime = new Date(date).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   // 배달 시간 나타내주는 네모 창 => 계속 변하는 친구!!!
   let dynamicChange = {
@@ -43,60 +48,56 @@ const OrderCard = ({
     />
   );
 
-
-    // timeElapse1초씩 경과시간 갱신
+  // timeElapse 1초씩 경과시간 갱신
   useEffect(() => {
-      let timeout = setInterval(() => {
-        setTimeElapsed(timeElapse + 1);
-      }, 1000);
-      return () => clearInterval(timeout);
+    let timeout = setInterval(() => {
+      setTimeElapsed(timeElapse + 1);
+    }, 1000);
+    return () => clearInterval(timeout);
   }, [timeElapse]);
 
+  let topLeft; // 각 주문카드 왼쪽 상단에 뜨는 친구
 
-  let topLeft  // 각 주문카드 왼쪽 상단에 뜨는 친구
-
-  // "주문대기중" 
+  // "주문대기중"
   if (status === "pending") {
-    topLeft ="주문 대기중";
+    topLeft = "주문 대기중";
   }
-    
+
   // "경과 시간 : n분 m초 ""
   else if (status === "preparing") {
-    
     const elapsedMinutes = Math.floor(timeElapse / 60); // 분 단위
     const elapsedSeconds = Math.round(timeElapse) % 60; // 초 단
     // 경과 시간에 따라 텍스트 생성
     topLeft = `경과시간: ${
-      timeElapse < 60 ? `${elapsedSeconds} 초` : `${elapsedMinutes} 분 ${elapsedSeconds} 초`
+      timeElapse < 60
+        ? `${elapsedSeconds} 초`
+        : `${elapsedMinutes} 분 ${elapsedSeconds} 초`
     }`;
-  } 
+  }
 
-  // "즉시수령" Pink 
-    else if (status === "fast_ready") {
-      dynamicChange.backgroundColor = "lightgreen";
-      topLeft = "즉시수령";
-    } 
- 
+  // "즉시수령" Pink
+  else if (status === "fast_ready") {
+    dynamicChange.backgroundColor = "lightgreen";
+    topLeft = "즉시수령";
+  }
+
   // "주문처리완료" 됐으면 Green
   else if (status === "ready") {
     dynamicChange.backgroundColor = "green";
-    topLeft = "주문처리완료"    
+    topLeft = "주문처리완료";
   }
-  
-   // "취소처리" 
-   else if (status === "decline") {
+
+  // "거절처리"
+  else if (status === "decline") {
     dynamicChange.backgroundColor = "pink";
-    topLeft = "거절처리";
+    topLeft = "거절처리_"  // 거절 사유를 topLeft에 추가
   } 
-
-
+  
+  // 취소처리
   else if (status === "cancel") {
     dynamicChange.backgroundColor = "red";
-    topLeft = "취소처리"    
-  } 
-
-
-
+    topLeft = "취소처리";
+  }
 
   return (
     <View style={styles.container}>
@@ -115,20 +116,20 @@ const OrderCard = ({
           ]}
         >
           <Text style={[styles.timerText, { color: dynamicChange.color }]}>
-          {topLeft}
+            {topLeft}
           </Text>
           {timerIcon}
         </TouchableOpacity>
       </View>
-
-    
 
       {/* orderNumber가 존재하는 경우, 문자열 "#00"과 orderNumber를 결합하여 반환합니다.
       orderNumber가 존재하지 않는 경우, 문자열 "#000"을 반환합니다
       */}
       <View style={styles.namePhone}>
         <View>
-          <Text style={styles.text}>{name} 【{hp}】</Text>
+          <Text style={styles.text}>
+            {name} 【{hp}】
+          </Text>
           <Text>{formattedDate}</Text>
           <Text>{formattedTime}</Text>
         </View>
@@ -142,7 +143,10 @@ const OrderCard = ({
         {orders.map((order, index) => {
           return (
             <View style={styles.orderItem} key={index}>
-              <Text style={{ color: "black" }}> ▶ {order.name}  :  {order.quantity}</Text>  
+              <Text style={{ color: "black" }}>
+                {" "}
+                ▶ {order.name} : {order.quantity}
+              </Text>
             </View>
           );
         })}
@@ -166,15 +170,12 @@ const OrderCard = ({
   );
 };
 
-
-export default OrderCard;
-
 const styles = StyleSheet.create({
   container: {
     padding: 15,
     marginHorizontal: 15,
     marginVertical: 10,
-    backgroundColor:  "white",
+    backgroundColor: "white",
     borderRadius: 20,
   },
   timer: {
@@ -223,3 +224,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default OrderCard;
+

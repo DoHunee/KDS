@@ -234,7 +234,12 @@ const Sales = () => {
         } else if (foundOrder.status === "cancel") {
           setReadyButtonTranslucent(true);
           setDeclineButtonTranslucent(false);
+        }else if (foundOrder.status === "decline") {
+          // 주문이 거절 상태인 경우 모든 버튼을 투명하게 만듭니다.
+          setReadyButtonTranslucent(true);
+          setDeclineButtonTranslucent(true);
         }
+        
       } else {
         alert("주문을 찾을 수 없습니다.");
       }
