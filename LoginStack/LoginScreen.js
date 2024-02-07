@@ -16,7 +16,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
 import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
-import LoginForm from './LoginFormComponents/LoginForm';
+import LoginForm from "./LoginFormComponents/LoginForm";
+import { WebSocket } from "react-native-websocket"; // WebSocket 라이브러리 추가
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -36,8 +37,6 @@ const LoginScreen = ({ navigation, route }) => {
 
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
-  const categoryNumberRef = useRef();
-  const employeeIDRef = useRef();
 
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
@@ -54,7 +53,6 @@ const LoginScreen = ({ navigation, route }) => {
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
-    const enteredNumber = storedNumberString + categoryNumber + employeeID;
 
     return (
       storedNumberString === storedNumberExample &&
@@ -89,6 +87,9 @@ const LoginScreen = ({ navigation, route }) => {
       dispatch(login()); // 전역으로 업데이트
       setIsLoggedIn(true); // 로컬로 업데이트
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
+
+      // 추가: 로그인 성공 시 웹소켓으로 메시지 전송
+      sendMessage();
 
       // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
@@ -193,16 +194,36 @@ const LoginScreen = ({ navigation, route }) => {
     Keyboard.dismiss();
   };
 
+  // 웹소켓 연결 및 메시지 전송 함수
+  const sendMessage = () => {
+    const ws = new WebSocket("ws://서버주소");
+
+    ws.onopen = () => {
+      console.log("웹소켓 연결 성공");
+      // 로그인 성공 메시지 전송
+      const message = {
+        type: "login",
+        success: true,
+        // 추가적인 데이터 필요 시 여기에 추가
+      };
+      ws.send(JSON.stringify(message));
+    };
+
+    ws.onerror = (error) => {
+      console.error("웹소켓 오류:", error);
+    };
+  };
+
   // Return 부분
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
         <View style={styles.container}>
           <Text style={styles.title}>🚀 OPen 🚀</Text>
-  
+
           {isLoggedIn ? (
             // 로그인 후 화면
             <View>
@@ -229,20 +250,20 @@ const LoginScreen = ({ navigation, route }) => {
                 employeeID={employeeID}
                 setEmployeeID={setEmployeeID}
               />
-  
+
               {/* 추가 입력란들 및 예시 값 */}
               <Text
                 style={{
-                  color: 'gray',
+                  color: "gray",
                   fontSize: 14,
-                  alignSelf: 'center',
+                  alignSelf: "center",
                   marginTop: 10,
                 }}
               >
-                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{' '}
+                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{" "}
                 {storedEmployeeIDExample}
               </Text>
-  
+
               {/* 로그인 버튼 */}
               <TouchableOpacity
                 style={styles.loginButton}
@@ -256,7 +277,7 @@ const LoginScreen = ({ navigation, route }) => {
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
