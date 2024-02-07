@@ -1,18 +1,12 @@
 // Sales.js
 import React, { useEffect, useState, useRef } from "react";
-import {
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { ScrollView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useSelector } from "react-redux";
 import commonStyles from "../components/Sales/style";
 
 import ModalComp from "../components/Sales/ModalComp";
 import SalesComp from "../components/Sales/SalesComp";
 import CalendarComp from "../components/Sales/CalendarComp";
-
-
 
 const Sales = () => {
   // // useEffect를 사용하여 completeOrders의 변경을 계속 확인
@@ -47,9 +41,17 @@ const Sales = () => {
 
   const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
-  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
-  const readyOrders = completeOrders.filter((order) => order.status === "fast_ready" || order.status === "ready"); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
-
+  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =
+    useState(false);
+  const readyOrders = completeOrders.filter(
+    (order) =>
+      order.status === "fast_ready" ||
+      order.status === "ready" ||
+      order.status === "cancel"
+  ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
+   // 모든 주문이 "cancel" 상태인지 확인합니다.
+  const hasOnlyCancelOrders = completeOrders.every((order) => order.status === "cancel");
+   //cancel 목록만!
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   // 로그인 관련
@@ -68,14 +70,16 @@ const Sales = () => {
       const { date } = order;
       const dateOnly = date.split(" ")[0];
 
+      // 해당 날짜에 대한 주문 목록이 모두 "cancel" 상태이고 그 주문이 존재하는 경우에만 빨간색으로 설정합니다.
       initialMarkedDates[dateOnly] = {
         marked: true,
-        dotColor: order.id.toString() === searchOrder ? "red" : "blue",
+        dotColor:
+          hasOnlyCancelOrders && order.status === "cancel" ? "red" : "blue",
       };
     });
 
     setMarkedDates(initialMarkedDates); // Update markedDates status
-  }, [completeOrders, searchOrder]);
+  }, [completeOrders]);
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
@@ -234,12 +238,11 @@ const Sales = () => {
         } else if (foundOrder.status === "cancel") {
           setReadyButtonTranslucent(true);
           setDeclineButtonTranslucent(false);
-        }else if (foundOrder.status === "decline") {
+        } else if (foundOrder.status === "decline") {
           // 주문이 거절 상태인 경우 모든 버튼을 투명하게 만듭니다.
           setReadyButtonTranslucent(true);
           setDeclineButtonTranslucent(true);
         }
-        
       } else {
         alert("주문을 찾을 수 없습니다.");
       }
