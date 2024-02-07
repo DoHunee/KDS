@@ -2,11 +2,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ScrollView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useSelector } from "react-redux";
-import commonStyles from "../components/Sales/style";
+import commonStyles from "../SalesComponents/style";
 
-import ModalComp from "../components/Sales/ModalComp";
-import SalesComp from "../components/Sales/SalesComp";
-import CalendarComp from "../components/Sales/CalendarComp";
+import ModalComp from "../SalesComponents/ModalComp";
+import SalesComp from "../SalesComponents/SalesComp";
+import CalendarComp from "../SalesComponents/CalendarComp";
 
 const Sales = () => {
   // // useEffect를 사용하여 completeOrders의 변경을 계속 확인

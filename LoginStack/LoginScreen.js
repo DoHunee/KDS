@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Alert,
@@ -15,8 +14,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
-import { login, logout } from "../../auth/authSlice";
+import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
+import LoginForm from './LoginFormComponents/LoginForm';
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -197,12 +197,12 @@ const LoginScreen = ({ navigation, route }) => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
         <View style={styles.container}>
           <Text style={styles.title}>🚀 OPen 🚀</Text>
-
+  
           {isLoggedIn ? (
             // 로그인 후 화면
             <View>
@@ -219,55 +219,30 @@ const LoginScreen = ({ navigation, route }) => {
           ) : (
             // 로그인 전 화면
             <View>
-              <View style={styles.inputContainer}>
-                {/* 여러 개의 TextInput으로 이루어진 입력란 */}
-                {storedNumber.map((digit, index) => (
-                  <TextInput
-                    key={index}
-                    style={styles.digitInput}
-                    keyboardType="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChangeText={(text) =>
-                      handleDigitInput(text, index, storedNumberRefs[index + 1])
-                    }
-                    ref={storedNumberRefs[index]}
-                  />
-                ))}
-              </View>
-
-              {/* 추가 입력란들 */}
-              <TextInput
-                style={[styles.digitInput, { alignSelf: "center" }]}
-                keyboardType="numeric"
-                maxLength={2}
-                value={categoryNumber}
-                onChangeText={(text) => setCategoryNumber(text)}
-                ref={categoryNumberRef}
+              {/* LoginForm 컴포넌트를 렌더링합니다. */}
+              <LoginForm
+                storedNumber={storedNumber}
+                handleDigitInput={handleDigitInput}
+                storedNumberRefs={storedNumberRefs}
+                categoryNumber={categoryNumber}
+                setCategoryNumber={setCategoryNumber}
+                employeeID={employeeID}
+                setEmployeeID={setEmployeeID}
               />
-
-              <TextInput
-                style={[styles.input, { alignSelf: "center" }]}
-                placeholder="사원 식별 번호 (7자리)"
-                keyboardType="numeric"
-                maxLength={7}
-                value={employeeID}
-                onChangeText={(text) => setEmployeeID(text)}
-                ref={employeeIDRef}
-              />
-
+  
+              {/* 추가 입력란들 및 예시 값 */}
               <Text
                 style={{
-                  color: "gray",
+                  color: 'gray',
                   fontSize: 14,
-                  alignSelf: "center",
+                  alignSelf: 'center',
                   marginTop: 10,
                 }}
               >
-                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{" "}
+                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{' '}
                 {storedEmployeeIDExample}
               </Text>
-
+  
               {/* 로그인 버튼 */}
               <TouchableOpacity
                 style={styles.loginButton}
@@ -281,7 +256,7 @@ const LoginScreen = ({ navigation, route }) => {
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -343,21 +318,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
-  },
-  editButton: {
-    backgroundColor: "#FF4500", // 예시 색상 (눈에 띄는 색상으로 변경 가능)
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 20, // 수정된 부분: 기존보다 더 큰 간격으로 조정
-  },
-
-  updateButton: {
-    backgroundColor: "#61dafb",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 30,
   },
 });
 

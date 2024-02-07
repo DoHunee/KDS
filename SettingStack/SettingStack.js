@@ -7,7 +7,7 @@ import { StatusBar} from "expo-status-bar";
 import Sales from "./Sales";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import ManagerStack from "./ManagerStack/ManagerStack";
+import ManagerStack from "../ManagerStack/ManagerStack";
 import LoginStack from "./LoginStack/LoginStack";
 import Stock from "./Stock";
 
