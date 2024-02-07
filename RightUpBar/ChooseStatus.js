@@ -25,7 +25,8 @@ const ChooseStatus = ({ length, onSelectStatus }) => {
         <View style={styles.buttonsContainer}>
           <Button onPress={() => onSelectStatus("ready")}style={styles.customButton}>주문처리완료</Button>
           <Button onPress={() => onSelectStatus("fast_ready")}style={styles.customButton}>즉시수령</Button>
-          <Button onPress={() => onSelectStatus("decline")}style={styles.customButton}>취소처리</Button>
+          <Button onPress={() => onSelectStatus("decline")}style={styles.customButton}>거절처리</Button>
+          <Button onPress={() => onSelectStatus("cancel")}style={styles.customButton}>취소처리</Button>
         </View>
       )}
     </TouchableOpacity>

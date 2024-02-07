@@ -73,20 +73,26 @@ const OrderCard = ({
 
   // "즉시수령" Pink 
     else if (status === "fast_ready") {
-      dynamicChange.backgroundColor = "pink";
+      dynamicChange.backgroundColor = "lightgreen";
       topLeft = "즉시수령";
     } 
-
-  // "취소처리" Red
-  else if (status === "decline") {
-    dynamicChange.backgroundColor = "red";
-    topLeft = "취소처리";
-  } 
-
+ 
   // "주문처리완료" 됐으면 Green
   else if (status === "ready") {
     dynamicChange.backgroundColor = "green";
     topLeft = "주문처리완료"    
+  }
+  
+   // "취소처리" 
+   else if (status === "decline") {
+    dynamicChange.backgroundColor = "pink";
+    topLeft = "거절처리";
+  } 
+
+
+  else if (status === "cancel") {
+    dynamicChange.backgroundColor = "red";
+    topLeft = "취소처리"    
   } 
 
 
