@@ -34,12 +34,12 @@ const Sales = () => {
   ); // useSelector를 사용하여 complete 상태 가져오기
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]); //선택한날짜의 모든 주문 목록
-  const [selecteddeclineOrders, setselecteddeclineOrders] = useState([]); //선택한날짜의 취소처리 주문목록
+  const [selectedcancelOrders, setselectedcancelOrders] = useState([]); //선택한날짜의 취소처리 주문목록
   const [selectedMonthOrders, setselectedMonthOrders] = useState([]); //선택한날짜가 속한 월에 해당되는 주문목록
 
   const [seletedtotalSales, setseletedtotalSales] = useState(0); // 선택한 날짜에 대한 전체 판매 금액을 나타내는 변수입니다.
   const [selectedMonthSales, setSelectedMonthSales] = useState(0); // 선택한 월에 대한 전체 판매 금액을 나타내는 변수입니다.
-  const [selecteddeclineSales, setselecteddeclineSales] = useState(0); //선택한 날짜에 대한 전체 주문 취소 금액을 나타내는 변수입니다.
+  const [selectedcancelSales, setselectedcancelSales] = useState(0); //선택한 날짜에 대한 전체 주문 취소 금액을 나타내는 변수입니다.
 
   const scrollViewRef = useRef(null); // 스크롤 위치를 조작할 때 사용됩니다.
   const [searchOrder, setSearchOrder] = useState(""); // 주문 번호 검색 상태값으로, 주문 번호를 검색하는데 사용됩니다
@@ -47,7 +47,7 @@ const Sales = () => {
 
   const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
-  const [declineButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
+  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
   const readyOrders = completeOrders.filter((order) => order.status === "fast_ready" || order.status === "ready"); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -109,9 +109,9 @@ const Sales = () => {
       (order) => order.status === "fast_ready" || order.status === "ready"
     );
 
-    // "decline" 상태의 주문 목록 필터링
-    const declineOrders = completeOrders.filter(
-      (order) => order.status === "decline"
+    // "cancel" 상태의 주문 목록 필터링
+    const cancelOrders = completeOrders.filter(
+      (order) => order.status === "cancel"
     );
 
     // "fast_ready" 및 "ready" 상태 +  선택한 날짜
@@ -120,8 +120,8 @@ const Sales = () => {
       return dateOnly === day.dateString;
     });
 
-    // "decline" 상태의 주문 목록 필터링 + 선택한 날짜
-    const selecteddeclineOrders = declineOrders.filter((order) => {
+    // "cancel" 상태의 주문 목록 필터링 + 선택한 날짜
+    const selectedcancelOrders = cancelOrders.filter((order) => {
       const dateOnly = order.date.split(" ")[0];
       return dateOnly === day.dateString;
     });
@@ -131,8 +131,8 @@ const Sales = () => {
       return order.date.substring(0, 7) === selectedMonth;
     });
 
-    //선택된 날짜에 대한 "decline" 상태의 주문들의 전체 취소 금액
-    const Decline_Final_Price = selecteddeclineOrders.reduce(
+    //선택된 날짜에 대한 "cancel" 상태의 주문들의 전체 취소 금액
+    const Decline_Final_Price = selectedcancelOrders.reduce(
       (total, order) =>
         total +
         order.orders.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -149,10 +149,10 @@ const Sales = () => {
 
     setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + fast-Ready + Ready
     setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
-    setselecteddeclineOrders(selecteddeclineOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + decline
+    setselectedcancelOrders(selectedcancelOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + cancel
 
     setseletedtotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
-    setselecteddeclineSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
+    setselectedcancelSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
 
     setSelectedDate(day.dateString); // Set the selected date
 
@@ -205,7 +205,7 @@ const Sales = () => {
 
       // 필터링된 주문 목록 업데이트
       setSelectedOrders(selectedDateOrders);
-      setselecteddeclineOrders([]); // 취소된 주문 목록을 초기화 하여 다음 검색때 중복된 값이 안나오게!!
+      setselectedcancelOrders([]); // 취소된 주문 목록을 초기화 하여 다음 검색때 중복된 값이 안나오게!!
 
       // 버튼 투명도 설정
       setReadyButtonTranslucent(false);
@@ -222,7 +222,7 @@ const Sales = () => {
       // 검색된 주문이 선택한 날짜에 해당하는 경우에만 업데이트
       if (foundOrder.date.split(" ")[0] === selectedDate) {
         setSelectedOrders([foundOrder]);
-        setselecteddeclineOrders([]);
+        setselectedcancelOrders([]);
 
         // 버튼 투명도 설정
         if (
@@ -231,7 +231,7 @@ const Sales = () => {
         ) {
           setReadyButtonTranslucent(false);
           setDeclineButtonTranslucent(true);
-        } else if (foundOrder.status === "decline") {
+        } else if (foundOrder.status === "cancel") {
           setReadyButtonTranslucent(true);
           setDeclineButtonTranslucent(false);
         }
@@ -254,12 +254,12 @@ const Sales = () => {
       setSelectedOrders(
         getOrdersByDate("fast_ready").concat(getOrdersByDate("ready"))
       );
-      setselecteddeclineOrders([]);
+      setselectedcancelOrders([]);
       setDeclineButtonTranslucent(true); // "취소목록" 버튼을 투명하게 만듭니다.
       setReadyButtonTranslucent(false); // "즉시수령,완료" 버튼의 투명도를 다시 1로 변경합니다.
-    } else if (status === "decline") {
+    } else if (status === "cancel") {
       setSelectedOrders([]);
-      setselecteddeclineOrders(getOrdersByDate("decline"));
+      setselectedcancelOrders(getOrdersByDate("cancel"));
       setReadyButtonTranslucent(true); // "즉시수령,완료" 버튼을 투명하게 만듭니다.
       setDeclineButtonTranslucent(false); // "취소목록" 버튼의 투명도를 다시 1로 변경합니다.
     }
@@ -290,9 +290,9 @@ const Sales = () => {
             {/* 매출 나타내는 부분 */}
             <SalesComp
               selectedOrders={selectedOrders}
-              selecteddeclineOrders={selecteddeclineOrders}
+              selectedcancelOrders={selectedcancelOrders}
               seletedtotalSales={seletedtotalSales}
-              selecteddeclineSales={selecteddeclineSales}
+              selectedcancelSales={selectedcancelSales}
               selectedMonthOrders={selectedMonthOrders}
               selectedMonthSales={selectedMonthSales}
               handleModal={() => setModalVisible(true)}
@@ -310,9 +310,9 @@ const Sales = () => {
               scrollViewRef={scrollViewRef}
               searchOrder={searchOrder}
               readyButtonTranslucent={readyButtonTranslucent}
-              declineButtonTranslucent={declineButtonTranslucent}
+              cancelButtonTranslucent={cancelButtonTranslucent}
               selectedOrders={selectedOrders}
-              selecteddeclineOrders={selecteddeclineOrders}
+              selectedcancelOrders={selectedcancelOrders}
               setSearchOrder={setSearchOrder}
               handleSearchOrder={handleSearchOrder} // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
               handleOrderStatusButtonClick={handleOrderStatusButtonClick} // 모달창 status 필터링 버튼 클릭에 대한 처리 함수

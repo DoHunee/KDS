@@ -21,10 +21,10 @@ const ModalComp = ({
   setSearchOrder,
   handleSearchOrder,
   readyButtonTranslucent,
-  declineButtonTranslucent,
+  cancelButtonTranslucent,
   handleOrderStatusButtonClick,
   selectedOrders,
-  selecteddeclineOrders,
+  selectedcancelOrders,
 }) => {
   return (
     //  모달창을 나타내는 부분
@@ -71,10 +71,10 @@ const ModalComp = ({
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => handleOrderStatusButtonClick("decline")}
+            onPress={() => handleOrderStatusButtonClick("cancel")}
             style={[
               commonStyles.switchButton2Text,
-              declineButtonTranslucent && { opacity: 0.5 }, // 버튼이 투명할 때의 스타일
+              cancelButtonTranslucent && { opacity: 0.5 }, // 버튼이 투명할 때의 스타일
             ]}
           >
             <Text style={commonStyles.switchButton2Text}>취소목록</Text>
@@ -82,7 +82,7 @@ const ModalComp = ({
         </View>
 
         {/* 모달창안에 주문내역을 나타내는 부분!! */}
-        {selectedOrders.concat(selecteddeclineOrders).map((order) => (
+        {selectedOrders.concat(selectedcancelOrders).map((order) => (
           <View
             key={order.id}
             //  주문내역 배경을 설정하는 부분!!
@@ -90,7 +90,7 @@ const ModalComp = ({
               commonStyles.orderContainer,
               {
                 backgroundColor:
-                  order.status === "decline"
+                  order.status === "cancel"
                     ? "red"
                     : order.status === "ready" || order.status === "fast_ready"
                     ? "green"
@@ -110,8 +110,15 @@ const ModalComp = ({
               <Text style={commonStyles.orderText}>
                 주문상태 : {order.status}{" "}
               </Text>
-              <View style={commonStyles.lineStyle}></View>
-
+              {/* 주문 상태가 "cancel"일 때만 취소 이유를 표시하는 부분 */}
+              {order.status === "cancel" && (
+                <>
+                  <Text style={commonStyles.orderText}>
+                    취소사유: {order.cancellationReason}
+                  </Text>
+                  <View style={commonStyles.lineStyle}></View>
+                </>
+              )}
               <Text style={commonStyles.orderText}>
                 [주문 목록]:{"\n\n"}
                 {order.orders.map((item, index) => (

@@ -111,6 +111,9 @@ export const OrdersDistrubutionSclie = createSlice({
       }
       canceledOrder.cancelTime = getTimePassedSec();
 
+      // 취소 사유 저장
+      canceledOrder.cancellationReason = cancellationReason;
+
       // 취소된 주문을 완료 배열에 추가
       state.complete = [...state.complete, canceledOrder];
       state.current = state.current.filter(
@@ -121,7 +124,7 @@ export const OrdersDistrubutionSclie = createSlice({
       state.current = state.current.filter((order) => order.id !== orderId);
     },
 
-    
+
   },
 });
 
