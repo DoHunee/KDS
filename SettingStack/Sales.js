@@ -202,57 +202,55 @@ const Sales = () => {
 
   // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
-    // 만약 주문 번호가 입력되지 않았다면, 선택한 날짜의 전체 주문 목록을 표시합니다.
+    // 주문 번호가 입력되지 않은 경우, 선택된 날짜의 모든 주문 목록을 표시합니다.
     if (!searchOrder) {
       const selectedDateOrders = completeOrders.filter((order) => {
         const dateOnly = order.date.split(" ")[0];
-        return dateOnly === selectedDate; // selectedDate는 선택한 날짜에 해당합니다.
+        return dateOnly === selectedDate; // selectedDate에 해당하는 주문만 필터링합니다.
       });
-
-      // 필터링된 주문 목록 업데이트
+  
+      // 필터링된 주문 목록을 업데이트합니다.
       setSelectedOrders(selectedDateOrders);
-      setselectedcancelOrders([]); // 취소된 주문 목록을 초기화 하여 다음 검색때 중복된 값이 안나오게!!
-
-      // 버튼 투명도 설정
+      setselectedcancelOrders([]); // 다음 검색 시 중복된 값이 나오지 않도록 취소된 주문 목록을 초기화합니다.
+  
+      // 버튼 투명도를 설정합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
-
+  
       return;
     }
-
-    const foundOrder = completeOrders.find(
-      (order) => order.id.toString() === searchOrder
+  
+    // 입력된 주문 번호를 찾습니다.
+    const foundOrders = completeOrders.filter(
+      (order) => order.id.toString().includes(searchOrder)
     );
-
-    if (foundOrder) {
-      // 검색된 주문이 선택한 날짜에 해당하는 경우에만 업데이트
-      if (foundOrder.date.split(" ")[0] === selectedDate) {
-        setSelectedOrders([foundOrder]);
-        setselectedcancelOrders([]);
-
-        // 버튼 투명도 설정
-        if (
-          foundOrder.status === "ready" ||
-          foundOrder.status === "fast_ready"
-        ) {
-          setReadyButtonTranslucent(false);
-          setDeclineButtonTranslucent(true);
-        } else if (foundOrder.status === "cancel") {
-          setReadyButtonTranslucent(true);
-          setDeclineButtonTranslucent(false);
-        } else if (foundOrder.status === "decline") {
-          // 주문이 거절 상태인 경우 모든 버튼을 투명하게 만듭니다.
-          setReadyButtonTranslucent(true);
-          setDeclineButtonTranslucent(true);
-        }
-      } else {
-        alert("주문을 찾을 수 없습니다.");
-      }
+  
+    if (foundOrders.length > 0) {
+      // 검색된 주문이 있을 경우
+      // 검색된 주문이 선택된 날짜에 해당하는 경우에만 업데이트합니다.
+      const selectedDateOrders = foundOrders.filter((order) => {
+        const dateOnly = order.date.split(" ")[0];
+        return dateOnly === selectedDate;
+      });
+  
+      setSelectedOrders(selectedDateOrders);
+      setselectedcancelOrders([]);
+  
+      // 주문 상태에 따라 버튼 투명도를 설정합니다.
+      const hasReadyOrder = selectedDateOrders.some(
+        (order) => order.status === "ready" || order.status === "fast_ready"
+      );
+      const hasCancelOrder = selectedDateOrders.some(
+        (order) => order.status === "cancel"
+      );
+  
+      setReadyButtonTranslucent(!hasReadyOrder);
+      setDeclineButtonTranslucent(!hasCancelOrder);
     } else {
-      // 검색된 주문이 없는 경우 알림 표시
+      // 검색된 주문이 없는 경우
       alert("주문을 찾을 수 없습니다.");
-
-      // 버튼 투명도 초기화
+  
+      // 버튼 투명도를 초기화합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
     }
