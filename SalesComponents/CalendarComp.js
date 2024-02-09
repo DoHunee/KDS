@@ -3,7 +3,7 @@ import React from "react";
 import { Calendar } from "react-native-calendars";
 import { commonStyles } from "./style";
 import { LocaleConfig } from "react-native-calendars";
-
+import { TouchableOpacity, Text , StyleSheet , View} from "react-native";
 
 //한국어 세팅
 LocaleConfig.locales["ko"] = {
@@ -48,16 +48,45 @@ LocaleConfig.locales["ko"] = {
 };
 LocaleConfig.defaultLocale = "ko"; // set default language
 
-const CalendarComp = ({ markedDates, handleCalenderDay }) => {
+const CalendarComp = ({
+  markedDates,
+  handleCalenderDay,
+  handleSelectToday,
+}) => {
   return (
-    <Calendar
-      style={commonStyles.calendar}
-      markedDates={markedDates}
-      onDayPress={(day) => {
-        handleCalenderDay(day);
-      }}
-    />
+    <View>
+    
+      {/* <TouchableOpacity style={styles.TodayButton} onPress={handleSelectToday}>
+        <Text style={styles.buttonText}>오늘</Text>
+      </TouchableOpacity> */}
+
+      <Calendar
+        style={commonStyles.calendar}
+        markedDates={markedDates}
+        onDayPress={(day) => {
+          handleCalenderDay(day);
+        }}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+ 
+  TodayButton: {
+    backgroundColor: "#61dafb",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 30,
+  },
+ 
+  buttonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
 
 export default CalendarComp;

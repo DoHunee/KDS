@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions, Platform, StatusBar } from "react-native";
 export const commonStyles = StyleSheet.create({
   
   container: {
-    padding: 15,
+    padding: 20,
     zIndex: 20000,
     position: "absolute",
     width: Dimensions.get("window").width,

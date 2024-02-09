@@ -49,9 +49,11 @@ const Sales = () => {
       order.status === "ready" ||
       order.status === "cancel"
   ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
-   // 모든 주문이 "cancel" 상태인지 확인합니다.
-  const hasOnlyCancelOrders = completeOrders.every((order) => order.status === "cancel");
-   //cancel 목록만!
+  // 모든 주문이 "cancel" 상태인지 확인합니다.
+  const hasOnlyCancelOrders = completeOrders.every(
+    (order) => order.status === "cancel"
+  );
+  //cancel 목록만!
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   // 로그인 관련
@@ -290,6 +292,30 @@ const Sales = () => {
     // console.log("위로 이동합니다!");
   };
 
+  // 오늘 날짜로 이동하는 함수!!!
+  const handleSelectToday = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Month starts from 0, so +1.
+    const day = today.getDate();
+
+    // 오늘의 날짜를 YYYY-MM-DD 형식으로 생성합니다.
+    const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
+      day < 10 ? "0" + day : day
+    }`;
+
+    // 오늘의 날짜를 선택하고 달력을 해당 월로 이동하기 위해 handleCalendarDay 함수를 호출합니다.
+    handleCalendarDay({ dateString: formattedDate });
+
+    // 오늘의 날짜가 속한 월로 달력을 이동합니다.
+    const currentMonth = `${year}-${month < 10 ? "0" + month : month}`;
+    const monthFormatted = {
+      [currentMonth]: { month: true, selected: true, selectedColor: "blue" },
+    };
+    // 달력을 해당 월로 이동시키기 위해 handleCalendarDay 함수에 전달합니다.
+    handleCalendarDay(monthFormatted);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={commonStyles.container}>
@@ -310,6 +336,7 @@ const Sales = () => {
             <CalendarComp
               markedDates={markedDates}
               handleCalenderDay={handleCalenderDay}
+              // handleSelectToday={handleSelectToday}
             />
 
             {/* 모달창을 나타내는 부분 */}
