@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncSt
 import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import LoginForm from "./LoginFormComponents/LoginForm";
-import { WebSocket } from "react-native-websocket"; // WebSocket 라이브러리 추가
+import io from "socket.io-client";
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -83,14 +83,18 @@ const LoginScreen = ({ navigation, route }) => {
       setIsLoggedIn(true); // 로컬로 업데이트
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
 
-      // 추가: 로그인 성공 시 웹소켓으로 메시지 전송
-      // sendMessage();
-
+      // stCode, posSeq, userId 값을 설정
+      const stCode = storedNumberExample; //매장번호 (4자리)
+      const posSeq = storedCategoryNumberExample; //포스번호 (2자리)
+      const userId = storedEmployeeIDExample; //직원 ID
+      
       // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
       setEmployeeID("");
       navigation.navigate("Orders");
+
+      connectToServer(stCode, posSeq, userId); //로그인 성공 시 소켓 연결!!!
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
@@ -178,24 +182,27 @@ const LoginScreen = ({ navigation, route }) => {
     Keyboard.dismiss();
   };
 
-  // 웹소켓 연결 및 메시지 전송 함수
-  const sendMessage = () => {
-    const ws = new WebSocket("ws://서버주소");
+  // 로그인이 성공했을 때 서버와 연결하는 함수
+  const connectToServer = (stCode, posSeq, userId) => {
+    const socket = io("http://10.1.1.13:8025/admin", {
+      query: {
+        stCode,
+        posSeq,
+        userId,
+      },
+    });
 
-    ws.onopen = () => {
-      console.log("웹소켓 연결 성공");
-      // 로그인 성공 메시지 전송
-      const message = {
-        type: "login",
-        success: true,
-        // 추가적인 데이터 필요 시 여기에 추가
-      };
-      ws.send(JSON.stringify(message));
-    };
+    socket.on("connect", () => {
+      console.log("서버와 연결되었습니다.");
+      // 연결되면 필요한 작업 수행
+    });
 
-    ws.onerror = (error) => {
-      console.error("웹소켓 오류:", error);
-    };
+    socket.on("disconnect", () => {
+      console.log("서버와의 연결이 끊어졌습니다.");
+      // 연결이 끊기면 필요한 작업 수행
+    });
+
+    // 필요한 이벤트 리스너를 추가할 수 있습니다.
   };
 
   // Return 부분
