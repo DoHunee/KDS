@@ -56,9 +56,9 @@ const CalendarComp = ({
   return (
     <View>
     
-      {/* <TouchableOpacity style={styles.TodayButton} onPress={handleSelectToday}>
-        <Text style={styles.buttonText}>오늘</Text>
-      </TouchableOpacity> */}
+      <TouchableOpacity style={styles.TodayButton} onPress={handleSelectToday}>
+        <Text style={styles.buttonText}>Today</Text>
+      </TouchableOpacity>
 
       <Calendar
         style={commonStyles.calendar}
@@ -74,16 +74,18 @@ const CalendarComp = ({
 const styles = StyleSheet.create({
  
   TodayButton: {
-    backgroundColor: "#61dafb",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    backgroundColor: "white",
+    paddingVertical: 10, // 상하 여백을 작게 조정합니다.
+    paddingHorizontal: 20, // 좌우 여백을 작게 조정합니다.
+    borderRadius: 8, // 둥근 모서리의 반경을 작게 조정합니다.
     marginTop: 30,
-  },
+    alignSelf: 'flex-end', // 오른쪽 정렬합니다.
+    marginRight: 20, // 오른쪽 여백을 추가합니다.
+},
  
   buttonText: {
     color: "black",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
   },

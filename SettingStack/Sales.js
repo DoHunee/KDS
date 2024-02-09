@@ -208,23 +208,23 @@ const Sales = () => {
         const dateOnly = order.date.split(" ")[0];
         return dateOnly === selectedDate; // 선택한 날짜에 해당하는 주문만 필터링합니다.
       });
-  
+
       // 필터링된 주문 목록을 업데이트합니다.
       setSelectedOrders(selectedDateOrders);
       setselectedcancelOrders([]); // 다음 검색에서 중복 값을 피하기 위해 취소된 주문 목록을 초기화합니다.
-  
+
       // 버튼의 투명도를 설정합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
-  
+
       return;
     }
-  
+
     // 입력된 주문 번호를 찾습니다.
-    const foundOrders = completeOrders.filter(
-      (order) => order.id.toString().includes(searchOrder)
+    const foundOrders = completeOrders.filter((order) =>
+      order.id.toString().includes(searchOrder)
     );
-  
+
     if (foundOrders.length > 0) {
       // 만약 검색된 주문이 있다면
       // 검색된 주문이 선택한 날짜에 해당하는 것인지 확인하여 업데이트합니다.
@@ -232,10 +232,10 @@ const Sales = () => {
         const dateOnly = order.date.split(" ")[0];
         return dateOnly === selectedDate;
       });
-  
+
       setSelectedOrders(selectedDateOrders);
       setselectedcancelOrders([]);
-  
+
       // 주문 상태에 따라 버튼의 투명도를 설정합니다.
       const hasReadyOrder = selectedDateOrders.some(
         (order) => order.status === "ready" || order.status === "fast_ready"
@@ -243,13 +243,13 @@ const Sales = () => {
       const hasCancelOrder = selectedDateOrders.some(
         (order) => order.status === "cancel"
       );
-  
+
       setReadyButtonTranslucent(!hasReadyOrder);
       setDeclineButtonTranslucent(!hasCancelOrder);
     } else {
       // 만약 검색된 주문이 없다면
       alert("주문을 찾을 수 없습니다.");
-  
+
       // 버튼의 투명도를 리셋합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
@@ -290,29 +290,17 @@ const Sales = () => {
     // console.log("위로 이동합니다!");
   };
 
-  // 오늘 날짜로 이동하는 함수!!!
+  // 오늘의 날짜를 표시하고 캘린더를 해당 월로 이동하는 함수
   const handleSelectToday = () => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1; // Month starts from 0, so +1.
-    const day = today.getDate();
+    const day = today.getDate(); // Get the day of the month.
 
-    // 오늘의 날짜를 YYYY-MM-DD 형식으로 생성합니다.
-    const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
-      day < 10 ? "0" + day : day
-    }`;
-
-    // 오늘의 날짜를 선택하고 달력을 해당 월로 이동하기 위해 handleCalendarDay 함수를 호출합니다.
-    handleCalendarDay({ dateString: formattedDate });
-
-    // 오늘의 날짜가 속한 월로 달력을 이동합니다.
-    const currentMonth = `${year}-${month < 10 ? "0" + month : month}`;
-    const monthFormatted = {
-      [currentMonth]: { month: true, selected: true, selectedColor: "blue" },
-    };
-    // 달력을 해당 월로 이동시키기 위해 handleCalendarDay 함수에 전달합니다.
-    handleCalendarDay(monthFormatted);
-  };
+    // Display the selected date and move the calendar to that month.
+    const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}`;
+    handleCalenderDay({ dateString: formattedDate });
+};
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -334,7 +322,7 @@ const Sales = () => {
             <CalendarComp
               markedDates={markedDates}
               handleCalenderDay={handleCalenderDay}
-              // handleSelectToday={handleSelectToday}
+              handleSelectToday={handleSelectToday}
             />
 
             {/* 모달창을 나타내는 부분 */}
