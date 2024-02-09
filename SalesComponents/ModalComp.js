@@ -1,5 +1,5 @@
 // ModalComp.js
-import React from "react";
+import { useEffect } from "react";
 import {
   Modal,
   ScrollView,
@@ -26,6 +26,10 @@ const ModalComp = ({
   selectedOrders,
   selectedcancelOrders,
 }) => {
+
+  useEffect(() => {
+    handleSearchOrder(); // searchOrder가 변경될 때마다 주문을 검색하고 업데이트합니다.
+  }, [searchOrder]); // searchOrder가 변경될 때마다 useEffect가 실행됩니다.
   return (
     //  모달창을 나타내는 부분
     <Modal

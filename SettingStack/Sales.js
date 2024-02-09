@@ -202,18 +202,18 @@ const Sales = () => {
 
   // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
-    // 주문 번호가 입력되지 않은 경우, 선택된 날짜의 모든 주문 목록을 표시합니다.
+    // 만약 주문 번호를 입력하지 않았다면 선택한 날짜에 해당하는 모든 주문 목록을 표시합니다.
     if (!searchOrder) {
       const selectedDateOrders = completeOrders.filter((order) => {
         const dateOnly = order.date.split(" ")[0];
-        return dateOnly === selectedDate; // selectedDate에 해당하는 주문만 필터링합니다.
+        return dateOnly === selectedDate; // 선택한 날짜에 해당하는 주문만 필터링합니다.
       });
   
       // 필터링된 주문 목록을 업데이트합니다.
       setSelectedOrders(selectedDateOrders);
-      setselectedcancelOrders([]); // 다음 검색 시 중복된 값이 나오지 않도록 취소된 주문 목록을 초기화합니다.
+      setselectedcancelOrders([]); // 다음 검색에서 중복 값을 피하기 위해 취소된 주문 목록을 초기화합니다.
   
-      // 버튼 투명도를 설정합니다.
+      // 버튼의 투명도를 설정합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
   
@@ -226,8 +226,8 @@ const Sales = () => {
     );
   
     if (foundOrders.length > 0) {
-      // 검색된 주문이 있을 경우
-      // 검색된 주문이 선택된 날짜에 해당하는 경우에만 업데이트합니다.
+      // 만약 검색된 주문이 있다면
+      // 검색된 주문이 선택한 날짜에 해당하는 것인지 확인하여 업데이트합니다.
       const selectedDateOrders = foundOrders.filter((order) => {
         const dateOnly = order.date.split(" ")[0];
         return dateOnly === selectedDate;
@@ -236,7 +236,7 @@ const Sales = () => {
       setSelectedOrders(selectedDateOrders);
       setselectedcancelOrders([]);
   
-      // 주문 상태에 따라 버튼 투명도를 설정합니다.
+      // 주문 상태에 따라 버튼의 투명도를 설정합니다.
       const hasReadyOrder = selectedDateOrders.some(
         (order) => order.status === "ready" || order.status === "fast_ready"
       );
@@ -247,10 +247,10 @@ const Sales = () => {
       setReadyButtonTranslucent(!hasReadyOrder);
       setDeclineButtonTranslucent(!hasCancelOrder);
     } else {
-      // 검색된 주문이 없는 경우
+      // 만약 검색된 주문이 없다면
       alert("주문을 찾을 수 없습니다.");
   
-      // 버튼 투명도를 초기화합니다.
+      // 버튼의 투명도를 리셋합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
     }
