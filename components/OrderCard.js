@@ -130,8 +130,9 @@ const OrderCard = ({
           <Text style={styles.text}>
             {name} 【{hp}】
           </Text>
-          <Text>{formattedDate}</Text>
+          <Text>주문번호 : {id}</Text>
           <Text>{formattedTime}</Text>
+          
         </View>
         <View>
           <Text style={styles.orderText}>
