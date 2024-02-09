@@ -8,7 +8,7 @@ import Sales from "./Sales";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ManagerStack from "../ManagerStack/ManagerStack";
-import LoginStack from "./LoginStack/LoginStack";
+import LoginStack from "../LoginStack/LoginStack";
 import Stock from "./Stock";
 
 const Stack = createNativeStackNavigator();

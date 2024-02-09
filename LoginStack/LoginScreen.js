@@ -16,18 +16,15 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 추가
 import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
-import LoginForm from "./LoginFormComponents/LoginForm";
-import { WebSocket } from "react-native-websocket"; // WebSocket 라이브러리 추가
+import LoginForm from './LoginFormComponents/LoginForm';
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-
   // 저장할 값들의 초기값 설정
   const [storedNumber, setStoredNumber] = useState(["", "", "", ""]);
   const [categoryNumber, setCategoryNumber] = useState("");
   const [employeeID, setEmployeeID] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
   const [storedCategoryNumberExample, setStoredCategoryNumberExample] =
@@ -37,22 +34,22 @@ const LoginScreen = ({ navigation, route }) => {
 
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
+  const categoryNumberRef = useRef();
+  const employeeIDRef = useRef();
 
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
     newStoredNumber[index] = text;
-
     setStoredNumber(newStoredNumber);
-
     if (text.length === 1 && nextRef && nextRef.current) {
       nextRef.current.focus();
     }
   };
-
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
+    const enteredNumber = storedNumberString + categoryNumber + employeeID;
 
     return (
       storedNumberString === storedNumberExample &&
@@ -60,7 +57,6 @@ const LoginScreen = ({ navigation, route }) => {
       employeeID === storedEmployeeIDExample
     );
   };
-
   // Fix.js,Manager.js에서 받아온 수정된 식별번호들 끌어오기!
   // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
   // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
@@ -78,30 +74,23 @@ const LoginScreen = ({ navigation, route }) => {
       // 에러 처리 로직 추가
     }
   };
-
   // 로그인 로직
   const handleLogin = () => {
     if (validateCredentials()) {
       Alert.alert("로그인 성공", "환영합니다!");
-
       dispatch(login()); // 전역으로 업데이트
       setIsLoggedIn(true); // 로컬로 업데이트
       setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
-
-      // 추가: 로그인 성공 시 웹소켓으로 메시지 전송
-      sendMessage();
 
       // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
       setEmployeeID("");
-
       navigation.navigate("Orders");
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
   };
-
   // 로그아웃 로직
   const handleLogout = async () => {
     Alert.alert(
@@ -123,13 +112,11 @@ const LoginScreen = ({ navigation, route }) => {
       { cancelable: false }
     );
   };
-
   // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
   useEffect(() => {
     setStoredNumber([...storedNumberExample]); //매장번호
     setCategoryNumber(storedCategoryNumberExample); //포스번호
   }, [storedNumberExample, storedCategoryNumberExample]);
-
   // 로그인,로그아웃 시 isLoggedIn 확인:
   useEffect(() => {
     if (isLoggedIn) {
@@ -138,7 +125,6 @@ const LoginScreen = ({ navigation, route }) => {
     } else {
       console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
     }
-
     // AsyncStorage에서 수정된 값을 가져와서 반영
     const fetchModified = async () => {
       try {
@@ -151,7 +137,6 @@ const LoginScreen = ({ navigation, route }) => {
         const storedCategoryNumberExample = await AsyncStorage.getItem(
           "storedCategoryNumberExample"
         );
-
         if (modifiedEmployeeID) {
           handleUpdateValues(
             "modifiedEmployeeID",
@@ -159,7 +144,6 @@ const LoginScreen = ({ navigation, route }) => {
             setStoredEmployeeIDExample
           );
         }
-
         if (storedNumberExample) {
           handleUpdateValues(
             "storedNumberExample",
@@ -167,7 +151,6 @@ const LoginScreen = ({ navigation, route }) => {
             setStoredNumberExample
           );
         }
-
         if (storedCategoryNumberExample) {
           handleUpdateValues(
             "storedCategoryNumberExample",
@@ -180,50 +163,27 @@ const LoginScreen = ({ navigation, route }) => {
         // 에러 처리 로직 추가
       }
     };
-
     fetchModified();
   }, [isLoggedIn, navigation]);
-
   // Fix.js(식별번호 수정)으로 이동!!
   const handleGoToFix = () => {
     navigation.navigate("Fix");
   };
-
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
-  };
-
-  // 웹소켓 연결 및 메시지 전송 함수
-  const sendMessage = () => {
-    const ws = new WebSocket("ws://서버주소");
-
-    ws.onopen = () => {
-      console.log("웹소켓 연결 성공");
-      // 로그인 성공 메시지 전송
-      const message = {
-        type: "login",
-        success: true,
-        // 추가적인 데이터 필요 시 여기에 추가
-      };
-      ws.send(JSON.stringify(message));
-    };
-
-    ws.onerror = (error) => {
-      console.error("웹소켓 오류:", error);
-    };
   };
 
   // Return 부분
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
         <View style={styles.container}>
           <Text style={styles.title}>🚀 OPen 🚀</Text>
-
+  
           {isLoggedIn ? (
             // 로그인 후 화면
             <View>
@@ -250,20 +210,20 @@ const LoginScreen = ({ navigation, route }) => {
                 employeeID={employeeID}
                 setEmployeeID={setEmployeeID}
               />
-
+  
               {/* 추가 입력란들 및 예시 값 */}
               <Text
                 style={{
-                  color: "gray",
+                  color: 'gray',
                   fontSize: 14,
-                  alignSelf: "center",
+                  alignSelf: 'center',
                   marginTop: 10,
                 }}
               >
-                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{" "}
+                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{' '}
                 {storedEmployeeIDExample}
               </Text>
-
+  
               {/* 로그인 버튼 */}
               <TouchableOpacity
                 style={styles.loginButton}
@@ -277,7 +237,7 @@ const LoginScreen = ({ navigation, route }) => {
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
