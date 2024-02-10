@@ -6,12 +6,11 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Button from "./Button";
 
 const OrderCard = ({
+  id,
   name,
   hp,
-  orderNumber,
   orders,
   status,
-  id,
   onPress,
   buttons,
   date,
@@ -131,16 +130,16 @@ const OrderCard = ({
           <Text style={styles.text}>
             {name} 【{hp}】
           </Text>
-          <Text>no.{id}</Text>
           <Text>{formattedTime}</Text>
           
         </View>
         <View>
           <Text style={styles.orderText}>
-            {orderNumber ? "#00" + orderNumber : "#000"}
+          <Text>no.{id}</Text>
           </Text>
         </View>
       </View>
+
       <View style={styles.orders}>
         {orders.map((order, index) => {
           return (
@@ -153,6 +152,7 @@ const OrderCard = ({
           );
         })}
       </View>
+
       {/* 주문카드에 버튼부분 */}
       <View style={styles.buttons}>
         {buttons.map((name, index) => {
