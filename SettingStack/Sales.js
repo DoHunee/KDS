@@ -1,8 +1,14 @@
 // Sales.js
 import React, { useEffect, useState, useRef } from "react";
-import { ScrollView, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { useSelector } from "react-redux";
-import commonStyles from "../SalesComponents/style";
 
 import ModalComp from "../SalesComponents/ModalComp";
 import SalesComp from "../SalesComponents/SalesComp";
@@ -298,13 +304,15 @@ const Sales = () => {
     const day = today.getDate(); // Get the day of the month.
 
     // Display the selected date and move the calendar to that month.
-    const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}`;
+    const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
+      day < 10 ? "0" + day : day
+    }`;
     handleCalenderDay({ dateString: formattedDate });
-};
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView style={commonStyles.container}>
+      <ScrollView style={styles.container}>
         {isLoggedIn ? (
           <>
             {/* 매출 나타내는 부분 */}
@@ -324,7 +332,7 @@ const Sales = () => {
               handleCalenderDay={handleCalenderDay}
               handleSelectToday={handleSelectToday}
             />
-
+            
             {/* 모달창을 나타내는 부분 */}
             <ModalComp
               modalVisible={modalVisible}
@@ -347,5 +355,16 @@ const Sales = () => {
     </TouchableWithoutFeedback>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    zIndex: 20000,
+    position: "absolute",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height, // 모달이 올라올 때 화면 전체를 꽉 채우도록 설정
+    top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
+  },
+});
 
 export default Sales;

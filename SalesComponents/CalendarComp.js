@@ -1,9 +1,8 @@
 // CalendarComp.js
 import React from "react";
 import { Calendar } from "react-native-calendars";
-import { commonStyles } from "./style";
 import { LocaleConfig } from "react-native-calendars";
-import { TouchableOpacity, Text , StyleSheet , View} from "react-native";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 
 //한국어 세팅
 LocaleConfig.locales["ko"] = {
@@ -55,13 +54,12 @@ const CalendarComp = ({
 }) => {
   return (
     <View>
-    
       <TouchableOpacity style={styles.TodayButton} onPress={handleSelectToday}>
         <Text style={styles.buttonText}>Today</Text>
       </TouchableOpacity>
 
       <Calendar
-        style={commonStyles.calendar}
+        style={styles.calendar}
         markedDates={markedDates}
         onDayPress={(day) => {
           handleCalenderDay(day);
@@ -72,17 +70,22 @@ const CalendarComp = ({
 };
 
 const styles = StyleSheet.create({
- 
+  calendar: {
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
   TodayButton: {
     backgroundColor: "white",
     paddingVertical: 10, // 상하 여백을 작게 조정합니다.
     paddingHorizontal: 20, // 좌우 여백을 작게 조정합니다.
     borderRadius: 8, // 둥근 모서리의 반경을 작게 조정합니다.
     marginTop: 30,
-    alignSelf: 'flex-end', // 오른쪽 정렬합니다.
+    alignSelf: "flex-end", // 오른쪽 정렬합니다.
     marginRight: 20, // 오른쪽 여백을 추가합니다.
-},
- 
+  },
+
   buttonText: {
     color: "black",
     fontSize: 16,

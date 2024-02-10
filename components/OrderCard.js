@@ -90,7 +90,7 @@ const OrderCard = ({
   // "거절처리"
   else if (status === "decline") {
     dynamicChange.backgroundColor = "pink";
-    topLeft = "거절처리_"  // 거절 사유를 topLeft에 추가
+    topLeft = "거절처리"  // 거절 사유를 topLeft에 추가
   } 
   
   // 취소처리
@@ -130,7 +130,7 @@ const OrderCard = ({
           <Text style={styles.text}>
             {name} 【{hp}】
           </Text>
-          <Text>주문번호 : {id}</Text>
+          <Text>no.{id}</Text>
           <Text>{formattedTime}</Text>
           
         </View>
