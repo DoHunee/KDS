@@ -51,6 +51,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             readyTime={item.readyTime}
             scheduleFor={item.scheduleFor}
             date={item.date}
+            declineReason={item.declineReason}
           />
         )}
         keyExtractor={(item) => item.id.toString()} // 고유한 키 추출  //고유키 추출 

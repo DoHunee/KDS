@@ -15,6 +15,7 @@ const OrderCard = ({
   onPress,
   buttons,
   date,
+  declineReason
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
   const handleOnPress = (data) => {onPress({ action: data, id: id });};
@@ -90,7 +91,7 @@ const OrderCard = ({
   // "거절처리"
   else if (status === "decline") {
     dynamicChange.backgroundColor = "pink";
-    topLeft = "거절처리"  // 거절 사유를 topLeft에 추가
+    topLeft = `거절사유: ${declineReason}`; // 거부 이유를 표시
   } 
   
   // 취소처리
