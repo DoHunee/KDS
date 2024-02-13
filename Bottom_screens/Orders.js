@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {StyleSheet,SafeAreaView,Alert,} from "react-native";
+import { StyleSheet, SafeAreaView, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import OrdersNumbers from "../RightUpBar/OrdersNumbers";
-import {handlePending,onConfirm,onDecline,onImmediateReceipt,} from "../store/storeSlice";
+import {
+  handlePending,
+  onConfirm,
+  onDecline,
+  onImmediateReceipt,
+} from "../store/storeSlice";
+// import { connectToServer } from "../LoginStack/LoginScreen"; // 소켓 연결 함수 import
+import { io } from "socket.io-client";
 
 
 const Orders = ({ navigation }) => {
@@ -14,14 +21,21 @@ const Orders = ({ navigation }) => {
     (state) => state.OrdersDistrubutionSclie.pending
   );
   const [orders, setOrders] = useState([]);
+  const socket = io("http://10.1.1.13:8025/admin");
 
-  // Accept,Decline,즉시수령 버튼 눌렀을대 event
-  const handleButtonPress = (data) => {
+  
+
+  // 수락,거절 ,즉시수령 버튼 눌렀을대 event
+  const handleButtonPress = (data,stCode) => {
     if (data.action === "수락") {
       dispatch(onConfirm({ id: data.id }));
-    } else if (data.action === "거절") {
+      // 주문 수락 이벤트 처리
+      socket.emit("acceptOrder", { id: data.id, message: "고객님의 주문이 접수되었습니다!" });
+    } 
+    else if (data.action === "거절") {
       declineOrder(data.id);
-    } else if (data.action === "즉시수령") {
+    } 
+    else if (data.action === "즉시수령") {
       // "즉시수령" 버튼을 눌렀을 때 알림 표시
       Alert.alert(
         "즉시 수령 확인",
@@ -35,6 +49,7 @@ const Orders = ({ navigation }) => {
             text: "예",
             onPress: () => {
               dispatch(onImmediateReceipt({ id: data.id }));
+              socket.emit("test", { id: data.id, message: "주문하신 제품을 즉시 수령해주세요" });
             },
           },
         ],
@@ -51,23 +66,35 @@ const Orders = ({ navigation }) => {
       [
         {
           text: "재료소진", // 첫 번째 버튼 텍스트
-          onPress: () =>
+          onPress: () => {
             dispatch(
               onDecline({
                 id: orderId,
                 declineReason: "재료소진",
               })
-            ),
+            );
+            // 거절 사유와 함께 거절 이벤트를 서버로 전송
+            socket.emit("declineOrder", {
+              id: orderId,
+              declineReason: "재료소진",
+            });
+          },
         },
         {
           text: "품절", // 두 번째 버튼 텍스트
-          onPress: () =>
+          onPress: () => {
             dispatch(
               onDecline({
                 id: orderId,
                 declineReason: "품절",
               })
-            ),
+            );
+            // 거절 사유와 함께 거절 이벤트를 서버로 전송
+            socket.emit("declineOrder", { 
+              id: orderId, 
+              declineReason: "품절" 
+            });
+          },
         },
         {
           text: "취소", // 취소 버튼 텍스트
@@ -93,10 +120,12 @@ const Orders = ({ navigation }) => {
     }
   }, [isLoggedIn]);
 
+  // Pending 주문 불러오기
   useEffect(() => {
     dispatch(handlePending());
   }, []);
 
+  // Pending 주문 상태 변경 감지
   useEffect(() => {
     setOrders(pendingOrders);
   }, [pendingOrders]);

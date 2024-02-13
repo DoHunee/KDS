@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncSt
 import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import LoginForm from "./LoginFormComponents/LoginForm";
-import io from "socket.io-client";
+import connectToServer from "../Socket";
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -87,7 +87,7 @@ const LoginScreen = ({ navigation, route }) => {
       const stCode = storedNumberExample; //매장번호 (4자리)
       const posSeq = storedCategoryNumberExample; //포스번호 (2자리)
       const userId = storedEmployeeIDExample; //직원 ID
-      
+
       // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
       setStoredNumber(["", "", "", ""]);
       setCategoryNumber("");
@@ -99,6 +99,7 @@ const LoginScreen = ({ navigation, route }) => {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
   };
+
   // 로그아웃 로직
   const handleLogout = async () => {
     Alert.alert(
@@ -120,11 +121,13 @@ const LoginScreen = ({ navigation, route }) => {
       { cancelable: false }
     );
   };
+  
   // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
   useEffect(() => {
     setStoredNumber([...storedNumberExample]); //매장번호
     setCategoryNumber(storedCategoryNumberExample); //포스번호
   }, [storedNumberExample, storedCategoryNumberExample]);
+
   // 로그인,로그아웃 시 isLoggedIn 확인:
   useEffect(() => {
     if (isLoggedIn) {
@@ -173,36 +176,15 @@ const LoginScreen = ({ navigation, route }) => {
     };
     fetchModified();
   }, [isLoggedIn, navigation]);
+
   // Fix.js(식별번호 수정)으로 이동!!
   const handleGoToFix = () => {
     navigation.navigate("Fix");
   };
+
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
-  };
-
-  // 로그인이 성공했을 때 서버와 연결하는 함수
-  const connectToServer = (stCode, posSeq, userId) => {
-    const socket = io("http://10.1.1.13:8025/admin", {
-      query: {
-        stCode,
-        posSeq,
-        userId,
-      },
-    });
-
-    socket.on("connect", () => {
-      console.log("서버와 연결되었습니다.");
-      // 연결되면 필요한 작업 수행
-    });
-
-    socket.on("disconnect", () => {
-      console.log("서버와의 연결이 끊어졌습니다.");
-      // 연결이 끊기면 필요한 작업 수행
-    });
-
-    // 필요한 이벤트 리스너를 추가할 수 있습니다.
   };
 
   // Return 부분
