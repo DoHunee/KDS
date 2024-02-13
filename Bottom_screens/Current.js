@@ -15,9 +15,9 @@ const Current = ({ navigation }) => {
 
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
-    if (data.action === "ready") {
+    if (data.action === "준비완료") {
       dispatch(onReady({ id: data.id }));
-    } else if (data.action === "cancel") {
+    } else if (data.action === "주문취소") {
       cancelOrder(data.id);
     }
   };
@@ -79,7 +79,7 @@ const Current = ({ navigation }) => {
           {/* 주문 목록을 표시하는 OrderList 컴포넌트 */}
           <SafeAreaView>
             <OrderList
-              buttons={["Ready", "Cancel"]}
+              buttons={["준비완료", "주문취소"]}
               itemsData={orders}
               buttonPress={buttonPress}
             />

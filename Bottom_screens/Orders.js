@@ -17,9 +17,9 @@ const Orders = ({ navigation }) => {
 
   // Accept,Decline,즉시수령 버튼 눌렀을대 event
   const handleButtonPress = (data) => {
-    if (data.action === "accept") {
+    if (data.action === "수락") {
       dispatch(onConfirm({ id: data.id }));
-    } else if (data.action === "decline") {
+    } else if (data.action === "거절") {
       declineOrder(data.id);
     } else if (data.action === "즉시수령") {
       // "즉시수령" 버튼을 눌렀을 때 알림 표시
@@ -111,7 +111,7 @@ const Orders = ({ navigation }) => {
             onAcceptAll={handleAcceptAllOrders}
           />
           <OrderList
-            buttons={["Accept", "Decline", "즉시수령"]}
+            buttons={["수락", "거절", "즉시수령"]}
             itemsData={orders}
             buttonPress={handleButtonPress}
           />

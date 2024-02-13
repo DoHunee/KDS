@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet,View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
 import ChooseStatus from "../RightUpBar/ChooseStatus";
