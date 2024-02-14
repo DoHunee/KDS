@@ -10,8 +10,6 @@ import {
   StatusBar,
   FlatList,
   Switch,
-  Modal,
-  TouchableOpacity,
 } from "react-native";
 import menuData from "../assets/data/menu.json"; // 메뉴 데이터 가져오기
 
@@ -26,8 +24,6 @@ const Stock = () => {
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
   const [menuItems, setMenuItems] = useState([]); // 메뉴 아이템 상태 변수 및 설정 함수
-  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 표시 여부 상태 변수 및 설정 함수
-  const [selectedMenuItem, setSelectedMenuItem] = useState(null); // 선택된 메뉴 아이템 상태 변수 및 설정 함수
 
   useEffect(() => {
     setMenuItems(menuData.Menu); // 메뉴 아이템 초기화
@@ -58,15 +54,8 @@ const Stock = () => {
 
   const handleToggleSwitch = (menuItem) => {
     // 스위치 토글 핸들러
-    setSelectedMenuItem(menuItem);
-    setIsModalVisible(true); // 모달 표시
-  };
-
-  const confirmSoldOut = () => {
-    // 품절 여부 확인 핸들러
-    setIsModalVisible(false);
-    const isSoldOut = selectedMenuItem.data.SoldOutYN === "Y" ? false : true;
-    setSoldOut(selectedMenuItem, isSoldOut); // 품절 여부 업데이트
+    const isSoldOut = menuItem.data.SoldOutYN === "Y" ? false : true;
+    setSoldOut(menuItem, isSoldOut); // 품절 여부 업데이트
   };
 
   const renderItem = ({ item }) => (
@@ -80,9 +69,7 @@ const Stock = () => {
             trackColor={{ false: "#767577", true: "#81b0ff" }}
             thumbColor={menu.SoldOutYN === "Y" ? "#f5dd4b" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={() =>
-              handleToggleSwitch({ FCName: item.FCName, data: menu })
-            }
+            onValueChange={() => handleToggleSwitch({ FCName: item.FCName, data: menu })}
             value={menu.SoldOutYN === "Y"}
           />
         </View>
@@ -101,36 +88,6 @@ const Stock = () => {
           contentContainerStyle={styles.listContainer}
         />
       ) : null}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              {selectedMenuItem && selectedMenuItem.data.SoldOutYN === "Y"
-                ? "다시 판매하시겠습니까?" // 품절 상태인 경우
-                : "정말로 품절 처리하시겠습니까?"} 
-            </Text>
-            <View style={styles.modalButtonsContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setIsModalVisible(false)}
-              >
-                <Text style={styles.textStyle}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonConfirm]}
-                onPress={confirmSoldOut}
-              >
-                <Text style={styles.textStyle}>확인</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 };
@@ -200,58 +157,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#333333",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "#f0f8ff", // 화려한 연한 파란색 배경
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    borderColor: "skyblue", // 화려한 파란색 테두리
-    borderWidth: 2,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontSize: 18,
-    color: "#333333",
-  },
-  modalButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  button: {
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-    width: "45%",
-    backgroundColor: "#007bff", // 화려한 파란색 배경
-  },
-  buttonClose: {
-    backgroundColor: "skyblue", // 화려한 빨간색 배경
-  },
-  buttonConfirm: {
-    backgroundColor: "skyblue", // 화려한 초록색 배경
-  },
-  textStyle: {
-    color: "black", // 흰색 텍스트
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });
 
