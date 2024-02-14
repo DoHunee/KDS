@@ -7,6 +7,7 @@ import {
   Platform,
   StyleSheet,
   Dimensions,
+  StatusBar
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -315,6 +316,14 @@ const Sales = () => {
       <ScrollView style={styles.container}>
         {isLoggedIn ? (
           <>
+            {/* 캘린더 부분 */}
+            <CalendarComp
+              markedDates={markedDates}
+              handleCalenderDay={handleCalenderDay}
+              handleSelectToday={handleSelectToday}
+            />
+            
+            
             {/* 매출 나타내는 부분 */}
             <SalesComp
               selectedOrders={selectedOrders}
@@ -325,13 +334,7 @@ const Sales = () => {
               selectedMonthSales={selectedMonthSales}
               handleModal={() => setModalVisible(true)}
             />
-
-            {/* 캘린더 부분 */}
-            <CalendarComp
-              markedDates={markedDates}
-              handleCalenderDay={handleCalenderDay}
-              handleSelectToday={handleSelectToday}
-            />
+            
             
             {/* 모달창을 나타내는 부분 */}
             <ModalComp
@@ -356,15 +359,12 @@ const Sales = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(
+  {
   container: {
-    padding: 20,
-    zIndex: 20000,
-    position: "absolute",
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height, // 모달이 올라올 때 화면 전체를 꽉 채우도록 설정
-    top: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 50,
+    flex : 1,
   },
+
 });
 
 export default Sales;

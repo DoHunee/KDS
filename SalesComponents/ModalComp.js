@@ -179,7 +179,7 @@ const ModalComp = ({
 const styles = StyleSheet.create({
   modalContainer: {
     marginTop: 50,
-    padding: 20,
+    padding: 10,
     backgroundColor: "white",
     flex: 1,
     paddingBottom: 50,

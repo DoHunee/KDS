@@ -1,6 +1,6 @@
 // SalesComp.js
 import React from "react";
-import { Text, View, Button , StyleSheet } from "react-native";
+import { Text, View, Button , StyleSheet  } from "react-native";
 
 const SalesComp = ({
   selectedOrders,
@@ -25,18 +25,16 @@ const SalesComp = ({
       </Text>
       <Text style={styles.monthlySalesText}>
         ■ 당월매출금액({selectedMonthOrders.length}건):{"              "}
-        {selectedMonthSales} 원
+        {selectedMonthSales} 원{"\n"}
       </Text>
-      <View style={styles.lineStyle}></View>
       <Button title="상세보기!" onPress={handleModal} />
     </View>
-  );
-};
+)};
 
 const styles = StyleSheet.create({
   selectedDateInfoContainer: {
-    marginTop: -15,
-    padding: 15,
+    marginTop: 15,
+    padding: 5,
     backgroundColor: "white",
     borderRadius: 10,
   },
@@ -46,7 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#e74c3c",
+    color: "green",
   },
 
   monthlySalesText: {
@@ -54,7 +52,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#27ae60",
+    color: "red",
   },
 
   lineStyle: {
