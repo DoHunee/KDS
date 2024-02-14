@@ -13,7 +13,6 @@ import {
 // import { connectToServer } from "../LoginStack/LoginScreen"; // 소켓 연결 함수 import
 import { io } from "socket.io-client";
 
-
 const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -23,19 +22,18 @@ const Orders = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
   const socket = io("http://10.1.1.13:8025/admin");
 
-  
-
   // 수락,거절 ,즉시수령 버튼 눌렀을대 event
-  const handleButtonPress = (data,stCode) => {
+  const handleButtonPress = (data, stCode) => {
     if (data.action === "수락") {
       dispatch(onConfirm({ id: data.id }));
       // 주문 수락 이벤트 처리
-      socket.emit("acceptOrder", { id: data.id, message: "고객님의 주문이 접수되었습니다!" });
-    } 
-    else if (data.action === "거절") {
+      socket.emit("acceptOrder", {
+        id: data.id,
+        message: "고객님의 주문이 접수되었습니다!",
+      });
+    } else if (data.action === "거절") {
       declineOrder(data.id);
-    } 
-    else if (data.action === "즉시수령") {
+    } else if (data.action === "즉시수령") {
       // "즉시수령" 버튼을 눌렀을 때 알림 표시
       Alert.alert(
         "즉시 수령 확인",
@@ -49,7 +47,11 @@ const Orders = ({ navigation }) => {
             text: "예",
             onPress: () => {
               dispatch(onImmediateReceipt({ id: data.id }));
-              socket.emit("test", { id: data.id, message: "주문하신 제품을 즉시 수령해주세요" });
+              socket.emit("test", {
+                stCode: "1234",
+                id: data.id,
+                message: "주문하신 제품을 즉시 수령해주세요",
+              });
             },
           },
         ],
@@ -90,9 +92,9 @@ const Orders = ({ navigation }) => {
               })
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
-            socket.emit("declineOrder", { 
-              id: orderId, 
-              declineReason: "품절" 
+            socket.emit("declineOrder", {
+              id: orderId,
+              declineReason: "품절",
             });
           },
         },

@@ -38,6 +38,8 @@ const LoginScreen = ({ navigation, route }) => {
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
 
+  const [socket, setSocket] = useState(null); // 소켓 상태 추가
+
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
@@ -78,23 +80,33 @@ const LoginScreen = ({ navigation, route }) => {
   // 로그인 로직
   const handleLogin = () => {
     if (validateCredentials()) {
-      Alert.alert("로그인 성공", "환영합니다!");
-      dispatch(login()); // 전역으로 업데이트
-      setIsLoggedIn(true); // 로컬로 업데이트
-      setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
+      if (!isLoggedIn) { // isLoggedIn 상태 확인
+        dispatch(login()); // 전역으로 업데이트
+        setIsLoggedIn(true); // 로컬로 업데이트
+        setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
+  
+        // stCode, posSeq, userId 값을 설정
+        const stCode = storedNumberExample; //매장번호 (4자리)
+        const posSeq = storedCategoryNumberExample; //포스번호 (2자리)
+        const userId = storedEmployeeIDExample; //직원 ID
+  
+        // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
+        setStoredNumber(["", "", "", ""]);
+        setCategoryNumber("");
+        setEmployeeID("");
+        navigation.navigate("Orders");
+  
+        if (!socket) {
+          // 소켓이 없으면 연결
+          const newSocket = connectToServer(stCode, posSeq, userId);
+          setSocket(newSocket);
+        }
 
-      // stCode, posSeq, userId 값을 설정
-      const stCode = storedNumberExample; //매장번호 (4자리)
-      const posSeq = storedCategoryNumberExample; //포스번호 (2자리)
-      const userId = storedEmployeeIDExample; //직원 ID
-
-      // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
-      setStoredNumber(["", "", "", ""]);
-      setCategoryNumber("");
-      setEmployeeID("");
-      navigation.navigate("Orders");
-
-      connectToServer(stCode, posSeq, userId); //로그인 성공 시 소켓 연결!!!
+        Alert.alert("로그인 성공", "환영합니다!");
+      } else {
+        // 이미 로그인 상태인 경우
+        Alert.alert("로그인 성공", "이미 로그인되어 있습니다.");
+      }
     } else {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
