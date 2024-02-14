@@ -138,7 +138,7 @@ const Stock = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // 흰색 배경
+    backgroundColor: "#FFFFFF",
   },
   listContainer: {
     flexGrow: 1,
@@ -148,30 +148,37 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: "#FFFFFF", // 흰색 테두리
+    borderColor: "#FFFFFF",
     borderRadius: 10,
     padding: 10,
-    backgroundColor: "#87CEEB", // 하늘색 배경
+    backgroundColor: "#87CEEB",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   categoryName: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "wh", // 흰색 텍스트
-    backgroundColor: "#FFFFFF", // 흰색 배경
-    paddingVertical: 8, // 세로 내부 여백 조정
-    paddingHorizontal: 15, // 가로 내부 여백 조정
-    borderRadius: 20, // 둥근 모서리 조정
+    color: "white",
+    backgroundColor: "#007bff", // 화려한 파란색 배경
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
     textAlign: "center",
-    shadowColor: "#000", // 그림자 색상 추가
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.3, // 그림자 투명도 조정
-    shadowRadius: 3, // 그림자 반경 조정
-    elevation: 5, // 안드로이드 그림자 효과 추가
-    backgroundColor: "#87CEEB", // 하늘색 배경
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   menuItem: {
     flexDirection: "row",
@@ -180,7 +187,15 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "#FFFFFF", // 흰색 배경
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
   },
   menuName: {
     fontSize: 18,
@@ -195,7 +210,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white", // 하늘색 배경
+    backgroundColor: "#f0f8ff", // 화려한 연한 파란색 배경
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -206,15 +221,15 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    borderColor: "black", // 검은색 테두리
-    borderWidth: 2, // 테두리 두께
+    borderColor: "skyblue", // 화려한 파란색 테두리
+    borderWidth: 2,
     elevation: 5,
   },
-
   modalText: {
     marginBottom: 15,
     textAlign: "center",
     fontSize: 18,
+    color: "#333333",
   },
   modalButtonsContainer: {
     flexDirection: "row",
@@ -226,16 +241,16 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     width: "45%",
-    backgroundColor: "#FFFFFF", // 흰색 배경
+    backgroundColor: "#007bff", // 화려한 파란색 배경
   },
   buttonClose: {
-    backgroundColor: "skyblue",
+    backgroundColor: "skyblue", // 화려한 빨간색 배경
   },
   buttonConfirm: {
-    backgroundColor: "skyblue",
+    backgroundColor: "skyblue", // 화려한 초록색 배경
   },
   textStyle: {
-    color: "#333333",
+    color: "black", // 흰색 텍스트
     fontWeight: "bold",
     textAlign: "center",
   },
