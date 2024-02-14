@@ -1,144 +1,241 @@
-// Stock.js
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Text, Button, Alert, StyleSheet, SafeAreaView, StatusBar, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Alert,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  FlatList,
+  Switch,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
+import menuData from "../assets/data/menu.json"; // 메뉴 데이터 가져오기
 
 const Stock = () => {
-  // 메뉴 데이터 초기화
-  const MENU_DATA = {
-    Menu: [
-      { name: "Cheeseburger", isSoldOut: false },
-      { name: "1955burger", isSoldOut: false },
-      { name: "Big Mac", isSoldOut: false },
-      { name: "Hamburger", isSoldOut: false },
-      { name: "Supremeburger", isSoldOut: false },
-      { name: "Pizza", isSoldOut: false },
-      { name: "Potato Pizza", isSoldOut: false },
-      { name: "sweet-Potato Pizza", isSoldOut: false },
-      { name: "pepperoni Pizza", isSoldOut: false },
-      { name: "Cheese Pizza", isSoldOut: false },
-      { name: "Hawaiian Pizza", isSoldOut: false },
-      { name: "Hot Pizza", isSoldOut: false },
-      { name: "chicago Pizza", isSoldOut: false },
-      { name: "Napolitana Pizza", isSoldOut: false },
-      { name: "Pepsi", isSoldOut: false },
-      { name: "Coca-Cola", isSoldOut: false },
-      
-      // ... 더 많은 데이터 추가 가능
-    ],
-  };
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux store에서 로그인 상태 가져오기
 
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
-  // 로그인 관련
   useEffect(() => {
     if (!isLoggedIn) {
-      // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+      // 만약 로그인 상태가 아니라면
+      // Alert.alert("Login required", "Login is required before use."); // 로그인이 필요하다는 알림 표시 (주석 처리됨)
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
-  
-  const StockScreen = () => {
-    const [menuData, setMenuData] = useState(MENU_DATA);
+  const [menuItems, setMenuItems] = useState([]); // 메뉴 아이템 상태 변수 및 설정 함수
+  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 표시 여부 상태 변수 및 설정 함수
+  const [selectedMenuItem, setSelectedMenuItem] = useState(null); // 선택된 메뉴 아이템 상태 변수 및 설정 함수
 
-    // 진짜 판매중지할건지 Alert 띄워주는!
-    const confirmSoldOut = (menuName, isSoldOut) => {
-      Alert.alert(
-        "확인",
-        isSoldOut
-        ? `'${menuName}'을(를) 다시 판매하시겠습니까?`
-        : `'${menuName}'을(를) 판매 중지하시겠습니까?`,
-        [
-          {
-            text: "취소",
-            style: "cancel",
-          },
-          {
-            text: "확인",
-            onPress: () => {
-              // 판매 중지 상태를 토글합니다
-              const updatedMenuData = {
-                ...menuData,
-                Menu: menuData.Menu.map((item) =>
-                  item.name === menuName
-                    ? { ...item, isSoldOut: !isSoldOut }
-                    : item
-                ),
+  useEffect(() => {
+    setMenuItems(menuData.Menu); // 메뉴 아이템 초기화
+  }, []);
+
+  const setSoldOut = (menuItem, isSoldOut) => {
+    // 품절 여부 설정 함수
+    const updatedMenuItems = menuItems.map((section) => {
+      if (section.FCName === menuItem.FCName) {
+        const updatedSection = {
+          ...section,
+          data: section.data.map((menu) => {
+            if (menu.MICode === menuItem.data.MICode) {
+              return {
+                ...menu,
+                SoldOutYN: isSoldOut ? "Y" : "N", // 품절 여부 업데이트
               };
-              setMenuData(updatedMenuData);
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-    };
-
-    // 여기서 색 변환 다 되는거야!!
-    const renderItem = ({ item }) => (
-      <View
-        style={[
-          styles.menuItem,
-          { borderColor: item.isSoldOut ? "red" : "skyblue" },
-        ]}
-      >
-        <Text
-          style={[
-            styles.menuName,
-            { color: item.isSoldOut ? "red" : "black" },
-          ]}
-        >
-          {item.name}
-        </Text>
-        <Button
-          title={item.isSoldOut ? "품절" : "판매중"}
-          color={item.isSoldOut ? "red" : "blue"}
-          onPress={() => confirmSoldOut(item.name, item.isSoldOut)}
-        />
-      </View>
-    );
-
-    return (
-      <SafeAreaView style={styles.container}>
-        {isLoggedIn ? (
-          <FlatList
-            data={menuData.Menu}
-            keyExtractor={(item) => item.name}
-            renderItem={renderItem}
-            contentContainerStyle={styles.listContainer}
-          />
-        ) : null}
-        </SafeAreaView>
-    );
+            }
+            return menu;
+          }),
+        };
+        return updatedSection;
+      }
+      return section;
+    });
+    setMenuItems(updatedMenuItems); // 메뉴 아이템 업데이트
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
+  const handleToggleSwitch = (menuItem) => {
+    // 스위치 토글 핸들러
+    setSelectedMenuItem(menuItem);
+    setIsModalVisible(true); // 모달 표시
+  };
 
-    listContainer: {
-      flexGrow: 1, // FlatList가 화면 크기에 맞게 늘어나도록 수정
-      backgroundColor: "white", // 흰색 배경 추가
-      overflow: "hidden", // 자식 컴포넌트를 프레임 내에 유지
-    },
+  const confirmSoldOut = () => {
+    // 품절 여부 확인 핸들러
+    setIsModalVisible(false);
+    const isSoldOut = selectedMenuItem.data.SoldOutYN === "Y" ? false : true;
+    setSoldOut(selectedMenuItem, isSoldOut); // 품절 여부 업데이트
+  };
 
-    menuItem: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: 15, // 여백을 더 늘렸습니다
-      borderBottomWidth: 2, // 더 굵은 하단 경계선으로 변경했습니다
-      borderRadius: 10, // 둥근 모서리를 추가했습니다
-      marginVertical: 5, // 수직 마진을 추가하여 항목 간격을 더 조절했습니다
-    },
-    menuName: {
-      fontSize: 18, // 폰트 크기를 더 크게 조절했습니다
-      fontWeight: "bold", // 굵은 폰트로 변경했습니다
-    },
-  });
+  const renderItem = ({ item }) => (
+    // FlatList 아이템 렌더링 함수
+    <View style={styles.sectionContainer}>
+      <Text style={styles.categoryName}>{item.FCName}</Text>
+      {item.data.map((menu) => (
+        <View key={menu.MICode} style={styles.menuItem}>
+          <Text style={styles.menuName}>{menu.MISimpleName}</Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={menu.SoldOutYN === "Y" ? "#f5dd4b" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() =>
+              handleToggleSwitch({ FCName: item.FCName, data: menu })
+            }
+            value={menu.SoldOutYN === "Y"}
+          />
+        </View>
+      ))}
+    </View>
+  );
 
-  return <StockScreen />;
+  return (
+    <SafeAreaView style={styles.container}>
+      {isLoggedIn ? (
+        // 로그인 상태에 따른 화면 출력
+        <FlatList
+          data={menuItems}
+          keyExtractor={(item) => item.FCName}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContainer}
+        />
+      ) : null}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              {selectedMenuItem && selectedMenuItem.data.SoldOutYN === "Y"
+                ? "다시 판매하시겠습니까?" // 품절 상태인 경우
+                : "정말로 품절 처리하시겠습니까?"} 
+            </Text>
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setIsModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonConfirm]}
+                onPress={confirmSoldOut}
+              >
+                <Text style={styles.textStyle}>확인</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF", // 흰색 배경
+  },
+  listContainer: {
+    flexGrow: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  sectionContainer: {
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: "#FFFFFF", // 흰색 테두리
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: "#87CEEB", // 하늘색 배경
+  },
+  categoryName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "white", // 흰색 텍스트
+    backgroundColor: "#FFFFFF", // 흰색 배경
+    paddingVertical: 8, // 세로 내부 여백 조정
+    paddingHorizontal: 15, // 가로 내부 여백 조정
+    borderRadius: 20, // 둥근 모서리 조정
+    textAlign: "center",
+    shadowColor: "#000", // 그림자 색상 추가
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3, // 그림자 투명도 조정
+    shadowRadius: 3, // 그림자 반경 조정
+    elevation: 5, // 안드로이드 그림자 효과 추가
+    backgroundColor: "#87CEEB", // 하늘색 배경
+  },
+  menuItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: "#FFFFFF", // 흰색 배경
+  },
+  menuName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333333",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#87CEEB", // 하늘색 배경
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 18,
+  },
+  modalButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    width: "45%",
+    backgroundColor: "#FFFFFF", // 흰색 배경
+  },
+  buttonClose: {
+    backgroundColor: "#00FF00",
+  },
+  buttonConfirm: {
+    backgroundColor: "#FF0000",
+  },
+  textStyle: {
+    color: "#333333",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
 
 export default Stock;

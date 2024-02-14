@@ -1,0 +1,229 @@
+{
+"Menu":[
+  {
+    "FCName": "음료",
+    "FCOrderNo": 1,
+    "data": [
+      {
+        "MICode": "0000002967",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093cola.png",
+        "MIPrice": 2500,
+        "MISimpleName": "코카콜라",
+        "OrderNo": 4,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002968",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093cidar.png",
+        "MIPrice": 2500,
+        "MISimpleName": "스프라이트",
+        "OrderNo": 5,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002982", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093lemonade.png", 
+        "MIPrice": 3000, 
+        "MISimpleName": "에이드(레몬)", 
+        "OrderNo": 19, 
+        "SoldOutYN": "N"
+      }, 
+      {
+        "MICode": "0000002984", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093grapeade.png", 
+        "MIPrice": 3000, 
+        "MISimpleName": "에이드(청포도)", 
+        "OrderNo": 20, 
+        "SoldOutYN": "N"
+    }, 
+    {
+      "MICode": "0000002985", 
+      "MIImg": "http://10.1.1.13:3000/images/itemImg/0093orangejuice.png", 
+      "MIPrice": 2500, 
+      "MISimpleName": "오렌지쥬스(*)", 
+      "OrderNo": 21, 
+      "SoldOutYN": "N"
+    }, 
+    {
+      "MICode": "0000002986", 
+      "MIImg": "http://10.1.1.13:3000/images/itemImg/0093coffeehot.png", 
+      "MIPrice": 3000, 
+      "MISimpleName": "커피(핫)", 
+      "OrderNo": 22, 
+      "SoldOutYN": "N"
+    }, 
+    {
+      "MICode": "0000002987", 
+      "MIImg": "http://10.1.1.13:3000/images/itemImg/0093coffeeice.png", 
+      "MIPrice": 3500, 
+      "MISimpleName": "커피(아이스)", 
+      "OrderNo": 23, 
+      "SoldOutYN": "N"}
+    ]
+  },
+
+  {
+    "FCName": "단품",
+    "FCOrderNo": 2,
+    "data": [
+      {
+        "MICode": "0000002969",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093cyberber.png",
+        "MIPrice": 5200,
+        "MISimpleName": "싸이버거",
+        "OrderNo": 6,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002971",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093deepcheese.png",
+        "MIPrice": 6100,
+        "MISimpleName": "딥치즈버거",
+        "OrderNo": 8,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002973", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093whitegarlic.png", 
+        "MIPrice": 6300, 
+        "MISimpleName": "화이트갈릭버거", 
+        "OrderNo": 10, 
+        "SoldOutYN": "N"
+      }, 
+      {
+        "MICode": "0000002975", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093shrimp.png", 
+        "MIPrice": 4300, 
+        "MISimpleName": 
+        "통새우버거", 
+        "OrderNo": 12, 
+        "SoldOutYN": "N"
+      }, 
+      {
+        "MICode": "0000002977", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093bulgogi.png", 
+        "MIPrice": 4300, 
+        "MISimpleName": "불고기버거", 
+        "OrderNo": 14, 
+        "SoldOutYN": "N"}
+    ]
+  },
+  {
+    "FCName": "세트",
+    "FCOrderNo": 3,
+    "data": [
+      {
+        "MICode": "0000002970",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093cyberber.png",
+        "MIPrice": 7500,
+        "MISimpleName": "싸이버거 세트",
+        "OrderNo": 7,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002972",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093deepcheese.png",
+        "MIPrice": 8100,
+        "MISimpleName": "딥치즈버거 세트",
+        "OrderNo": 9,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002974", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093whitegarlic.png", 
+        "MIPrice": 8500, 
+        "MISimpleName": "화이트갈릭버거 세트", 
+        "OrderNo": 11, 
+        "SoldOutYN": "N"
+      }, 
+      {
+        "MICode": "0000002976", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093shrimp.png", 
+        "MIPrice": 6800, 
+        "MISimpleName": "통새 우버거 세트", 
+        "OrderNo": 13, 
+        "SoldOutYN": "N"
+      }, 
+      {
+        "MICode": "0000002978", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093bulgogi.png", 
+        "MIPrice": 6800, 
+        "MISimpleName": "불고기버거 세트", 
+        "OrderNo": 15, 
+        "SoldOutYN": "N"}
+
+    ]
+  },
+  {
+    "FCName": "치킨",
+    "FCOrderNo": 4,
+    "data": [
+      {
+        "MICode": "0000002979",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093soonsal.png",
+        "MIPrice": 10400,
+        "MISimpleName": "순살치킨(8조각)",
+        "OrderNo": 16,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002980",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093kayjoon.png",
+        "MIPrice": 12500,
+        "MISimpleName": "케이준강정",
+        "OrderNo": 17,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002981", 
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093friedchicken.png", 
+        "MIPrice": 17000, 
+        "MISimpleName": "후라이드치킨(홀)", 
+        "OrderNo": 18, 
+        "SoldOutYN": "N"}
+    ]
+  },
+  {
+    "FCName": "사이드",
+    "FCOrderNo": 5,
+    "data": [
+      {
+        "MICode": "0000002989",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093cheesestick.png",
+        "MIPrice": 2500,
+        "MISimpleName": "치즈스틱(2조각)",
+        "OrderNo": 24,
+        "SoldOutYN": "N"
+      },
+      {
+        "MICode": "0000002990",
+        "MIImg": "http://10.1.1.13:3000/images/itemImg/0093nuget.png",
+        "MIPrice": 6500,
+        "MISimpleName": "할라피뇨너겟(13조각)",
+        "OrderNo": 25,
+        "SoldOutYN": "N"
+      },
+      {"MICode": "0000002991", 
+      "MIImg": "http://10.1.1.13:3000/images/itemImg/0093potato.png", 
+      "MIPrice": 2200, 
+      "MISimpleName": "케이준양념감자(소)", 
+      "OrderNo": 26, "SoldOutYN": "N"
+    }, 
+    {
+      "MICode": "0000002992", 
+      "MIImg": "http://10.1.1.13:3000/images/itemImg/0093potato.png", 
+      "MIPrice": 3800, 
+      "MISimpleName": "케이준양념감자(중)", 
+      "OrderNo": 27, 
+      "SoldOutYN": "N"
+    }, 
+    {"MICode": "0000005073", 
+    "MIImg": "http://10.1.1.13:3000/images/itemImg/0093potato.png", 
+    "MIPrice": 3800, 
+    "MISimpleName": "케이준양념감자(대)", 
+    "OrderNo": 29, 
+    "SoldOutYN": "N"}
+    ]
+  }
+]
+}
