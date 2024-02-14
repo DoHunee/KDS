@@ -28,10 +28,8 @@ const LoginScreen = ({ navigation, route }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
-  const [storedCategoryNumberExample, setStoredCategoryNumberExample] =
-    useState("5");
-  const [storedEmployeeIDExample, setStoredEmployeeIDExample] =
-    useState("6789012");
+  const [storedCategoryNumberExample, setStoredCategoryNumberExample] =useState("5");
+  const [storedEmployeeIDExample, setStoredEmployeeIDExample] =useState("6789012");
 
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
@@ -49,17 +47,17 @@ const LoginScreen = ({ navigation, route }) => {
       nextRef.current.focus();
     }
   };
+  
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
-    const enteredNumber = storedNumberString + categoryNumber + employeeID;
-
     return (
       storedNumberString === storedNumberExample &&
       categoryNumber === storedCategoryNumberExample &&
       employeeID === storedEmployeeIDExample
     );
   };
+
   // Fix.js,Manager.js에서 받아온 수정된 식별번호들 끌어오기!
   // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
   // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
@@ -77,6 +75,7 @@ const LoginScreen = ({ navigation, route }) => {
       // 에러 처리 로직 추가
     }
   };
+
   // 로그인 로직
   const handleLogin = () => {
     if (validateCredentials()) {
@@ -85,24 +84,18 @@ const LoginScreen = ({ navigation, route }) => {
         setIsLoggedIn(true); // 로컬로 업데이트
         setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
   
-        // stCode, posSeq, userId 값을 설정
-        const stCode = storedNumberExample; //매장번호 (4자리)
-        const posSeq = storedCategoryNumberExample; //포스번호 (2자리)
-        const userId = storedEmployeeIDExample; //직원 ID
-  
+        // 로그인 성공 시 소켓 연결 시도
+        if (!socket) {
+          const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
+          setSocket(newSocket);
+        }
+
+        Alert.alert("로그인 성공", "환영합니다!"); 
         // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
         setStoredNumber(["", "", "", ""]);
         setCategoryNumber("");
         setEmployeeID("");
         navigation.navigate("Orders");
-  
-        if (!socket) {
-          // 소켓이 없으면 연결
-          const newSocket = connectToServer(stCode, posSeq, userId);
-          setSocket(newSocket);
-        }
-
-        Alert.alert("로그인 성공", "환영합니다!");
       } else {
         // 이미 로그인 상태인 경우
         Alert.alert("로그인 성공", "이미 로그인되어 있습니다.");
@@ -126,7 +119,11 @@ const LoginScreen = ({ navigation, route }) => {
           text: "로그아웃",
           onPress: async () => {
             dispatch(logout()); // 전역으로 업데이트
-            setIsLoggedIn(false);
+            setIsLoggedIn(false); // 로컬 상태 업데이트
+            if (socket) {
+              socket.disconnect(); // 소켓 연결 해제
+              setSocket(null); // 소켓 상태 초기화
+            }
           },
         },
       ],
@@ -198,6 +195,24 @@ const LoginScreen = ({ navigation, route }) => {
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
   };
+
+  useEffect(() => {
+    // 로그인 상태가 true로 변경되고, 현재 소켓 연결이 없을 때만 소켓 연결 시도
+    if (isLoggedIn && !socket) {
+      // 소켓 연결
+      const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
+      setSocket(newSocket);
+    }
+  
+    // 로그아웃 시 또는 컴포넌트 언마운트 시 소켓 연결 해제
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        setSocket(null); // 소켓 상태 초기화
+      }
+    };
+  // 의존성 배열에서 socket을 제거하여, isLoggedIn 상태 변화에만 반응하도록 변경
+  }, [isLoggedIn]); 
 
   // Return 부분
   return (

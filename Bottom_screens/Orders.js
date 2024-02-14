@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import { StyleSheet, SafeAreaView, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
@@ -10,7 +10,6 @@ import {
   onDecline,
   onImmediateReceipt,
 } from "../store/storeSlice";
-// import { connectToServer } from "../LoginStack/LoginScreen"; // 소켓 연결 함수 import
 import { io } from "socket.io-client";
 
 const Orders = ({ navigation }) => {
@@ -20,14 +19,27 @@ const Orders = ({ navigation }) => {
     (state) => state.OrdersDistrubutionSclie.pending
   );
   const [orders, setOrders] = useState([]);
-  const socket = io("http://10.1.1.13:8025/admin");
+  const socket = useRef(null);
+
+  // 소켓 여러번 접근하는 문제를 해결하기 위해!
+  useEffect(() => {
+    // 컴포넌트 마운트 시 소켓 연결 생성
+    socket.current = io("http://10.1.1.13:8025/admin");
+
+    // 컴포넌트 언마운트 시 소켓 연결 종료
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, []);
 
   // 수락,거절 ,즉시수령 버튼 눌렀을대 event
   const handleButtonPress = (data, stCode) => {
     if (data.action === "수락") {
       dispatch(onConfirm({ id: data.id }));
       // 주문 수락 이벤트 처리
-      socket.emit("acceptOrder", {
+      socket.current.emit("acceptOrder", {
         id: data.id,
         message: "고객님의 주문이 접수되었습니다!",
       });
@@ -47,7 +59,7 @@ const Orders = ({ navigation }) => {
             text: "예",
             onPress: () => {
               dispatch(onImmediateReceipt({ id: data.id }));
-              socket.emit("test", {
+              socket.current.emit("test", {
                 stCode: "1234",
                 id: data.id,
                 message: "주문하신 제품을 즉시 수령해주세요",
@@ -76,7 +88,7 @@ const Orders = ({ navigation }) => {
               })
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
-            socket.emit("declineOrder", {
+            socket.current.emit("declineOrder", {
               id: orderId,
               declineReason: "재료소진",
             });
@@ -92,7 +104,7 @@ const Orders = ({ navigation }) => {
               })
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
-            socket.emit("declineOrder", {
+            socket.current.emit("declineOrder", {
               id: orderId,
               declineReason: "품절",
             });
