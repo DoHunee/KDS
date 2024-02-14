@@ -28,8 +28,10 @@ const LoginScreen = ({ navigation, route }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
-  const [storedCategoryNumberExample, setStoredCategoryNumberExample] =useState("5");
-  const [storedEmployeeIDExample, setStoredEmployeeIDExample] =useState("6789012");
+  const [storedCategoryNumberExample, setStoredCategoryNumberExample] =
+    useState("5");
+  const [storedEmployeeIDExample, setStoredEmployeeIDExample] =
+    useState("6789012");
 
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
@@ -47,7 +49,7 @@ const LoginScreen = ({ navigation, route }) => {
       nextRef.current.focus();
     }
   };
-  
+
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
@@ -79,23 +81,16 @@ const LoginScreen = ({ navigation, route }) => {
   // 로그인 로직
   const handleLogin = () => {
     if (validateCredentials()) {
-      if (!isLoggedIn) { // isLoggedIn 상태 확인
+      if (!isLoggedIn) {
         dispatch(login()); // 전역으로 업데이트
         setIsLoggedIn(true); // 로컬로 업데이트
         setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
-  
-        // 로그인 성공 시 소켓 연결 시도
-        if (!socket) {
-          const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
-          setSocket(newSocket);
-        }
 
-        Alert.alert("로그인 성공", "환영합니다!"); 
+        Alert.alert("로그인 성공", "환영합니다!");
         // 추가: 로그인 성공 시 사용자가 입력한 값을 초기화
         setStoredNumber(["", "", "", ""]);
         setCategoryNumber("");
         setEmployeeID("");
-        navigation.navigate("Orders");
       } else {
         // 이미 로그인 상태인 경우
         Alert.alert("로그인 성공", "이미 로그인되어 있습니다.");
@@ -130,61 +125,6 @@ const LoginScreen = ({ navigation, route }) => {
       { cancelable: false }
     );
   };
-  
-  // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
-  useEffect(() => {
-    setStoredNumber([...storedNumberExample]); //매장번호
-    setCategoryNumber(storedCategoryNumberExample); //포스번호
-  }, [storedNumberExample, storedCategoryNumberExample]);
-
-  // 로그인,로그아웃 시 isLoggedIn 확인:
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigation.navigate("Orders"); //여기에 코드가 있어도 로그인시 orders로 이동
-      console.log("로그인 후 isLoggedIn:", isLoggedIn);
-    } else {
-      console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
-    }
-    // AsyncStorage에서 수정된 값을 가져와서 반영
-    const fetchModified = async () => {
-      try {
-        const modifiedEmployeeID = await AsyncStorage.getItem(
-          "modifiedEmployeeID"
-        );
-        const storedNumberExample = await AsyncStorage.getItem(
-          "storedNumberExample"
-        );
-        const storedCategoryNumberExample = await AsyncStorage.getItem(
-          "storedCategoryNumberExample"
-        );
-        if (modifiedEmployeeID) {
-          handleUpdateValues(
-            "modifiedEmployeeID",
-            modifiedEmployeeID,
-            setStoredEmployeeIDExample
-          );
-        }
-        if (storedNumberExample) {
-          handleUpdateValues(
-            "storedNumberExample",
-            storedNumberExample,
-            setStoredNumberExample
-          );
-        }
-        if (storedCategoryNumberExample) {
-          handleUpdateValues(
-            "storedCategoryNumberExample",
-            storedCategoryNumberExample,
-            setStoredCategoryNumberExample
-          );
-        }
-      } catch (error) {
-        console.error("AsyncStorage 에러:", error);
-        // 에러 처리 로직 추가
-      }
-    };
-    fetchModified();
-  }, [isLoggedIn, navigation]);
 
   // Fix.js(식별번호 수정)으로 이동!!
   const handleGoToFix = () => {
@@ -196,23 +136,60 @@ const LoginScreen = ({ navigation, route }) => {
     Keyboard.dismiss();
   };
 
+  // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
   useEffect(() => {
-    // 로그인 상태가 true로 변경되고, 현재 소켓 연결이 없을 때만 소켓 연결 시도
-    if (isLoggedIn && !socket) {
-      // 소켓 연결
-      const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
-      setSocket(newSocket);
+    setStoredNumber([...storedNumberExample]); //매장번호
+    setCategoryNumber(storedCategoryNumberExample); //포스번호
+  }, [storedNumberExample, storedCategoryNumberExample]);
+
+  // isLoggedIn 상태 변화에 반응하여 많은 기능을 수행하는 useEffect 부분!
+  useEffect(() => {
+    // 로그인 상태가 true일 때 실행되는 로직
+    if (isLoggedIn) {
+      navigation.navigate("Orders");
+      console.log("로그인 후 isLoggedIn:", isLoggedIn);
+      // 현재 소켓 연결이 없을 때만 소켓 연결 시도
+      if (!socket) {
+        const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
+        setSocket(newSocket);
+      }
+    } else {
+      console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
+      // 이 부분의 로직은 useEffect의 반환 함수로 이동됩니다.
     }
   
-    // 로그아웃 시 또는 컴포넌트 언마운트 시 소켓 연결 해제
+    // AsyncStorage에서 수정된 값을 가져와 반영하는 로직
+    const fetchModified = async () => {
+      try {
+        const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
+        const storedNumberExample = await AsyncStorage.getItem("storedNumberExample");
+        const storedCategoryNumberExample = await AsyncStorage.getItem("storedCategoryNumberExample");
+        
+        if (modifiedEmployeeID) {
+          handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
+        }
+        if (storedNumberExample) {
+          handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
+        }
+        if (storedCategoryNumberExample) {
+          handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
+        }
+      } catch (error) {
+        console.error("AsyncStorage 에러:", error);
+      }
+    };
+  
+    fetchModified();
+  
+    // 컴포넌트 언마운트 또는 로그아웃 시 소켓 연결 해제
+    // 이 부분이 로그아웃과 컴포넌트 언마운트 시 소켓 연결을 해제하는 유일한 부분입니다.
     return () => {
       if (socket) {
         socket.disconnect();
-        setSocket(null); // 소켓 상태 초기화
+        setSocket(null);
       }
     };
-  // 의존성 배열에서 socket을 제거하여, isLoggedIn 상태 변화에만 반응하도록 변경
-  }, [isLoggedIn]); 
+  }, [isLoggedIn, navigation]); // 의존성 배열에 navigation 추가
 
   // Return 부분
   return (
