@@ -189,7 +189,7 @@ const LoginScreen = ({ navigation, route }) => {
         setSocket(null);
       }
     };
-  }, [isLoggedIn, navigation]); // 의존성 배열에 navigation 추가
+  }, [isLoggedIn]); // 의존성 배열에 navigation 추가
 
   // Return 부분
   return (
