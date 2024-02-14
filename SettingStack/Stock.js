@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "white", // 흰색 텍스트
+    color: "wh", // 흰색 텍스트
     backgroundColor: "#FFFFFF", // 흰색 배경
     paddingVertical: 8, // 세로 내부 여백 조정
     paddingHorizontal: 15, // 가로 내부 여백 조정
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#87CEEB", // 하늘색 배경
+    backgroundColor: "white", // 하늘색 배경
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -206,8 +206,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+    borderColor: "black", // 검은색 테두리
+    borderWidth: 2, // 테두리 두께
     elevation: 5,
   },
+
   modalText: {
     marginBottom: 15,
     textAlign: "center",
@@ -226,10 +229,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF", // 흰색 배경
   },
   buttonClose: {
-    backgroundColor: "#00FF00",
+    backgroundColor: "skyblue",
   },
   buttonConfirm: {
-    backgroundColor: "#FF0000",
+    backgroundColor: "skyblue",
   },
   textStyle: {
     color: "#333333",
