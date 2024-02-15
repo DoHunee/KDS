@@ -1,6 +1,6 @@
 // Stock.js
 import React, { useEffect, useState, useRef } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -24,20 +24,29 @@ const Stock = () => {
     }
     // socket.current = io("http://10.1.1.13:8025/admin");
     // socket.current.emit("soldOutMenuList", { stCode: "0093" }); //서버에 연결 시도!!
-    setMenuItems(menuData.SoldOutMenu); // 로그인시!메뉴 아이템 초기화
+    setMenuItems(menuData); // 로그인시!메뉴 아이템 초기화
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
-
 
   // 스위치 토글 핸들러
   const toggleSoldOut = (item, isSideMenu = false, parentMICode = null) => {
     const updatedMenuItems = menuItems.map((menuItem) => {
       if (isSideMenu && menuItem.MICode === parentMICode) {
+        // 부메뉴 아이템 처리
         const updatedSideMenus = menuItem.SideMenus.map((sideMenu) =>
-          sideMenu.SMCode === item.SMCode ? { ...sideMenu, SSoldOutYN: sideMenu.SSoldOutYN === "Y" ? "N" : "Y" } : sideMenu
+          sideMenu.SMCode === item.SMCode
+            ? {
+                ...sideMenu,
+                SSoldOutYN: sideMenu.SSoldOutYN === "Y" ? "N" : "Y",
+              }
+            : sideMenu
         );
         return { ...menuItem, SideMenus: updatedSideMenus };
       } else if (!isSideMenu && menuItem.MICode === item.MICode) {
-        return { ...menuItem, SoldOutYN: menuItem.SoldOutYN === "Y" ? "N" : "Y" };
+        // 메인 메뉴 아이템 처리
+        return {
+          ...menuItem,
+          SoldOutYN: menuItem.SoldOutYN === "Y" ? "N" : "Y",
+        };
       }
       return menuItem;
     });
