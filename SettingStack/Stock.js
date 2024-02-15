@@ -1,36 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState, useRef } from "react";
+import {  useSelector } from "react-redux";
 import {
   View,
   Text,
-  Button,
-  Alert,
   StyleSheet,
   SafeAreaView,
-  StatusBar,
   FlatList,
   Switch,
 } from "react-native";
 import menuData from "../assets/data/menu.json"; // 메뉴 데이터 가져오기
+import { io } from "socket.io-client";
 
 const Stock = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux store에서 로그인 상태 가져오기
+  const [menuItems, setMenuItems] = useState([]); // 메뉴 아이템 상태 변수 및 설정 함수
+  const socket = useRef(null);
 
   useEffect(() => {
     if (!isLoggedIn) {
       // 만약 로그인 상태가 아니라면
       // Alert.alert("Login required", "Login is required before use."); // 로그인이 필요하다는 알림 표시 (주석 처리됨)
     }
+    socket.current = io("http://10.1.1.13:8025/admin");
+    socket.current.emit("soldOutMenuList", { stCode: "0093" }); //서버에 연결 시도!!
+    setMenuItems(menuData.Menu); // 로그인시!메뉴 아이템 초기화
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
-  const [menuItems, setMenuItems] = useState([]); // 메뉴 아이템 상태 변수 및 설정 함수
 
-  useEffect(() => {
-    setMenuItems(menuData.Menu); // 메뉴 아이템 초기화
-  }, []);
 
+  // 품절 여부 설정 함수
   const setSoldOut = (menuItem, isSoldOut) => {
-    // 품절 여부 설정 함수
     const updatedMenuItems = menuItems.map((section) => {
       if (section.FCName === menuItem.FCName) {
         const updatedSection = {
@@ -52,8 +51,8 @@ const Stock = () => {
     setMenuItems(updatedMenuItems); // 메뉴 아이템 업데이트
   };
 
+  // 스위치 토글 핸들러
   const handleToggleSwitch = (menuItem) => {
-    // 스위치 토글 핸들러
     const isSoldOut = menuItem.data.SoldOutYN === "Y" ? false : true;
     setSoldOut(menuItem, isSoldOut); // 품절 여부 업데이트
   };

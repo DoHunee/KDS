@@ -147,14 +147,14 @@ const LoginScreen = ({ navigation, route }) => {
     // 로그인 상태가 true일 때 실행되는 로직
     if (isLoggedIn) {
       navigation.navigate("Orders");
-      console.log("로그인 후 isLoggedIn:", isLoggedIn);
+      // console.log("로그인 후 isLoggedIn:", isLoggedIn);
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
       if (!socket) {
         const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
         setSocket(newSocket);
       }
     } else {
-      console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
+      // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
       // 이 부분의 로직은 useEffect의 반환 함수로 이동됩니다.
     }
   

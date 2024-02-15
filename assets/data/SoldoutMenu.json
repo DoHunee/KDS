@@ -1,0 +1,511 @@
+[
+  {
+    "STCode": "0093",
+    "MICode": "0000002899",
+    "MISimpleName": "포장",
+    "OrderNo": 1,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002900",
+    "MISimpleName": "햄버거(할인)",
+    "OrderNo": 2,
+    "DisplayYN": "N",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002904",
+    "MISimpleName": "순살치킨(할인)",
+    "OrderNo": 3,
+    "DisplayYN": "N",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002967",
+    "MISimpleName": "코카콜라",
+    "OrderNo": 4,
+    "DisplayYN": "Y",
+    "SoldOutYN": "Y",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002968",
+    "MISimpleName": "스프라이트",
+    "OrderNo": 5,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002969",
+    "MISimpleName": "싸이버거",
+    "OrderNo": 6,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002970",
+    "MISimpleName": "싸이버거 세트",
+    "OrderNo": 7,
+    "DisplayYN": "Y",
+    "SoldOutYN": "Y",
+    "ActiveYN": "Y",
+    "SideMenus": [
+      {
+        "SMCode": "0000002969",
+        "SMName": "싸이버거",
+        "SMSeq": 1,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002991",
+        "SMName": "케이준양념감자",
+        "SMSeq": 2,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002992",
+        "SMName": "케이준양념감자",
+        "SMSeq": 3,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000005073",
+        "SMName": "케이준양념감자",
+        "SMSeq": 4,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002989",
+        "SMName": "치즈스틱(2조각)",
+        "SMSeq": 5,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002967",
+        "SMName": "코카콜라",
+        "SMSeq": 6,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002968",
+        "SMName": "스프라이트",
+        "SMSeq": 7,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "Y",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002980",
+        "SMName": "케이준강정",
+        "SMSeq": 8,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002981",
+        "SMName": "후라이드치킨(홀)",
+        "SMSeq": 9,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "Y",
+        "SActiveYN": "Y"
+      }
+    ]
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002971",
+    "MISimpleName": "딥치즈버거",
+    "OrderNo": 8,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002972",
+    "MISimpleName": "딥치즈버거 세트",
+    "OrderNo": 9,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": [
+      {
+        "SMCode": "0000002971",
+        "SMName": "딥치즈버거",
+        "SMSeq": 1,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002991",
+        "SMName": "케이준양념감자",
+        "SMSeq": 2,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002992",
+        "SMName": "케이준양념감자",
+        "SMSeq": 3,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000005073",
+        "SMName": "케이준양념감자",
+        "SMSeq": 4,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002989",
+        "SMName": "치즈스틱(2조각)",
+        "SMSeq": 5,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002967",
+        "SMName": "코카콜라",
+        "SMSeq": 6,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002968",
+        "SMName": "스프라이트",
+        "SMSeq": 7,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "Y",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002980",
+        "SMName": "케이준강정",
+        "SMSeq": 8,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002981",
+        "SMName": "후라이드치킨(홀)",
+        "SMSeq": 9,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "Y",
+        "SActiveYN": "Y"
+      }
+    ]
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002973",
+    "MISimpleName": "화이트갈릭버거",
+    "OrderNo": 10,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002974",
+    "MISimpleName": "화이트갈릭버거 세트",
+    "OrderNo": 11,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": [
+      {
+        "SMCode": "0000002973",
+        "SMName": "화이트갈릭버거",
+        "SMSeq": 1,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002991",
+        "SMName": "케이준양념감자",
+        "SMSeq": 2,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002992",
+        "SMName": "케이준양념감자",
+        "SMSeq": 3,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000005073",
+        "SMName": "케이준양념감자",
+        "SMSeq": 4,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002989",
+        "SMName": "치즈스틱(2조각)",
+        "SMSeq": 5,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002967",
+        "SMName": "코카콜라",
+        "SMSeq": 6,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002968",
+        "SMName": "스프라이트",
+        "SMSeq": 7,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "Y",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002980",
+        "SMName": "케이준강정",
+        "SMSeq": 8,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "N",
+        "SActiveYN": "Y"
+      },
+      {
+        "SMCode": "0000002981",
+        "SMName": "후라이드치킨(홀)",
+        "SMSeq": 9,
+        "SDisplayYN": "Y",
+        "SSoldOutYN": "Y",
+        "SActiveYN": "Y"
+      }
+    ]
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002975",
+    "MISimpleName": "통새우버거",
+    "OrderNo": 12,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002976",
+    "MISimpleName": "통새우버거 세트",
+    "OrderNo": 13,
+    "DisplayYN": "Y",
+    "SoldOutYN": "Y",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002977",
+    "MISimpleName": "불고기버거",
+    "OrderNo": 14,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002978",
+    "MISimpleName": "불고기버거 세트",
+    "OrderNo": 15,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002979",
+    "MISimpleName": "순살치킨(8조각)",
+    "OrderNo": 16,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002980",
+    "MISimpleName": "케이준강정",
+    "OrderNo": 17,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002981",
+    "MISimpleName": "후라이드치킨(홀)",
+    "OrderNo": 18,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002982",
+    "MISimpleName": "에이드(레몬)",
+    "OrderNo": 19,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002984",
+    "MISimpleName": "에이드(청포도)",
+    "OrderNo": 20,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002985",
+    "MISimpleName": "오렌지쥬스(*)",
+    "OrderNo": 21,
+    "DisplayYN": "Y",
+    "SoldOutYN": "Y",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002986",
+    "MISimpleName": "커피(핫)",
+    "OrderNo": 22,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002987",
+    "MISimpleName": "커피(아이스)",
+    "OrderNo": 23,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002989",
+    "MISimpleName": "치즈스틱(2조각)",
+    "OrderNo": 24,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002990",
+    "MISimpleName": "할라피뇨너겟(13조각)",
+    "OrderNo": 25,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002991",
+    "MISimpleName": "케이준양념감자(소)",
+    "OrderNo": 26,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000002992",
+    "MISimpleName": "케이준양념감자(중)",
+    "OrderNo": 27,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000005072",
+    "MISimpleName": "케이준양념감자(중)",
+    "OrderNo": 28,
+    "DisplayYN": "N",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  },
+  {
+    "STCode": "0093",
+    "MICode": "0000005073",
+    "MISimpleName": "케이준양념감자(대)",
+    "OrderNo": 29,
+    "DisplayYN": "Y",
+    "SoldOutYN": "N",
+    "ActiveYN": "Y",
+    "SideMenus": []
+  }
+]

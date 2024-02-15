@@ -59,11 +59,13 @@ const Orders = ({ navigation }) => {
             text: "예",
             onPress: () => {
               dispatch(onImmediateReceipt({ id: data.id }));
-              socket.current.emit("test", {
-                stCode: "1234",
-                id: data.id,
-                message: "주문하신 제품을 즉시 수령해주세요",
-              });
+        
+              // socket.current.emit("test", {
+              //   stCode: "1234",
+              //   id: data.id,
+              //   message: "주문하신 제품을 즉시 수령해주세요",
+              // });
+        
             },
           },
         ],
