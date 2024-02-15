@@ -1,3 +1,4 @@
+// Stock.js
 import React, { useEffect, useState, useRef } from "react";
 import {  useSelector } from "react-redux";
 import {
@@ -8,85 +9,78 @@ import {
   FlatList,
   Switch,
 } from "react-native";
-import menuData from "../assets/data/menu.json"; // 메뉴 데이터 가져오기
-import { io } from "socket.io-client";
+import menuData from "../assets/data/SoldoutMenu.json"; // 메뉴 데이터 가져오기
+// import { io } from "socket.io-client";
 
 const Stock = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux store에서 로그인 상태 가져오기
   const [menuItems, setMenuItems] = useState([]); // 메뉴 아이템 상태 변수 및 설정 함수
-  const socket = useRef(null);
+  // const socket = useRef(null);
 
   useEffect(() => {
     if (!isLoggedIn) {
       // 만약 로그인 상태가 아니라면
       // Alert.alert("Login required", "Login is required before use."); // 로그인이 필요하다는 알림 표시 (주석 처리됨)
     }
-    socket.current = io("http://10.1.1.13:8025/admin");
-    socket.current.emit("soldOutMenuList", { stCode: "0093" }); //서버에 연결 시도!!
-    setMenuItems(menuData.Menu); // 로그인시!메뉴 아이템 초기화
+    // socket.current = io("http://10.1.1.13:8025/admin");
+    // socket.current.emit("soldOutMenuList", { stCode: "0093" }); //서버에 연결 시도!!
+    setMenuItems(menuData.SoldOutMenu); // 로그인시!메뉴 아이템 초기화
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
 
-
-  // 품절 여부 설정 함수
-  const setSoldOut = (menuItem, isSoldOut) => {
-    const updatedMenuItems = menuItems.map((section) => {
-      if (section.FCName === menuItem.FCName) {
-        const updatedSection = {
-          ...section,
-          data: section.data.map((menu) => {
-            if (menu.MICode === menuItem.data.MICode) {
-              return {
-                ...menu,
-                SoldOutYN: isSoldOut ? "Y" : "N", // 품절 여부 업데이트
-              };
-            }
-            return menu;
-          }),
-        };
-        return updatedSection;
-      }
-      return section;
-    });
-    setMenuItems(updatedMenuItems); // 메뉴 아이템 업데이트
-  };
-
   // 스위치 토글 핸들러
-  const handleToggleSwitch = (menuItem) => {
-    const isSoldOut = menuItem.data.SoldOutYN === "Y" ? false : true;
-    setSoldOut(menuItem, isSoldOut); // 품절 여부 업데이트
+  const toggleSoldOut = (item, isSideMenu = false, parentMICode = null) => {
+    const updatedMenuItems = menuItems.map((menuItem) => {
+      if (isSideMenu && menuItem.MICode === parentMICode) {
+        const updatedSideMenus = menuItem.SideMenus.map((sideMenu) =>
+          sideMenu.SMCode === item.SMCode ? { ...sideMenu, SSoldOutYN: sideMenu.SSoldOutYN === "Y" ? "N" : "Y" } : sideMenu
+        );
+        return { ...menuItem, SideMenus: updatedSideMenus };
+      } else if (!isSideMenu && menuItem.MICode === item.MICode) {
+        return { ...menuItem, SoldOutYN: menuItem.SoldOutYN === "Y" ? "N" : "Y" };
+      }
+      return menuItem;
+    });
+    setMenuItems(updatedMenuItems);
   };
 
   const renderItem = ({ item }) => (
-    // FlatList 아이템 렌더링 함수
-    <View style={styles.sectionContainer}>
-      <Text style={styles.categoryName}>{item.FCName}</Text>
-      {item.data.map((menu) => (
-        <View key={menu.MICode} style={styles.menuItem}>
-          <Text style={styles.menuName}>{menu.MISimpleName}</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={menu.SoldOutYN === "Y" ? "#f5dd4b" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => handleToggleSwitch({ FCName: item.FCName, data: menu })}
-            value={menu.SoldOutYN === "Y"}
-          />
+    <View style={styles.menuItem}>
+      <Text style={styles.menuName}>{item.MISimpleName}</Text>
+      <Switch
+        trackColor={{ false: "#767577", true: "#81b0ff" }}
+        thumbColor={item.SoldOutYN === "Y" ? "#f5dd4b" : "#f4f3f4"}
+        onValueChange={() => toggleSoldOut(item)}
+        value={item.SoldOutYN === "Y"}
+      />
+      {item.SideMenus && item.SideMenus.length > 0 && (
+        <View style={styles.sideMenuContainer}>
+          {item.SideMenus.map((sideMenu) => (
+            <View key={sideMenu.SMCode} style={styles.sideMenuItem}>
+              <Text style={styles.sideMenuName}>{sideMenu.SMName}</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                thumbColor={sideMenu.SSoldOutYN === "Y" ? "#f5dd4b" : "#f4f3f4"}
+                onValueChange={() => toggleSoldOut(sideMenu, true, item.MICode)}
+                value={sideMenu.SSoldOutYN === "Y"}
+              />
+            </View>
+          ))}
         </View>
-      ))}
+      )}
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {isLoggedIn ? (
-        // 로그인 상태에 따른 화면 출력
+      {isLoggedIn && (
         <FlatList
           data={menuItems}
-          keyExtractor={(item) => item.FCName}
+          keyExtractor={(item) => item.MICode}
           renderItem={renderItem}
           contentContainerStyle={styles.listContainer}
         />
-      ) : null}
+      )}
     </SafeAreaView>
   );
 };

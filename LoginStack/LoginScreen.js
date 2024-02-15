@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncSt
 import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import LoginForm from "./LoginFormComponents/LoginForm";
-import connectToServer from "../Socket";
+import connectToServer from "../Socket/Socket";
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();

@@ -32,4 +32,5 @@ const connectToServer = (stCode, posSeq, userId) => {
   return socket; // 생성된 소켓 반환
 };
 
+
 export default connectToServer;
