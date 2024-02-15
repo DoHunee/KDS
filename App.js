@@ -5,7 +5,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import { AuthProvider, useAuth } from "./AuthContext"; // AuthProvider 추가
+import { AuthProvider, useAuth } from "./auth/AuthContext"; // AuthProvider 추가
 
 import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../auth/AuthContext";
 import { StatusBar } from "expo-status-bar";
 
 import Fix from "./Fix";

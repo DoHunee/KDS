@@ -150,7 +150,7 @@ const LoginScreen = ({ navigation, route }) => {
       // console.log("로그인 후 isLoggedIn:", isLoggedIn);
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
       if (!socket) {
-        const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample);
+        const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample, dispatch);
         setSocket(newSocket);
       }
     } else {
@@ -189,7 +189,7 @@ const LoginScreen = ({ navigation, route }) => {
         setSocket(null);
       }
     };
-  }, [isLoggedIn]); // 의존성 배열에 navigation 추가
+  }, [isLoggedIn]); 
 
   // Return 부분
   return (
