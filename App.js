@@ -5,13 +5,14 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import { AuthProvider, useAuth } from "./auth/AuthContext"; // AuthProvider 추가
+
+import { AuthProvider } from "./auth/AuthContext"; // AuthProvider 추가
+import { SocketProvider } from "./Socket/SocketContext";
 
 import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";
 import Current from "./Bottom_screens/Current";
 import Complete from "./Bottom_screens/Complete";
-import { SocketProvider } from "./Socket/SocketContext";
 
 const Tab = createMaterialBottomTabNavigator();
 

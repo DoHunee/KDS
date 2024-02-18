@@ -5,7 +5,7 @@ import io from "socket.io-client";
 // 서버 주소를 변수로 분리하여 필요에 따라 쉽게 변경할 수 있도록 했습니다.
 const SERVER_URL = "http://211.54.171.41:8025/admin";
 
-const connectToServer = (stCode, posSeq, userId) => {
+const connectToServer = (stCode, posSeq, userId, setData) => {
 
   const socket = io(SERVER_URL, {
     query: {
@@ -28,11 +28,7 @@ const connectToServer = (stCode, posSeq, userId) => {
   socket.on("test", (orderstatus) => {
     console.log("즉시수령 목록:", orderstatus);
   });
-
-  socket.on("soldOutMenuList", (data) => {
-    console.log("socket.js에서  받음:", data);
-  });
-
+  
   
   return socket; // 생성된 소켓 반환
 };

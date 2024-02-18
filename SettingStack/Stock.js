@@ -10,33 +10,35 @@ import {
   Switch,
 } from "react-native";
 // import menuData from "../assets/data/SoldoutMenu.json"; // 메뉴 데이터 가져오기
-import { io } from "socket.io-client";
+import axios from 'axios';
 
 const Stock = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux 스토어에서 로그인 상태 가져오기
-  const [menuItems, setMenuItems] = useState([]); // 메뉴 아이템 상태
-  const socket = useRef(null);// useRef 훅을 통해 소켓 인스턴스 가져오기
+  const [menuItems, setMenuItems] = useState([]);
+
   
+  
+  // 로그인 상태 접근
   useEffect(() => {
-    if (!isLoggedIn) {
-      // 만약 로그인 상태가 아니라면
-      // Alert.alert("Login required", "Login is required before use."); // 로그인이 필요하다는 알림 표시 (주석 처리됨)
-    }
+  if (isLoggedIn) {
+    fetchMenuData(); //API로 데이터 가져오기!!
+  }  
+}, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
-    // 서버로부터 메뉴 리스트 데이터를 받아오는 이벤트 리스너 설정
-    {
-      console.log("로그인 후 서버와도 연결되었습니다!")
-
-      socket.current = io("http://211.54.171.41:8025/admin");
-      socket.current.emit("soldOutMenuList", { stCode: "0093" }); //서버에 연결 시도!!
-      
-      // 컴포넌트 언마운트 시 또는 isLoggedIn 상태가 변경될 때 실행될 정리 함수
-      return () => {
-        socket.current.off("soldOutMenuList"); // 이벤트 리스너 제거
-        socket.current.disconnect(); // 소켓 연결 해제
-      };
+  // 메뉴 데이터를 서버로부터 가져오는 함수
+  const fetchMenuData = async () => {
+    if (!isLoggedIn) return;
+    try {
+      const response = await axios.post('http://211.54.171.41:3000/api/store/findAllItems', { STCode: '0093' }, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      // 여기서 data 구조를 확인하고, 필요한 부분만 추출하여 상태에 저장합니다.
+      // console.log(response);
+      setMenuItems(response.data); // 예를 들어 response.data.Menu 등으로 접근해야 할 수도 있습니다.
+    } catch (error) {
+      console.error("메뉴 데이터 요청 중 오류 발생:", error);
     }
-  }, [isLoggedIn, socket]); // 로그인 상태가 변경될 때마다 실행
+  };
 
   // 스위치 토글 핸들러
   const toggleSoldOut = (item, isSideMenu = false, parentMICode = null) => {
@@ -61,7 +63,7 @@ const Stock = () => {
       }
       return menuItem;
     });
-    setMenuItems(updatedMenuItems);
+    setMenuItems(updatedMenuItems); // 상태 업데이트
   };
 
   // 렌더링 하는 부분!
