@@ -15,16 +15,14 @@ import { io } from "socket.io-client";
 const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const pendingOrders = useSelector(
-    (state) => state.OrdersDistrubutionSclie.pending
-  );
+  const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
   const socket = useRef(null);
 
   // 소켓 여러번 접근하는 문제를 해결하기 위해!
   useEffect(() => {
     // 컴포넌트 마운트 시 소켓 연결 생성
-    socket.current = io("http://10.1.1.13:8025/admin");
+    socket.current = io("http://211.54.171.41:8025/admin");
 
     // 컴포넌트 언마운트 시 소켓 연결 종료
     return () => {
@@ -59,13 +57,11 @@ const Orders = ({ navigation }) => {
             text: "예",
             onPress: () => {
               dispatch(onImmediateReceipt({ id: data.id }));
-        
-              // socket.current.emit("test", {
-              //   stCode: "1234",
-              //   id: data.id,
-              //   message: "주문하신 제품을 즉시 수령해주세요",
-              // });
-        
+              socket.current.emit("test", {
+                stCode: "0093",
+                id: data.id,
+                message: "주문하신 제품을 즉시 수령해주세요",
+              });
             },
           },
         ],

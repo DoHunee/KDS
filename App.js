@@ -11,6 +11,7 @@ import SettingStack from "./SettingStack/SettingStack";
 import Orders from "./Bottom_screens/Orders";
 import Current from "./Bottom_screens/Current";
 import Complete from "./Bottom_screens/Complete";
+import { SocketProvider } from "./Socket/SocketContext";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -18,7 +19,8 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer independent={true}>
-        <AuthProvider>
+        <SocketProvider>
+        <AuthProvider> 
           {/* Color when clicking on the bottom tab navigator */}
           <Tab.Navigator
             initialRouteName="SettingStack"
@@ -86,6 +88,7 @@ export default function App() {
             />
           </Tab.Navigator>
         </AuthProvider>
+        </SocketProvider>
       </NavigationContainer>
     </Provider>
   );
