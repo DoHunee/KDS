@@ -10,30 +10,44 @@ import {
   Switch,
 } from "react-native";
 // import menuData from "../assets/data/SoldoutMenu.json"; // 메뉴 데이터 가져오기
-import axios from 'axios';
+import axios from "axios";
+import { io } from "socket.io-client";
 
 const Stock = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux 스토어에서 로그인 상태 가져오기
-  const { stCode} = useSelector((state) => state.auth);
+  const { stCode } = useSelector((state) => state.auth);
   const [menuItems, setMenuItems] = useState([]);
+  const socket = useRef(null);
 
-  
-  
   // 로그인 상태 접근
   useEffect(() => {
-  if (isLoggedIn) {
-    fetchMenuData(); //API로 데이터 가져오기!!
-  }  
-}, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
+    if (isLoggedIn) {
+      fetchMenuData(); //API로 데이터 가져오기!!
+    }
+  }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
+  useEffect(() => {
+    // 컴포넌트 마운트 시 소켓 연결 생성
+    socket.current = io("http://211.54.171.41:8025/admin");
 
+    // 컴포넌트 언마운트 시 소켓 연결 종료
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, []);
   // 메뉴 데이터를 서버로부터 가져오는 함수
   const fetchMenuData = async () => {
     if (!isLoggedIn) return;
     try {
-      const response = await axios.post('http://211.54.171.41:3000/api/store/findAllItems', { STCode: stCode }, {
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await axios.post(
+        "http://211.54.171.41:3000/api/store/findAllItems",
+        { STCode: stCode },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       // 여기서 data 구조를 확인하고, 필요한 부분만 추출하여 상태에 저장합니다.
       // console.log(response);
       setMenuItems(response.data); // 예를 들어 response.data.Menu 등으로 접근해야 할 수도 있습니다.
@@ -47,21 +61,27 @@ const Stock = () => {
     const updatedMenuItems = menuItems.map((menuItem) => {
       if (isSideMenu && menuItem.MICode === parentMICode) {
         // 부메뉴 아이템 처리
-        const updatedSideMenus = menuItem.SideMenus.map((sideMenu) =>
-          sideMenu.SMCode === item.SMCode
-            ? {
-                ...sideMenu,
-                SSoldOutYN: sideMenu.SSoldOutYN === "Y" ? "N" : "Y",
-              }
-            : sideMenu
-        );
+        const updatedSideMenus = menuItem.SideMenus.map((sideMenu) => {
+          if (sideMenu.SMCode === item.SMCode) {
+            const newStatus = sideMenu.SSoldOutYN === "Y" ? "N" : "Y";
+            // 서브 메뉴 품절 처리 소켓 이벤트 발송
+            socket.current.emit("sideMenuSoldOut", {
+              SMCode: sideMenu.SMCode,
+              SSoldOutYN: newStatus,
+            });
+            return { ...sideMenu, SSoldOutYN: newStatus };
+          }
+          return sideMenu;
+        });
         return { ...menuItem, SideMenus: updatedSideMenus };
       } else if (!isSideMenu && menuItem.MICode === item.MICode) {
-        // 메인 메뉴 아이템 처리
-        return {
-          ...menuItem,
-          SoldOutYN: menuItem.SoldOutYN === "Y" ? "N" : "Y",
-        };
+        const newStatus = menuItem.SoldOutYN === "Y" ? "N" : "Y";
+        // 메인 메뉴 품절 처리 소켓 이벤트 발송
+        socket.current.emit("mainMenuSoldOut", {
+          MICode: menuItem.MICode,
+          SoldOutYN: newStatus,
+        });
+        return { ...menuItem, SoldOutYN: newStatus };
       }
       return menuItem;
     });
