@@ -14,6 +14,7 @@ import axios from 'axios';
 
 const Stock = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux 스토어에서 로그인 상태 가져오기
+  const { stCode} = useSelector((state) => state.auth);
   const [menuItems, setMenuItems] = useState([]);
 
   
@@ -25,11 +26,12 @@ const Stock = () => {
   }  
 }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
+
   // 메뉴 데이터를 서버로부터 가져오는 함수
   const fetchMenuData = async () => {
     if (!isLoggedIn) return;
     try {
-      const response = await axios.post('http://211.54.171.41:3000/api/store/findAllItems', { STCode: '0093' }, {
+      const response = await axios.post('http://211.54.171.41:3000/api/store/findAllItems', { STCode: stCode }, {
         headers: { 'Content-Type': 'application/json' },
       });
       // 여기서 data 구조를 확인하고, 필요한 부분만 추출하여 상태에 저장합니다.

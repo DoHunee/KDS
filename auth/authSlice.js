@@ -1,18 +1,29 @@
+// authSlice.js
+
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  isLoggedIn: false,
+  stCode: '', // 4자리 번호
+  categoryNumber: '', // 2자리 번호
+  employeeID: '', // 7자리 번호
+};
+
 const authSlice = createSlice({
-  name: 'AuthSlice',
-  initialState: {
-    isLoggedIn: false,
-    // 다른 필요한 상태들 추가 가능
-  },
+  name: 'auth',
+  initialState,
   reducers: {
-    // 로그인 및 로그아웃과 관련된 액션 정의
-    login: (state) => {
+    login: (state, action) => {
       state.isLoggedIn = true;
+      state.stCode = action.payload.stCode;
+      state.categoryNumber = action.payload.categoryNumber;
+      state.employeeID = action.payload.employeeID;
     },
     logout: (state) => {
       state.isLoggedIn = false;
+      state.stCode = '';
+      state.categoryNumber = '';
+      state.employeeID = '';
     },
   },
 });

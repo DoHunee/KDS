@@ -82,7 +82,11 @@ const LoginScreen = ({ navigation, route }) => {
   const handleLogin = () => {
     if (validateCredentials()) {
       if (!isLoggedIn) {
-        dispatch(login()); // 전역으로 업데이트
+        dispatch(login({
+          stCode: storedNumber.join(''), // 4자리 번호
+          categoryNumber, // 2자리 번호
+          employeeID, // 7자리 번호
+        })); // 전역으로 업데이트
         setIsLoggedIn(true); // 로컬로 업데이트
         setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
 
