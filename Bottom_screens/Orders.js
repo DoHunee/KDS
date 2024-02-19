@@ -11,7 +11,6 @@ import {
   onImmediateReceipt,
 } from "../store/storeSlice";
 import { io } from "socket.io-client";
-
 const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -24,7 +23,6 @@ const Orders = ({ navigation }) => {
   useEffect(() => {
     // 컴포넌트 마운트 시 소켓 연결 생성
     socket.current = io("http://211.54.171.41:8025/admin");
-
     // 컴포넌트 언마운트 시 소켓 연결 종료
     return () => {
       if (socket.current) {
@@ -71,7 +69,6 @@ const Orders = ({ navigation }) => {
       );
     }
   };
-
   // 주문 거절 처리 함수
   const declineOrder = (orderId) => {
     Alert.alert(
@@ -120,7 +117,6 @@ const Orders = ({ navigation }) => {
       { cancelable: false } // 알림 창이 뒤로 버튼으로 닫히지 않도록 설정
     );
   };
-
   // 주문 모두승인
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
@@ -128,24 +124,20 @@ const Orders = ({ navigation }) => {
     });
     setOrders([]);
   };
-
   //isLoggined = false일때 로그인하세요!!
   useEffect(() => {
     if (!isLoggedIn) {
       // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
-
   // Pending 주문 불러오기
   useEffect(() => {
     dispatch(handlePending());
   }, []);
-
   // Pending 주문 상태 변경 감지
   useEffect(() => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
-
   return (
     <SafeAreaView style={styles.container}>
       {isLoggedIn ? (
@@ -165,7 +157,6 @@ const Orders = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -195,7 +186,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 4,
   },
-
   logoutButton: {
     backgroundColor: "#61dafb",
     paddingVertical: 15,

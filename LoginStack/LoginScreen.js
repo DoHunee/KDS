@@ -18,8 +18,6 @@ import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import LoginForm from "./LoginFormComponents/LoginForm";
 import connectToServer from "../Socket/Socket";
-import { io } from "socket.io-client";
-
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   // 저장할 값들의 초기값 설정
@@ -33,15 +31,11 @@ const LoginScreen = ({ navigation, route }) => {
     useState("5");
   const [storedEmployeeIDExample, setStoredEmployeeIDExample] =
     useState("6789012");
-
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
-
-  // 소켓 정의!
-  const socket = useRef(null);
-
+  const [socket, setSocket] = useState(null); // 소켓 상태 추가
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
@@ -51,7 +45,6 @@ const LoginScreen = ({ navigation, route }) => {
       nextRef.current.focus();
     }
   };
-
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
@@ -61,7 +54,6 @@ const LoginScreen = ({ navigation, route }) => {
       employeeID === storedEmployeeIDExample
     );
   };
-
   // Fix.js,Manager.js에서 받아온 수정된 식별번호들 끌어오기!
   // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
   // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
@@ -79,7 +71,6 @@ const LoginScreen = ({ navigation, route }) => {
       // 에러 처리 로직 추가
     }
   };
-
   // 로그인 로직
   const handleLogin = () => {
     if (validateCredentials()) {
@@ -97,7 +88,6 @@ const LoginScreen = ({ navigation, route }) => {
         setStoredNumber(["", "", "", ""]);
         setCategoryNumber("");
         setEmployeeID("");
-
       } else {
         // 이미 로그인 상태인 경우
         Alert.alert("로그인 성공", "이미 로그인되어 있습니다.");
@@ -106,7 +96,6 @@ const LoginScreen = ({ navigation, route }) => {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
   };
-
   // 로그아웃 로직
   const handleLogout = async () => {
     Alert.alert(
@@ -132,38 +121,34 @@ const LoginScreen = ({ navigation, route }) => {
       { cancelable: false }
     );
   };
-
   // Fix.js(식별번호 수정)으로 이동!!
   const handleGoToFix = () => {
     navigation.navigate("Fix");
   };
-
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
   };
-
   // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
   useEffect(() => {
     setStoredNumber([...storedNumberExample]); //매장번호
     setCategoryNumber(storedCategoryNumberExample); //포스번호
   }, [storedNumberExample, storedCategoryNumberExample]);
-
-  
-  // connectToServer 연결하고 open 이벤트 emit
+  // isLoggedIn 상태 변화에 반응하여 많은 기능을 수행하는 useEffect 부분!
   useEffect(() => {
     // 로그인 상태가 true일 때 실행되는 로직
     if (isLoggedIn) {
       navigation.navigate("Orders");
-    
+      // console.log("로그인 후 isLoggedIn:", isLoggedIn);
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
-      if (!socket.current) {
-        socket.current = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch); // 사용자가 입력한 값으로 연결!
-        socket.current.emit("open", {
-          stCode: storedNumber.join(''), // 배열 형태의 storedNumber를 문자열로 결합
-        })
+      if (!socket) {
+        const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample, dispatch);
+        setSocket(newSocket);
       }
-    } 
+    } else {
+      // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
+      // 이 부분의 로직은 useEffect의 반환 함수로 이동됩니다.
+    }
   
     // AsyncStorage에서 수정된 값을 가져와 반영하는 로직
     const fetchModified = async () => {
@@ -191,13 +176,12 @@ const LoginScreen = ({ navigation, route }) => {
     // 컴포넌트 언마운트 또는 로그아웃 시 소켓 연결 해제
     // 이 부분이 로그아웃과 컴포넌트 언마운트 시 소켓 연결을 해제하는 유일한 부분입니다.
     return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-        socket.current = null;
+      if (socket) {
+        socket.disconnect();
+        setSocket(null);
       }
     };
-  }, [isLoggedIn, socket, storedNumber, categoryNumber, employeeID]); 
-
+  }, [isLoggedIn]); 
   // Return 부분
   return (
     <KeyboardAvoidingView
@@ -245,7 +229,6 @@ const LoginScreen = ({ navigation, route }) => {
                 예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{" "}
                 {storedEmployeeIDExample}
               </Text>
-
               {/* 로그인 버튼 */}
               <TouchableOpacity
                 style={styles.loginButton}
@@ -260,6 +243,7 @@ const LoginScreen = ({ navigation, route }) => {
     </KeyboardAvoidingView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -323,5 +307,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
 export default LoginScreen;
