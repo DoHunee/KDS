@@ -18,6 +18,7 @@ import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import LoginForm from "./LoginFormComponents/LoginForm";
 import connectToServer from "../Socket/Socket";
+import { io } from "socket.io-client";
 
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -38,7 +39,8 @@ const LoginScreen = ({ navigation, route }) => {
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
 
-  const [socket, setSocket] = useState(null); // 소켓 상태 추가
+  // 소켓 정의!
+  const socket = useRef(null);
 
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
@@ -95,6 +97,7 @@ const LoginScreen = ({ navigation, route }) => {
         setStoredNumber(["", "", "", ""]);
         setCategoryNumber("");
         setEmployeeID("");
+
       } else {
         // 이미 로그인 상태인 경우
         Alert.alert("로그인 성공", "이미 로그인되어 있습니다.");
@@ -146,7 +149,7 @@ const LoginScreen = ({ navigation, route }) => {
     setCategoryNumber(storedCategoryNumberExample); //포스번호
   }, [storedNumberExample, storedCategoryNumberExample]);
 
-  // isLoggedIn 상태 변화에 반응하여 많은 기능을 수행하는 useEffect 부분!
+  
   // connectToServer 연결하고 open 이벤트 emit
   useEffect(() => {
     // 로그인 상태가 true일 때 실행되는 로직
@@ -154,14 +157,11 @@ const LoginScreen = ({ navigation, route }) => {
       navigation.navigate("Orders");
     
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
-      if (!socket) {
-        const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch); // 사용자가 입력한 값으로 연결!
-        setSocket(newSocket);
-
-        // 소켓 연결 후 "open" 이벤트 전송
-        newSocket.emit("open", {
+      if (!socket.current) {
+        socket.current = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch); // 사용자가 입력한 값으로 연결!
+        socket.current.emit("open", {
           stCode: storedNumber.join(''), // 배열 형태의 storedNumber를 문자열로 결합
-        });
+        })
       }
     } 
   
@@ -191,9 +191,9 @@ const LoginScreen = ({ navigation, route }) => {
     // 컴포넌트 언마운트 또는 로그아웃 시 소켓 연결 해제
     // 이 부분이 로그아웃과 컴포넌트 언마운트 시 소켓 연결을 해제하는 유일한 부분입니다.
     return () => {
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current = null;
       }
     };
   }, [isLoggedIn, socket, storedNumber, categoryNumber, employeeID]); 

@@ -33,7 +33,7 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
       console.log("Opening and closing points? : ", data);
       Alert.alert(
         "소켓 데이터 수신", // 알림 창 제목
-        `수신된 데이터: ${JSON.stringify(data)}`, // 알림 창 내용
+        `${JSON.stringify(data)}`, // 알림 창 내용
         [
           { text: "확인", onPress: () => console.log("확인 버튼 클릭됨") }
         ],
