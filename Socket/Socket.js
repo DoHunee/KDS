@@ -27,19 +27,27 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
   });
 
   socket.on("open", (data) => {
-    // 알림 창 표시를 위해 메인 스레드에서 실행되어야 함
-    // setTimeout을 사용하여 메인 스레드로의 실행을 보장
-    setTimeout(() => {
-      console.log("Opening and closing points? : ", data);
-      Alert.alert(
-        "소켓 데이터 수신", // 알림 창 제목
-        `${JSON.stringify(data)}`, // 알림 창 내용
-        [
-          { text: "확인", onPress: () => console.log("확인 버튼 클릭됨") }
-        ],
-        { cancelable: false }
-      );
-    }, 0);
+    // console.log("Opening and closing points? : ", data);
+    Alert.alert(
+      "소켓 데이터 수신", // 알림 창 제목
+      `${JSON.stringify(data)}`, // 열기를 원하십니까??
+      [
+        {
+          text: "확인",
+          onPress: () => {
+            console.log("확인 버튼 클릭됨");
+            // "open" 이벤트로 "OK"를 다시 emit
+            socket.emit("open", "OK");
+          }
+        },
+        {
+          text: "취소",
+          onPress: () => console.log("취소 버튼 클릭됨"),
+          style: "cancel"
+        },
+      ],
+      { cancelable: false }
+    );
   });
 
   socket.on("test", (orderstatus) => {
