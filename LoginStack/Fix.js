@@ -85,23 +85,24 @@ const Fix = ({ route, navigation }) => {
       >
         <View style={styles.container}>
           <Text style={styles.title}>🚀 식별번호 수정 🚀</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="식별번호 (7 자리)"
-            keyboardType="numeric"
-            maxLength={7}
-            value={modifiedEmployeeID}
-            onChangeText={(text) => setModifiedEmployeeID(text)}
-          />
-
-          <TouchableOpacity
-            style={styles.updateButton}
-            onPress={handleUpdateEmployeeID}
-          >
-            <Text style={styles.buttonText}>식별번호수정 </Text>
-          </TouchableOpacity>
-
+  
+          <View style={styles.inputRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="식별번호 (7 자리)"
+              keyboardType="numeric"
+              maxLength={7}
+              value={modifiedEmployeeID}
+              onChangeText={(text) => setModifiedEmployeeID(text)}
+            />
+            <TouchableOpacity
+              style={styles.updateButton}
+              onPress={handleUpdateEmployeeID}
+            >
+              <Text style={styles.buttonText}>식별번호 수정</Text>
+            </TouchableOpacity>
+          </View>
+  
           <Button title="로그인 페이지로!" onPress={handleGoToLogin} />
         </View>
       </KeyboardAvoidingView>
@@ -109,44 +110,48 @@ const Fix = ({ route, navigation }) => {
   );
 };
 
-// 스타일 정의
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 30,
-    color: "black",
-    textAlign: "center",
-  },
-  input: {
-    height: 40,
-    width: 200,
-    borderColor: "#61dafb",
-    borderBottomWidth: 2,
-    marginBottom: 10,
-    paddingHorizontal: 15,
-    color: "black",
-  },
-  updateButton: {
-    backgroundColor: "#61dafb",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 30,
-  },
-  buttonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-});
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#f0f0f0",
+      paddingHorizontal: 20,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      marginBottom: 30,
+      color: "black",
+      textAlign: "center",
+    },
+    inputRow: {
+      flexDirection: 'row', // 가로 배치
+      alignItems: 'center', // 세로 중앙 정렬
+      marginBottom: 20, // 하단 요소와의 간격
+    },
+    input: {
+      height: 40,
+      flex: 1, // 수정: width 속성 제거, flex 추가
+      borderColor: "#61dafb",
+      borderBottomWidth: 2,
+      marginBottom: 10,
+      paddingHorizontal: 15,
+      color: "black",
+    },
+    updateButton: {
+      backgroundColor: "#61dafb",
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      marginLeft: 10, 
+    },
+    buttonText: {
+      color: "black",
+      fontSize: 16,
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+  });
 
 export default Fix;
