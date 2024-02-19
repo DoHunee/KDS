@@ -18,6 +18,7 @@ const Orders = ({ navigation }) => {
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
   const [orders, setOrders] = useState([]);
   const socket = useRef(null);
+  const { stCode } = useSelector((state) => state.auth);
 
   // 소켓 여러번 접근하는 문제를 해결하기 위해!
   useEffect(() => {
@@ -33,11 +34,12 @@ const Orders = ({ navigation }) => {
   }, []);
 
   // 수락,거절 ,즉시수령 버튼 눌렀을대 event
-  const handleButtonPress = (data, stCode) => {
+  const handleButtonPress = (data) => {
     if (data.action === "수락") {
       dispatch(onConfirm({ id: data.id }));
       // 주문 수락 이벤트 처리
       socket.current.emit("acceptOrder", {
+        stCode: stCode,
         id: data.id,
         message: "고객님의 주문이 접수되었습니다!",
       });
@@ -58,7 +60,7 @@ const Orders = ({ navigation }) => {
             onPress: () => {
               dispatch(onImmediateReceipt({ id: data.id }));
               socket.current.emit("test", {
-                stCode: "0093",
+                stCode: stCode,
                 id: data.id,
                 message: "주문하신 제품을 즉시 수령해주세요",
               });
@@ -87,6 +89,7 @@ const Orders = ({ navigation }) => {
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
             socket.current.emit("declineOrder", {
+              stCode: stCode,
               id: orderId,
               declineReason: "재료소진",
             });
@@ -103,6 +106,7 @@ const Orders = ({ navigation }) => {
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
             socket.current.emit("declineOrder", {
+              stCode: stCode,
               id: orderId,
               declineReason: "품절",
             });

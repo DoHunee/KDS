@@ -37,6 +37,7 @@ const Stock = () => {
       }
     };
   }, []);
+  
   // 메뉴 데이터를 서버로부터 가져오는 함수
   const fetchMenuData = async () => {
     if (!isLoggedIn) return;
