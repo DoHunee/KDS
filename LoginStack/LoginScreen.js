@@ -147,20 +147,23 @@ const LoginScreen = ({ navigation, route }) => {
   }, [storedNumberExample, storedCategoryNumberExample]);
 
   // isLoggedIn 상태 변화에 반응하여 많은 기능을 수행하는 useEffect 부분!
+  // connectToServer 연결하고 open 이벤트 emit
   useEffect(() => {
     // 로그인 상태가 true일 때 실행되는 로직
     if (isLoggedIn) {
       navigation.navigate("Orders");
-      // console.log("로그인 후 isLoggedIn:", isLoggedIn);
+    
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
       if (!socket) {
-        const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample, dispatch);
+        const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch); // 사용자가 입력한 값으로 연결!
         setSocket(newSocket);
+
+        // 소켓 연결 후 "open" 이벤트 전송
+        newSocket.emit("open", {
+          stCode: storedNumber.join(''), // 배열 형태의 storedNumber를 문자열로 결합
+        });
       }
-    } else {
-      // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
-      // 이 부분의 로직은 useEffect의 반환 함수로 이동됩니다.
-    }
+    } 
   
     // AsyncStorage에서 수정된 값을 가져와 반영하는 로직
     const fetchModified = async () => {
@@ -193,7 +196,7 @@ const LoginScreen = ({ navigation, route }) => {
         setSocket(null);
       }
     };
-  }, [isLoggedIn]); 
+  }, [isLoggedIn, socket, storedNumber, categoryNumber, employeeID]); 
 
   // Return 부분
   return (
