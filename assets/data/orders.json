@@ -1,110 +1,76 @@
 {
   "orders": [
     {
-      "OrderKey": 1,
-      "STSeq": 135748,
-      "UserName": "장도훈",
       "UserHp": "010-5526-1387",
-      "title": "Macdonard",
+      "UserName": "장도훈",
+      "OrderKey": 1,
+      "UserKey": 1,
+      "SDDate": "2024-02-20",
+      "SDTime": "12:12:00",
       "STCode": "0093",
+      "STSeq": 10001,
       "ProcessCode": "pending",
-      "SDDate": "2024-02-02 08:30:00",
+      "TotalPrice": 14100,
+      "TotalQuantity": 2,
+      "ActiveYN": "Y",
+      "InsertDate": "2024-02-20T13:40:00.000Z",
+      "InsertUser": "1807001",
+      "CancleCode": null,
+      "CancleDate": null,
+      "CancleUser": null,
       "orders": [
-        {"name": "Cheesburger", "price": 8000 , "quantity" : 2}, 
-        {"name": "Hamburger", "price": 7500, "quantity" : 1},
-        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}, 
-        {"name": "Pizza", "price": 15500, "quantity" : 1} 
+        {
+          "name": "Cheesburger",
+          "price": 8000,
+          "quantity": 2
+        },
+        {
+          "name": "Hamburger",
+          "price": 7500,
+          "quantity": 1
+        },
+        {
+          "name": "Coca-Cola",
+          "price": 1500,
+          "quantity": 1
+        },
+        {
+          "name": "Pizza",
+          "price": 15500,
+          "quantity": 1
+        }
       ]
     },
-
     {
-      "OrderKey": 2,
-      "STSeq": 265845,
+      "UserHp": "010-4567-8525",
       "UserName": "조준호",
-      "UserHp": "010-4561-5456",
-      "title": "Macdonard",
+      "OrderKey": 2,
+      "UserKey": 2,
+      "SDDate": "2024-02-20",
+      "SDTime": "14:13:00",
       "STCode": "0093",
+      "STSeq": 10002,
       "ProcessCode": "pending",
-      "SDDate": "2024-02-02 12:12:00",
+      "TotalPrice": 14100,
+      "TotalQuantity": 2,
+      "ActiveYN": "Y",
+      "InsertDate": "2024-02-20T13:40:00.000Z",
+      "InsertUser": "1807001",
+      "CancleCode": null,
+      "CancleDate": null,
+      "CancleUser": null,
       "orders": [
-        {"name": "Cheesburger", "price": 8000, "quantity" : 2}, 
-        {"name": "Hamburger", "price": 7500, "quantity" : 1},
-        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}, 
-        {"name": "Pizza", "price": 15500, "quantity" : 1},
-        {"name": "rice", "price": 1000, "quantity" : 1}
+        {
+          "name": "Cheesburger",
+          "price": 8000,
+          "quantity": 2
+        },
+        {
+          "name": "Hamburger",
+          "price": 7500,
+          "quantity": 1
+        }
       ]
-      
-      
-    },
-    
-    {
-      "OrderKey": 3,
-      "STSeq": 345784,
-      "UserName": "김준성",
-      "UserHp": "010-7894-4456",
-      "title": "Mom's Touch",
-      "STCode": "0093",
-      "ProcessCode": "pending",
-      "SDDate": "2024-02-02 17:48:00",
-      "orders": [
-        {"name": "Cheesburger", "price": 8000, "quantity" : 1}, 
-        {"name": "Hamburger", "price": 7500, "quantity" : 1},
-        {"name": "Coca-Cola", "price": 1500, "quantity" : 2}
-      ]
-      
-    },
-
-    {
-      "OrderKey": 4,
-      "STSeq": 3445678,
-      "UserName": "김다정",
-      "UserHp": "010-7894-4456",
-      "title": "Mom's Touch",
-      "STCode": "0093",
-      "ProcessCode": "pending",
-      "SDDate": "2024-02-02 15:00:00",
-      "orders": [
-        {"name": "Cheesburger", "price": 8000, "quantity" : 1}, 
-        {"name": "Hamburger", "price": 7500, "quantity" : 3},
-        {"name": "pizza", "price": 8000, "quantity" : 1},
-        {"name": "Coca-Cola", "price": 1500, "quantity" : 2}
-      ]
-      
-    },
-
-    {
-      "OrderKey": 5,
-      "STSeq": 1245648,
-      "UserName": "이연지",
-      "UserHp": "010-7894-4456",
-      "title": "Mom's Touch",
-      "STCode": "0093",
-      "ProcessCode": "pending",
-      "SDDate": "2024-02-02 17:00:00",
-      "orders": [
-        {"name": "Cheesburger", "price": 8000, "quantity" : 2}, 
-        {"name": "Hamburger", "price": 7500, "quantity" : 2},
-        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}
-      ]
-      
-    },
-
-    {
-      "OrderKey": 6,
-      "STSeq": 14999412,
-      "UserName": "장도엽",
-      "UserHp": "010-7894-4456",
-      "title": "Mom's Touch",
-      "STCode": "0093",
-      "ProcessCode": "pending",
-      "SDDate": "2024-02-02 17:00:00",
-      "orders": [
-        {"name": "Cheesburger", "price": 8000, "quantity" : 2}, 
-        {"name": "Hamburger", "price": 7500, "quantity" : 2},
-        {"name": "Coca-Cola", "price": 1500, "quantity" : 1}
-      ]
-      
     }
-    
   ]
 }

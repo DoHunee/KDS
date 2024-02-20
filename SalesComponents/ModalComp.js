@@ -109,7 +109,7 @@ const ModalComp = ({
                 
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
-              <Text style={styles.orderText}>판매시간 : {order.SDDate} </Text>
+              <Text style={styles.orderText}>판매시간 : {order.SDTime} </Text>
               <Text style={styles.orderText}>주문상태 : {order.ProcessCode} </Text>
               {/* 주문 상태가 "cancel"일 때만 취소 이유를 표시하는 부분 */}
               {order.ProcessCode === "cancel" && (

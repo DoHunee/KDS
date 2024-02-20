@@ -47,6 +47,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             onPress={handleOnPress}
             buttons={buttons}
             SDDate={item.SDDate}
+            SDTime={item.SDTime}
             declineReason={item.declineReason}
             />
         )}

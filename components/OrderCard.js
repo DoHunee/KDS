@@ -14,23 +14,23 @@ const OrderCard = ({
   onPress,
   buttons,
   SDDate,
+  SDTime,
   declineReason
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
   const handleOnPress = (data) => {onPress({ action: data, STSeq: STSeq });};
 
+  const [hours, minutes] = SDTime.split(':').map(num => parseInt(num, 10));
 
-  //날짜
-  const formattedDate = new Date(SDDate).toLocaleDateString([], {
-    month: "2-digit",
-    day: "2-digit",
-  });
+  // 24시간제를 12시간제로 변환하고, 오전/오후 결정
+  const isPM = hours >= 12;
+  const formattedHours = hours % 12 || 12; // 0시는 12시(오전)으로, 12시는 12시(오후)로 표시
+  const amPm = isPM ? 'PM' : 'AM';
+  
+  // 시간과 분을 "HH:MM AM/PM" 형식의 문자열로 조합
+  const formattedTime = `${formattedHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${amPm}`;
 
-  //시간
-  const formattedTime = new Date(SDDate).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  
 
   // 배달 시간 나타내주는 네모 창 => 계속 변하는 친구!!!
   let dynamicChange = {
