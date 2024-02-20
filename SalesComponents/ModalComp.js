@@ -104,9 +104,9 @@ const ModalComp = ({
             ]}
           >
             <View style={styles.orderBackground}>
-              <Text style={styles.orderText}>
-                이름: {order.name} [{order.hp}]
-              </Text>
+              <Text style={styles.orderText}>이름: {order.UserName} [{order.UserHp}]</Text>
+              <Text style={styles.orderText}>OrderKey : {order.OrderKey}</Text>
+                
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
               <Text style={styles.orderText}>판매시간 : {order.SDDate} </Text>

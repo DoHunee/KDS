@@ -40,8 +40,8 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
         renderItem={({ item }) => (
           <OrderCard
             STSeq={item.STSeq}
-            name={item.name}
-            hp={item.hp}
+            UserName={item.UserName}
+            UserHp={item.UserHp}
             orders={item.orders}
             ProcessCode={item.ProcessCode}
             onPress={handleOnPress}

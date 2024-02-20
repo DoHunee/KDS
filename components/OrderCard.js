@@ -7,8 +7,8 @@ import Button from "./Button";
 
 const OrderCard = ({
   STSeq,
-  name,
-  hp,
+  UserName,
+  UserHp,
   orders,
   ProcessCode,
   onPress,
@@ -128,7 +128,7 @@ const OrderCard = ({
       <View style={styles.namePhone}>
         <View>
           <Text style={styles.text}>
-            {name} 【{hp}】
+            {UserName} 【{UserHp}】
           </Text>
           <Text>{formattedTime}</Text>
           

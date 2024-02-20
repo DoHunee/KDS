@@ -1,11 +1,178 @@
-{
-  "OrderKey": 135748,               
-  "UserKey": 135748,                
-  "SDdate": "2024-02-02 08:30:00",  
-  "STCode": "0093",                 
-  "STSeq" : 1221,                   
-  "ProcessCode": "pending",        
-  "TotalPrice" :  21000  ,            
-  "TotalQuantity" :  1,                 
-  "ActiveYN" :  "Y"               
-}
+[
+  {
+    "UserHp": "010-4746-6846",
+    "UserName": "상형",
+    "OrderKey": 1,
+    "UserKey": 1,
+    "SDDate": "2024-02-20",
+    "STCode": "0093",
+    "STSeq": 1,
+    "ProcessCode": "접수대기",
+    "TotalPrice": 14100,
+    "TotalQuantity": 2,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-20T00:00:00.000Z",
+    "InsertUser": "1807001",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002970",
+        "MISimpleName": "싸이버거세트",
+        "OriginPrice": 7500,
+        "MIPrice": 8000,
+        "MICnt": 1,
+        "TotPrice": 8000,
+        "SideYN": "Y",
+        "SubItems": [
+          {
+            "SideSeq": 1,
+            "SMICode": "0000002969",
+            "SMISimpleName": "싸이버거",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
+          },
+          {
+            "SideSeq": 2,
+            "SMICode": "0000002992",
+            "SMISimpleName": "케이준양념감자(중)",
+            "SMIPrice": 500,
+            "SMICnt": 1,
+            "STotPrice": 500
+          },
+          {
+            "SideSeq": 3,
+            "SMICode": "0000002968",
+            "SMISimpleName": "스프라이트",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
+          }
+        ]
+      },
+      {
+        "ItemSeq": 2,
+        "MICode": "0000002971",
+        "MISimpleName": "딥치즈버거",
+        "OriginPrice": 6100,
+        "MIPrice": 6100,
+        "MICnt": 1,
+        "TotPrice": 6100,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
+  },
+  {
+    "UserHp": "010-4746-6846",
+    "UserName": "상형",
+    "OrderKey": 2,
+    "UserKey": 1,
+    "SDDate": "2024-02-20",
+    "STCode": "0093",
+    "STSeq": 1,
+    "ProcessCode": "접수완료",
+    "TotalPrice": 10400,
+    "TotalQuantity": 1,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-20T00:00:00.000Z",
+    "InsertUser": "1807001",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002979",
+        "MISimpleName": "순살치킨(8조각)",
+        "OriginPrice": 10400,
+        "MIPrice": 10400,
+        "MICnt": 1,
+        "TotPrice": 10400,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
+  },
+  {
+    "UserHp": "010-4746-6846",
+    "UserName": "상형",
+    "OrderKey": 3,
+    "UserKey": 1,
+    "SDDate": "2024-02-20",
+    "STCode": "0093",
+    "STSeq": 1,
+    "ProcessCode": "처리완료",
+    "TotalPrice": 13600,
+    "TotalQuantity": 3,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-20T00:00:00.000Z",
+    "InsertUser": "1807001",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002977",
+        "MISimpleName": "불고기버거",
+        "OriginPrice": 4300,
+        "MIPrice": 4300,
+        "MICnt": 1,
+        "TotPrice": 4300,
+        "SideYN": "N",
+        "SubItems": []
+      },
+      {
+        "ItemSeq": 2,
+        "MICode": "0000002978",
+        "MISimpleName": "불고기버거세트",
+        "OriginPrice": 6800,
+        "MIPrice": 6800,
+        "MICnt": 1,
+        "TotPrice": 6800,
+        "SideYN": "Y",
+        "SubItems": [
+          {
+            "SideSeq": 1,
+            "SMICode": "0000002977",
+            "SMISimpleName": "불고기버거",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
+          },
+          {
+            "SideSeq": 2,
+            "SMICode": "0000002991",
+            "SMISimpleName": "케이준양념감자(소)",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
+          },
+          {
+            "SideSeq": 3,
+            "SMICode": "0000002967",
+            "SMISimpleName": "코카콜라",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
+          }
+        ]
+      },
+      {
+        "ItemSeq": 3,
+        "MICode": "0000002989",
+        "MISimpleName": "치즈스틱(2조각)",
+        "OriginPrice": 2500,
+        "MIPrice": 2500,
+        "MICnt": 1,
+        "TotPrice": 2500,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
+  }
+]
