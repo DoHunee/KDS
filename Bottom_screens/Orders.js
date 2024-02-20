@@ -69,6 +69,7 @@ const Orders = ({ navigation }) => {
       );
     }
   };
+
   // 주문 거절 처리 함수
   const declineOrder = (orderId) => {
     Alert.alert(
@@ -117,6 +118,7 @@ const Orders = ({ navigation }) => {
       { cancelable: false } // 알림 창이 뒤로 버튼으로 닫히지 않도록 설정
     );
   };
+
   // 주문 모두승인
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
@@ -124,20 +126,25 @@ const Orders = ({ navigation }) => {
     });
     setOrders([]);
   };
+
   //isLoggined = false일때 로그인하세요!!
   useEffect(() => {
     if (!isLoggedIn) {
       // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
+
   // Pending 주문 불러오기
   useEffect(() => {
     dispatch(handlePending());
   }, []);
+
   // Pending 주문 상태 변경 감지
   useEffect(() => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
+
+  
   return (
     <SafeAreaView style={styles.container}>
       {isLoggedIn ? (
@@ -157,6 +164,7 @@ const Orders = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

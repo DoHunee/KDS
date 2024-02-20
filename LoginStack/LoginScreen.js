@@ -27,15 +27,18 @@ const LoginScreen = ({ navigation, route }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
-  const [storedCategoryNumberExample, setStoredCategoryNumberExample] =
+  const [CategoryNumberExample, setStoredCategoryNumberExample] =
     useState("5");
-  const [storedEmployeeIDExample, setStoredEmployeeIDExample] =
+  const [EmployeeIDExample, setStoredEmployeeIDExample] =
     useState("6789012");
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
   const [socket, setSocket] = useState(null); // 소켓 상태 추가
+  
+
+
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
     const newStoredNumber = [...storedNumber];
@@ -45,23 +48,25 @@ const LoginScreen = ({ navigation, route }) => {
       nextRef.current.focus();
     }
   };
+
   // 입력된 숫자들을 하나의 문자열로 결합하고, 예시 값과 일치하는지 여부를 반환합니다.
   const validateCredentials = () => {
     const storedNumberString = storedNumber.join("");
     return (
       storedNumberString === storedNumberExample &&
-      categoryNumber === storedCategoryNumberExample &&
-      employeeID === storedEmployeeIDExample
+      categoryNumber === CategoryNumberExample &&
+      employeeID === EmployeeIDExample
     );
   };
+
   // Fix.js,Manager.js에서 받아온 수정된 식별번호들 끌어오기!
   // Fix.js에서 업데이트된 값들이 존재하면 값 끌어오기
   // Fix.js에서 받아온 modifiedEmployeeID(수정된 식별번호)를  할당
   // 예시: handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
   // Manager.js에서 받아온 storedNumberExample(수정된 매장번호)를  할당
   // 예시: handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
-  // Manager.js에서 받아온 storedCategoryNumberExample(수정된 포스번호)를 할당
-  // 예시: handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
+  // Manager.js에서 받아온 CategoryNumberExample(수정된 포스번호)를 할당
+  // 예시: handleUpdateValues("CategoryNumberExample", CategoryNumberExample, setStoredCategoryNumberExample);
   const handleUpdateValues = async (key, value, stateUpdater) => {
     try {
       stateUpdater(value);
@@ -71,6 +76,7 @@ const LoginScreen = ({ navigation, route }) => {
       // 에러 처리 로직 추가
     }
   };
+
   // 로그인 로직
   const handleLogin = () => {
     if (validateCredentials()) {
@@ -96,6 +102,7 @@ const LoginScreen = ({ navigation, route }) => {
       Alert.alert("로그인 실패", "입력한 정보가 올바르지 않습니다.");
     }
   };
+
   // 로그아웃 로직
   const handleLogout = async () => {
     Alert.alert(
@@ -121,20 +128,24 @@ const LoginScreen = ({ navigation, route }) => {
       { cancelable: false }
     );
   };
+
   // Fix.js(식별번호 수정)으로 이동!!
   const handleGoToFix = () => {
     navigation.navigate("Fix");
   };
+
   // 키보드 내리기
   const handleDismissKeyboard = () => {
     Keyboard.dismiss();
   };
+
   // storedNumber 및 categoryNumber 초기값 설정 => 다시 로그인할때도 매장번호와 포스번호는 고정되게 세팅
   useEffect(() => {
     setStoredNumber([...storedNumberExample]); //매장번호
-    setCategoryNumber(storedCategoryNumberExample); //포스번호
-  }, [storedNumberExample, storedCategoryNumberExample]);
+    setCategoryNumber(CategoryNumberExample); //포스번호
+  }, [storedNumberExample, CategoryNumberExample]);
   // isLoggedIn 상태 변화에 반응하여 많은 기능을 수행하는 useEffect 부분!
+  
   useEffect(() => {
     // 로그인 상태가 true일 때 실행되는 로직
     if (isLoggedIn) {
@@ -142,8 +153,19 @@ const LoginScreen = ({ navigation, route }) => {
       // console.log("로그인 후 isLoggedIn:", isLoggedIn);
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
       if (!socket) {
-        const newSocket = connectToServer(storedNumberExample, storedCategoryNumberExample, storedEmployeeIDExample, dispatch);
+        // 어차피 example 값과 맞아야 로그인이 되니까 이렇게 해도 상관없네!
+        const newSocket = connectToServer(storedNumberExample, CategoryNumberExample, EmployeeIDExample, dispatch);
+        // console.log(storedNumberExample, CategoryNumberExample, EmployeeIDExample);
+        
+        // const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch); 
+        // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
+        
         setSocket(newSocket);
+
+         // 소켓 연결 후 "open" 이벤트 전송
+         newSocket.emit("open", {
+          stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
+        });
       }
     } else {
       // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
@@ -155,7 +177,7 @@ const LoginScreen = ({ navigation, route }) => {
       try {
         const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
         const storedNumberExample = await AsyncStorage.getItem("storedNumberExample");
-        const storedCategoryNumberExample = await AsyncStorage.getItem("storedCategoryNumberExample");
+        const CategoryNumberExample = await AsyncStorage.getItem("CategoryNumberExample");
         
         if (modifiedEmployeeID) {
           handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
@@ -163,8 +185,8 @@ const LoginScreen = ({ navigation, route }) => {
         if (storedNumberExample) {
           handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
         }
-        if (storedCategoryNumberExample) {
-          handleUpdateValues("storedCategoryNumberExample", storedCategoryNumberExample, setStoredCategoryNumberExample);
+        if (CategoryNumberExample) {
+          handleUpdateValues("CategoryNumberExample", CategoryNumberExample, setStoredCategoryNumberExample);
         }
       } catch (error) {
         console.error("AsyncStorage 에러:", error);
@@ -181,7 +203,9 @@ const LoginScreen = ({ navigation, route }) => {
         setSocket(null);
       }
     };
-  }, [isLoggedIn]); 
+  }, [isLoggedIn, socket, storedNumber, categoryNumber, employeeID]);
+
+
   // Return 부분
   return (
     <KeyboardAvoidingView
@@ -226,8 +250,8 @@ const LoginScreen = ({ navigation, route }) => {
                   marginTop: 10,
                 }}
               >
-                예시 값: {storedNumberExample} - {storedCategoryNumberExample} -{" "}
-                {storedEmployeeIDExample}
+                예시 값: {storedNumberExample} - {CategoryNumberExample} -{" "}
+                {EmployeeIDExample}
               </Text>
               {/* 로그인 버튼 */}
               <TouchableOpacity

@@ -26,29 +26,29 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
     // 연결이 끊기면 필요한 작업 수행
   });
 
-  // socket.on("open", (data) => {
-  //   console.log("Opening and closing points? : ", data);
-  //   Alert.alert(
-  //     "소켓 데이터 수신", // 알림 창 제목
-  //     `${JSON.stringify(data)}`, // 열기를 원하십니까??
-  //     [
-  //       {
-  //         text: "확인",
-  //         onPress: () => {
-  //           console.log("확인 버튼 클릭됨");
-  //           // "open" 이벤트로 "OK"를 다시 emit
-  //           socket.emit("open", "OK");
-  //         }
-  //       },
-  //       {
-  //         text: "취소",
-  //         onPress: () => console.log("취소 버튼 클릭됨"),
-  //         style: "cancel"
-  //       },
-  //     ],
-  //     { cancelable: false }
-  //   );
-  // });
+  socket.on("open", (data) => {
+    console.log("Opening and closing points? : ", data);
+    Alert.alert(
+      "소켓 데이터 수신", // 알림 창 제목
+      `${JSON.stringify(data)}`, // 열기를 원하십니까??
+      [
+        {
+          text: "확인",
+          onPress: () => {
+            console.log("확인 버튼 클릭됨");
+            // "open" 이벤트로 "OK"를 다시 emit
+            socket.emit("open", "OK");
+          }
+        },
+        {
+          text: "취소",
+          onPress: () => console.log("취소 버튼 클릭됨"),
+          style: "cancel"
+        },
+      ],
+      { cancelable: false }
+    );
+  });
 
   socket.on("test", (orderstatus) => {
     console.log("즉시수령 목록:", orderstatus);
