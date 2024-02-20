@@ -27,8 +27,10 @@ const Stock = () => {
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
   useEffect(() => {
-    // 컴포넌트 마운트 시 소켓 연결 생성
-    socket.current = io("http://211.54.171.41:8025/admin");
+    // 컴포넌트 마운트 시 소켓 연결 생성 및 자동 재접속 비활성화
+    socket.current = io("http://211.54.171.41:8025/admin", {
+      reconnection: false, // 자동 재접속 비활성화
+    });
 
     // 컴포넌트 언마운트 시 소켓 연결 종료
     return () => {
@@ -38,7 +40,7 @@ const Stock = () => {
     };
   }, []);
   
-  // 메뉴 데이터를 서버로부터 가져오는 함수
+  // 메뉴 데이터를 API로 서버로부터 가져오는 함수
   const fetchMenuData = async () => {
     if (!isLoggedIn) return;
     try {

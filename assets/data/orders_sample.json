@@ -1,0 +1,11 @@
+{
+  "OrderKey": 135748,               
+  "UserKey": 135748,                
+  "SDdate": "2024-02-02 08:30:00",  
+  "STCode": "0093",                 
+  "STSeq" : 1221,                   
+  "ProcessCode": "pending",        
+  "TotalPrice" :  21000  ,            
+  "TotalQuantity" :  1,                 
+  "ActiveYN" :  "Y"               
+}

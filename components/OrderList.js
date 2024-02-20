@@ -10,6 +10,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
   
   const [listItems, setListItems] = useState([]);
   
+  // 모든 주문 리스트는 일단 날짜,시간 순으로 정렬!!
   useEffect(() => {
     // itemsData를 날짜 기준으로 정렬
     const sortedItems = itemsData.slice().sort((a, b) => {
@@ -38,23 +39,18 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
         data={listItems} // 수정된 listItems를 사용
         renderItem={({ item }) => (
           <OrderCard
+            id={item.id}
             name={item.name}
             hp={item.hp}
-            orderNumber={item.orderNumber}
             orders={item.orders}
-            confirmTime={item.confirmTime}
             status={item.status}
-            id={item.id}
-            timeRequire={item.timeRequire}
-            buttons={buttons}
             onPress={handleOnPress}
-            readyTime={item.readyTime}
-            scheduleFor={item.scheduleFor}
+            buttons={buttons}
             date={item.date}
             declineReason={item.declineReason}
-          />
+            />
         )}
-        keyExtractor={(item) => item.id.toString()} // 고유한 키 추출  //고유키 추출 
+        keyExtractor={(item) => item.id.toString()} //고유키 추출 
       />
     </View>
   );
