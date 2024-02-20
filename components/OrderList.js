@@ -17,9 +17,9 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
 
-      // 날짜가 같으면 id를 비교하여 정렬
+      // 날짜가 같으면 STSeq를 비교하여 정렬
       if (dateA.getTime() === dateB.getTime()) {
-        return a.id - b.id;
+        return a.STSeq - b.STSeq;
       }
 
       // 날짜가 다르면 날짜를 기준으로 정렬
@@ -39,7 +39,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
         data={listItems} // 수정된 listItems를 사용
         renderItem={({ item }) => (
           <OrderCard
-            id={item.id}
+            STSeq={item.STSeq}
             name={item.name}
             hp={item.hp}
             orders={item.orders}
@@ -50,7 +50,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             declineReason={item.declineReason}
             />
         )}
-        keyExtractor={(item) => item.id.toString()} //고유키 추출 
+        keyExtractor={(item) => item.STSeq.toString()} //고유키 추출 
       />
     </View>
   );

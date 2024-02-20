@@ -229,7 +229,7 @@ const Sales = () => {
 
     // 입력된 주문 번호를 찾습니다.
     const foundOrders = completeOrders.filter((order) =>
-      order.id.toString().includes(searchOrder)
+      order.STSeq.toString().includes(searchOrder)
     );
 
     if (foundOrders.length > 0) {

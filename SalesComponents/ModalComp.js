@@ -89,7 +89,7 @@ const ModalComp = ({
         {/* 모달창안에 주문내역을 나타내는 부분!! */}
         {selectedOrders.concat(selectedcancelOrders).map((order) => (
           <View
-            key={order.id}
+            key={order.STSeq}
             //  주문내역 배경을 설정하는 부분!!
             style={[
               styles.orderContainer,
@@ -108,7 +108,7 @@ const ModalComp = ({
                 이름: {order.name} [{order.hp}]
               </Text>
               <View style={styles.lineStyle}></View>
-              <Text style={styles.orderText}>주문번호 : {order.id} </Text>
+              <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
               <Text style={styles.orderText}>판매시간 : {order.date} </Text>
               <Text style={styles.orderText}>주문상태 : {order.status} </Text>
               {/* 주문 상태가 "cancel"일 때만 취소 이유를 표시하는 부분 */}

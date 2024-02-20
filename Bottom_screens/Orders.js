@@ -39,15 +39,15 @@ const Orders = ({ navigation }) => {
   // 수락,거절 ,즉시수령 버튼 눌렀을대 event
   const handleButtonPress = (data) => {
     if (data.action === "수락") {
-      dispatch(onConfirm({ id: data.id }));
+      dispatch(onConfirm({ STSeq: data.STSeq }));
       // 주문 수락 이벤트 처리
       socket.current.emit("acceptOrder", {
         stCode: stCode,
-        id: data.id,
+        STSeq: data.STSeq,
         message: "고객님의 주문이 접수되었습니다!",
       });
     } else if (data.action === "거절") {
-      declineOrder(data.id);
+      declineOrder(data.STSeq);
     } else if (data.action === "즉시수령") {
       // "즉시수령" 버튼을 눌렀을 때 알림 표시
       Alert.alert(
@@ -61,10 +61,10 @@ const Orders = ({ navigation }) => {
           {
             text: "예",
             onPress: () => {
-              dispatch(onImmediateReceipt({ id: data.id }));
+              dispatch(onImmediateReceipt({ STSeq: data.STSeq }));
               socket.current.emit("test", {
                 stCode: stCode,
-                id: data.id,
+                STSeq: data.STSeq,
                 message: "주문하신 제품을 즉시 수령해주세요",
               });
             },
@@ -86,14 +86,14 @@ const Orders = ({ navigation }) => {
           onPress: () => {
             dispatch(
               onDecline({
-                id: orderId,
+                STSeq: orderId,
                 declineReason: "재료소진",
               })
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
             socket.current.emit("declineOrder", {
               stCode: stCode,
-              id: orderId,
+              STSeq: orderId,
               declineReason: "재료소진",
             });
           },
@@ -103,14 +103,14 @@ const Orders = ({ navigation }) => {
           onPress: () => {
             dispatch(
               onDecline({
-                id: orderId,
+                STSeq: orderId,
                 declineReason: "품절",
               })
             );
             // 거절 사유와 함께 거절 이벤트를 서버로 전송
             socket.current.emit("declineOrder", {
               stCode: stCode,
-              id: orderId,
+              STSeq: orderId,
               declineReason: "품절",
             });
           },
@@ -127,7 +127,7 @@ const Orders = ({ navigation }) => {
   // 주문 모두승인
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
-      dispatch(onConfirm({ id: order.id }));
+      dispatch(onConfirm({ STSeq: order.STSeq }));
     });
     setOrders([]);
   };

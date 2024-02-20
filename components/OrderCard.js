@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Button from "./Button";
 
 const OrderCard = ({
-  id,
+  STSeq,
   name,
   hp,
   orders,
@@ -17,7 +17,7 @@ const OrderCard = ({
   declineReason
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
-  const handleOnPress = (data) => {onPress({ action: data, id: id });};
+  const handleOnPress = (data) => {onPress({ action: data, STSeq: STSeq });};
 
 
   //날짜
@@ -135,7 +135,7 @@ const OrderCard = ({
         </View>
         <View>
           <Text style={styles.orderText}>
-          <Text>no.{id}</Text>
+          <Text>no.{STSeq}</Text>
           </Text>
         </View>
       </View>
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   orders: {
     borderTopColor: "skyblue",
-    borderTopWidth: 2,
+    borderTopWSTSeqth: 2,
     marginTop: 5,
   },
   orderItem: {

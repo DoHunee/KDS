@@ -30,7 +30,7 @@ export const OrdersDistrubutionSlice = createSlice({
     onConfirm: (state, action) => {
       const orders = state.pending;
       const confirmOrder = orders?.find(
-        (item) => item.id === action.payload.id
+        (item) => item.STSeq === action.payload.STSeq
       );
 
       confirmOrder.status = "preparing";
@@ -39,14 +39,14 @@ export const OrdersDistrubutionSlice = createSlice({
 
       state.current = [...state.current, confirmOrder];
       state.pending = state.pending.filter(
-        (item) => item.id !== action.payload.id
+        (item) => item.STSeq !== action.payload.STSeq
       );
     },
 
     // "Decline "주문을 거절하고 대기 중 목록에서 제거  state = decline
     onDecline: (state, action) => {
       const orders = state.pending;
-      const declineOrder = orders?.find((item) => item.id === action.payload.id);
+      const declineOrder = orders?.find((item) => item.STSeq === action.payload.STSeq);
 
        // 거절 사유를 받아옴
        const declineReason = action.payload?.declineReason;
@@ -66,7 +66,7 @@ export const OrdersDistrubutionSlice = createSlice({
 
       state.complete = [...state.complete, declineOrder];
       state.pending = state.pending.filter(
-        (item) => item.id !== action.payload.id
+        (item) => item.STSeq !== action.payload.STSeq
       );
     },
 
@@ -74,7 +74,7 @@ export const OrdersDistrubutionSlice = createSlice({
     onImmediateReceipt: (state, action) => {
       const orders = state.pending;
       const immediateReceiptOrder = orders?.find(
-        (item) => item.id === action.payload.id
+        (item) => item.STSeq === action.payload.STSeq
       );
 
       immediateReceiptOrder.status = "fast_ready";
@@ -84,14 +84,14 @@ export const OrdersDistrubutionSlice = createSlice({
 
       state.complete = [...state.complete, immediateReceiptOrder];
       state.pending = state.pending.filter(
-        (item) => item.id !== action.payload.id
+        (item) => item.STSeq !== action.payload.STSeq
       );
     },
 
     // 주문이 완료되었음을 나타내고 완료 상태로 이동
     onReady: (state, action) => {
       const orders = state.current;
-      const readyOrder = orders.find((item) => item.id === action.payload.id);
+      const readyOrder = orders.find((item) => item.STSeq === action.payload.STSeq);
 
       readyOrder.status = "ready";
       readyOrder.readyTime = getTimePassedSec();
@@ -99,14 +99,14 @@ export const OrdersDistrubutionSlice = createSlice({
 
       state.complete = [...state.complete, readyOrder];
       state.current = state.current.filter(
-        (item) => item.id !== action.payload.id
+        (item) => item.STSeq !== action.payload.STSeq
       );
     },
 
     // 주문 취소하고 완료 목록에 이동
     onCancel: (state, action) => {
-      const orderId = action.payload.id;
-      const canceledOrder = state.current.find((order) => order.id === orderId);
+      const orderId = action.payload.STSeq;
+      const canceledOrder = state.current.find((order) => order.STSeq === orderId);
 
       // 취소 사유를 받아옴
       const cancellationReason = action.payload.cancellationReason;
@@ -126,11 +126,11 @@ export const OrdersDistrubutionSlice = createSlice({
       // 취소된 주문을 완료 배열에 추가
       state.complete = [...state.complete, canceledOrder];
       state.current = state.current.filter(
-        (item) => item.id !== action.payload.id
+        (item) => item.STSeq !== action.payload.STSeq
       );
 
       // 현재 주문 목록에서 해당 주문 제거
-      state.current = state.current.filter((order) => order.id !== orderId);
+      state.current = state.current.filter((order) => order.STSeq !== orderId);
     },
 
 

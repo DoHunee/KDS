@@ -46,14 +46,14 @@ const Current = ({ navigation }) => {
   // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
     if (data.action === "준비완료") {
-      dispatch(onReady({ id: data.id }));
+      dispatch(onReady({ STSeq: data.STSeq }));
       socket.current.emit("readyOrder", {
         stCode: stCode,
-        id: data.id,
+        STSeq: data.STSeq,
         message: "고객님의 주문이 준비 완료되었습니다!",
       });
     } else if (data.action === "주문취소") {
-      cancelOrder(data.id);
+      cancelOrder(data.STSeq);
     }
   };
 
@@ -68,7 +68,7 @@ const Current = ({ navigation }) => {
           onPress: () =>
             dispatch(
               onCancel({
-                id: orderId,
+                STSeq: orderId,
                 cancellationReason: "고객 요청에 따른 취소 처리",
               })
             ),
@@ -78,7 +78,7 @@ const Current = ({ navigation }) => {
           onPress: () =>
             dispatch(
               onCancel({
-                id: orderId,
+                STSeq: orderId,
                 cancellationReason: "가게 사정에 따른 취소",
               })
             ),
