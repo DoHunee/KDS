@@ -11,6 +11,8 @@ import {
   onImmediateReceipt,
 } from "../store/storeSlice";
 import { io } from "socket.io-client";
+
+
 const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -21,8 +23,11 @@ const Orders = ({ navigation }) => {
 
   // 소켓 여러번 접근하는 문제를 해결하기 위해!
   useEffect(() => {
-    // 컴포넌트 마운트 시 소켓 연결 생성
-    socket.current = io("http://211.54.171.41:8025/admin");
+    // 컴포넌트 마운트 시 소켓 연결 생성 및 자동 재접속 비활성화
+    socket.current = io("http://211.54.171.41:8025/admin", {
+      reconnection: false, // 자동 재접속 비활성화
+    });
+  
     // 컴포넌트 언마운트 시 소켓 연결 종료
     return () => {
       if (socket.current) {
@@ -144,7 +149,7 @@ const Orders = ({ navigation }) => {
     setOrders(pendingOrders);
   }, [pendingOrders]);
 
-  
+
   return (
     <SafeAreaView style={styles.container}>
       {isLoggedIn ? (

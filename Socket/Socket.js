@@ -9,6 +9,7 @@ const SERVER_URL = "http://211.54.171.41:8025/admin";
 const connectToServer = (stCode, posSeq, userId, setData) => {
 
   const socket = io(SERVER_URL, {
+    reconnection: false, // 자동 재접속 비활성화
     query: {
       stCode,
       posSeq,
@@ -53,10 +54,10 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
   socket.on("test", (orderstatus) => {
     console.log("즉시수령 목록:", orderstatus);
   });
+
   socket.on("sideMenuSoldOut", (sideMenu) => {
     console.log("사이드 품절:", sideMenu);
   });
-  
 
   socket.on("mainMenuSoldOut", (mainMenu) => {
     console.log("메인 품절:", mainMenu);
