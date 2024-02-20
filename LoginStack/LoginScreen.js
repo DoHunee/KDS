@@ -18,6 +18,7 @@ import { login, logout } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import LoginForm from "./LoginFormComponents/LoginForm";
 import connectToServer from "../Socket/Socket";
+
 const LoginScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   // 저장할 값들의 초기값 설정
@@ -27,17 +28,13 @@ const LoginScreen = ({ navigation, route }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // 예제 값들을 useState로 관리
   const [storedNumberExample, setStoredNumberExample] = useState("1234");
-  const [CategoryNumberExample, setStoredCategoryNumberExample] =
-    useState("5");
-  const [EmployeeIDExample, setStoredEmployeeIDExample] =
-    useState("6789012");
+  const [CategoryNumberExample, setStoredCategoryNumberExample] = useState("5");
+  const [EmployeeIDExample, setStoredEmployeeIDExample] = useState("6789012");
   // storedNumberRefs 정의
   const storedNumberRefs = [useRef(), useRef(), useRef(), useRef()];
   const categoryNumberRef = useRef();
   const employeeIDRef = useRef();
-  const [socket, setSocket] = useState(null); // 소켓 상태 추가
-  
-
+  const socket = useRef(null);
 
   // 숫자를 입력할 때 호출되며, 입력된 숫자를 배열에 저장하고 필요에 따라 다음 입력란으로 포커스를 이동합니다.
   const handleDigitInput = (text, index, nextRef) => {
@@ -81,11 +78,13 @@ const LoginScreen = ({ navigation, route }) => {
   const handleLogin = () => {
     if (validateCredentials()) {
       if (!isLoggedIn) {
-        dispatch(login({
-          stCode: storedNumber.join(''), // 4자리 번호
-          categoryNumber, // 2자리 번호
-          employeeID, // 7자리 번호
-        })); // 전역으로 업데이트
+        dispatch(
+          login({
+            stCode: storedNumber.join(""), // 4자리 번호
+            categoryNumber, // 2자리 번호
+            employeeID, // 7자리 번호
+          })
+        ); // 전역으로 업데이트
         setIsLoggedIn(true); // 로컬로 업데이트
         setStoredEmployeeIDExample(employeeID); //사원번호를 update하는 부분!
 
@@ -118,9 +117,9 @@ const LoginScreen = ({ navigation, route }) => {
           onPress: async () => {
             dispatch(logout()); // 전역으로 업데이트
             setIsLoggedIn(false); // 로컬 상태 업데이트
-            if (socket) {
-              socket.disconnect(); // 소켓 연결 해제
-              setSocket(null); // 소켓 상태 초기화
+            if (socket.current) {
+              socket.current.disconnect(); // 소켓 연결 해제
+              socket.current = null; // 소켓 상태 초기화
             }
           },
         },
@@ -145,25 +144,28 @@ const LoginScreen = ({ navigation, route }) => {
     setCategoryNumber(CategoryNumberExample); //포스번호
   }, [storedNumberExample, CategoryNumberExample]);
   // isLoggedIn 상태 변화에 반응하여 많은 기능을 수행하는 useEffect 부분!
-  
+
   useEffect(() => {
     // 로그인 상태가 true일 때 실행되는 로직
     if (isLoggedIn) {
       navigation.navigate("Orders");
       // console.log("로그인 후 isLoggedIn:", isLoggedIn);
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
-      if (!socket) {
+      if (!socket.current) {
         // 어차피 example 값과 맞아야 로그인이 되니까 이렇게 해도 상관없네!
-        const newSocket = connectToServer(storedNumberExample, CategoryNumberExample, EmployeeIDExample, dispatch);
+        socket.current = connectToServer(
+          storedNumberExample,
+          CategoryNumberExample,
+          EmployeeIDExample,
+          dispatch
+        );
         // console.log(storedNumberExample, CategoryNumberExample, EmployeeIDExample);
-        
-        // const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch); 
-        // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
-        
-        setSocket(newSocket);
 
-         // 소켓 연결 후 "open" 이벤트 전송
-         newSocket.emit("open", {
+        // const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch);
+        // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
+
+        // 소켓 연결 후 "open" 이벤트 전송
+        socket.current.emit("open", {
           stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
         });
       }
@@ -171,40 +173,57 @@ const LoginScreen = ({ navigation, route }) => {
       // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);
       // 이 부분의 로직은 useEffect의 반환 함수로 이동됩니다.
     }
-  
+
     // AsyncStorage에서 수정된 값을 가져와 반영하는 로직
     const fetchModified = async () => {
       try {
-        const modifiedEmployeeID = await AsyncStorage.getItem("modifiedEmployeeID");
-        const storedNumberExample = await AsyncStorage.getItem("storedNumberExample");
-        const CategoryNumberExample = await AsyncStorage.getItem("CategoryNumberExample");
-        
+        const modifiedEmployeeID = await AsyncStorage.getItem(
+          "modifiedEmployeeID"
+        );
+        const storedNumberExample = await AsyncStorage.getItem(
+          "storedNumberExample"
+        );
+        const CategoryNumberExample = await AsyncStorage.getItem(
+          "CategoryNumberExample"
+        );
+
         if (modifiedEmployeeID) {
-          handleUpdateValues("modifiedEmployeeID", modifiedEmployeeID, setStoredEmployeeIDExample);
+          handleUpdateValues(
+            "modifiedEmployeeID",
+            modifiedEmployeeID,
+            setStoredEmployeeIDExample
+          );
         }
         if (storedNumberExample) {
-          handleUpdateValues("storedNumberExample", storedNumberExample, setStoredNumberExample);
+          handleUpdateValues(
+            "storedNumberExample",
+            storedNumberExample,
+            setStoredNumberExample
+          );
         }
         if (CategoryNumberExample) {
-          handleUpdateValues("CategoryNumberExample", CategoryNumberExample, setStoredCategoryNumberExample);
+          handleUpdateValues(
+            "CategoryNumberExample",
+            CategoryNumberExample,
+            setStoredCategoryNumberExample
+          );
         }
       } catch (error) {
         console.error("AsyncStorage 에러:", error);
       }
     };
-  
+
     fetchModified();
-  
+
     // 컴포넌트 언마운트 또는 로그아웃 시 소켓 연결 해제
     // 이 부분이 로그아웃과 컴포넌트 언마운트 시 소켓 연결을 해제하는 유일한 부분입니다.
     return () => {
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current = null;
       }
     };
   }, [isLoggedIn, socket, storedNumber, categoryNumber, employeeID]);
-
 
   // Return 부분
   return (
@@ -267,7 +286,6 @@ const LoginScreen = ({ navigation, route }) => {
     </KeyboardAvoidingView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
