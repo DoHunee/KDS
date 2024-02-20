@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Managerfix = () => {
   const [storedNumberExample, setStoredNumberExample] = useState("");
-  const [storedCategoryNumberExample, setStoredCategoryNumberExample] =
+  const [CategoryNumberExample, setStoredCategoryNumberExample] =
     useState("");
   const navigation = useNavigation();
 
@@ -27,16 +27,16 @@ const Managerfix = () => {
       const storedNumberExampleValue = await AsyncStorage.getItem(
         "storedNumberExample"
       );
-      const storedCategoryNumberExampleValue = await AsyncStorage.getItem(
-        "storedCategoryNumberExample"
+      const CategoryNumberExampleValue = await AsyncStorage.getItem(
+        "CategoryNumberExample"
       );
 
       if (storedNumberExampleValue) {
         setStoredNumberExample(storedNumberExampleValue);
       }
 
-      if (storedCategoryNumberExampleValue) {
-        setStoredCategoryNumberExample(storedCategoryNumberExampleValue);
+      if (CategoryNumberExampleValue) {
+        setStoredCategoryNumberExample(CategoryNumberExampleValue);
       }
     } catch (error) {
       console.error("AsyncStorage 에러:", error);
@@ -67,12 +67,12 @@ const Managerfix = () => {
   const handleCategoryNumberExample = async () => {
     try {
       await AsyncStorage.setItem(
-        "storedCategoryNumberExample",
-        storedCategoryNumberExample
+        "CategoryNumberExample",
+        CategoryNumberExample
       );
       console.log(
         "AsyncStorage에 변환된 포스번호를 저장했습니다!",
-        storedCategoryNumberExample
+        CategoryNumberExample
       );
       Alert.alert("포스번호가 변경되었습니다");
 
@@ -125,7 +125,7 @@ const Managerfix = () => {
             placeholder="포스번호 (1~2자리)"
             keyboardType="numeric"
             maxLength={2}
-            value={storedCategoryNumberExample}
+            value={CategoryNumberExample}
             onChangeText={(text) => setStoredCategoryNumberExample(text)}
           />
 
