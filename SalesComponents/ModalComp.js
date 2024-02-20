@@ -8,7 +8,7 @@ import {
   Text,
   View,
   StyleSheet,
-  Platform
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -142,6 +142,17 @@ const ModalComp = ({
                 )}{" "}
                 원
               </Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  /* 여기에 결제 상세 정보를 보여주는 로직을 추가하세요. */
+                }}
+                style={styles.paymentDetailsButton}
+              >
+                <Text style={styles.paymentDetailsButtonText}>
+                  결제 상세 보기
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         ))}
@@ -330,6 +341,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  paymentDetailsButton: {
+    marginTop: 10,
+    backgroundColor: "#3498db", // 버튼 배경 색상
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center", // 버튼 내 텍스트 가운데 정렬
+  },
+  paymentDetailsButtonText: {
+    color: "white", // 텍스트 색상
+    fontWeight: "bold", // 텍스트 굵기
   },
 });
 
