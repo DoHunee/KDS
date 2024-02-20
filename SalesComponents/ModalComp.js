@@ -95,9 +95,9 @@ const ModalComp = ({
               styles.orderContainer,
               {
                 backgroundColor:
-                  order.status === "cancel"
+                  order.ProcessCode === "cancel"
                     ? "red"
-                    : order.status === "ready" || order.status === "fast_ready"
+                    : order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
                     ? "green"
                     : "lightgreen",
               },
@@ -109,10 +109,10 @@ const ModalComp = ({
               </Text>
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
-              <Text style={styles.orderText}>판매시간 : {order.date} </Text>
-              <Text style={styles.orderText}>주문상태 : {order.status} </Text>
+              <Text style={styles.orderText}>판매시간 : {order.SDDate} </Text>
+              <Text style={styles.orderText}>주문상태 : {order.ProcessCode} </Text>
               {/* 주문 상태가 "cancel"일 때만 취소 이유를 표시하는 부분 */}
-              {order.status === "cancel" && (
+              {order.ProcessCode === "cancel" && (
                 <>
                   <Text style={styles.orderText}>
                     취소사유: {order.cancellationReason}

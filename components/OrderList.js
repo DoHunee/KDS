@@ -14,8 +14,8 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
   useEffect(() => {
     // itemsData를 날짜 기준으로 정렬
     const sortedItems = itemsData.slice().sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
+      const dateA = new Date(a.SDDate);
+      const dateB = new Date(b.SDDate);
 
       // 날짜가 같으면 STSeq를 비교하여 정렬
       if (dateA.getTime() === dateB.getTime()) {
@@ -43,10 +43,10 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             name={item.name}
             hp={item.hp}
             orders={item.orders}
-            status={item.status}
+            ProcessCode={item.ProcessCode}
             onPress={handleOnPress}
             buttons={buttons}
-            date={item.date}
+            SDDate={item.SDDate}
             declineReason={item.declineReason}
             />
         )}

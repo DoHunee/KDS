@@ -10,10 +10,10 @@ const OrderCard = ({
   name,
   hp,
   orders,
-  status,
+  ProcessCode,
   onPress,
   buttons,
-  date,
+  SDDate,
   declineReason
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
@@ -21,13 +21,13 @@ const OrderCard = ({
 
 
   //날짜
-  const formattedDate = new Date(date).toLocaleDateString([], {
+  const formattedDate = new Date(SDDate).toLocaleDateString([], {
     month: "2-digit",
     day: "2-digit",
   });
 
   //시간
-  const formattedTime = new Date(date).toLocaleTimeString([], {
+  const formattedTime = new Date(SDDate).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -59,12 +59,12 @@ const OrderCard = ({
   let topLeft; // 각 주문카드 왼쪽 상단에 뜨는 친구
 
   // "주문대기중"
-  if (status === "pending") {
+  if (ProcessCode === "pending") {
     topLeft = "주문 대기중";
   }
 
   // "경과 시간 : n분 m초 ""
-  else if (status === "preparing") {
+  else if (ProcessCode === "preparing") {
     const elapsedMinutes = Math.floor(timeElapse / 60); // 분 단위
     const elapsedSeconds = Math.round(timeElapse) % 60; // 초 단
     // 경과 시간에 따라 텍스트 생성
@@ -76,25 +76,25 @@ const OrderCard = ({
   }
 
   // "즉시수령" Pink
-  else if (status === "fast_ready") {
+  else if (ProcessCode === "fast_ready") {
     dynamicChange.backgroundColor = "lightgreen";
     topLeft = "즉시수령";
   }
 
   // "주문처리완료" 됐으면 Green
-  else if (status === "ready") {
+  else if (ProcessCode === "ready") {
     dynamicChange.backgroundColor = "green";
     topLeft = "주문처리완료";
   }
 
   // "거절처리"
-  else if (status === "decline") {
+  else if (ProcessCode === "decline") {
     dynamicChange.backgroundColor = "pink";
     topLeft = `거절사유: ${declineReason}`; // 거부 이유를 표시
   } 
   
   // 취소처리
-  else if (status === "cancel") {
+  else if (ProcessCode === "cancel") {
     dynamicChange.backgroundColor = "red";
     topLeft = "취소처리";
   }
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   orders: {
     borderTopColor: "skyblue",
-    borderTopWSTSeqth: 2,
+    borderTopWidth: 2,
     marginTop: 5,
   },
   orderItem: {

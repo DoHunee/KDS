@@ -33,7 +33,7 @@ export const OrdersDistrubutionSlice = createSlice({
         (item) => item.STSeq === action.payload.STSeq
       );
 
-      confirmOrder.status = "preparing";
+      confirmOrder.ProcessCode = "preparing";
       confirmOrder.confirmTime = getTimePassedSec();
       confirmOrder.orderNumber = state.current.length + 1;
 
@@ -56,7 +56,7 @@ export const OrdersDistrubutionSlice = createSlice({
         declineReason === "재료소진" ||
         declineReason === "품절"
       ) {
-        declineOrder.status = "decline";
+        declineOrder.ProcessCode = "decline";
       }
       declineOrder.cancelTime = getTimePassedSec();
       declineOrder.orderNumber = state.complete.length + 1;
@@ -77,7 +77,7 @@ export const OrdersDistrubutionSlice = createSlice({
         (item) => item.STSeq === action.payload.STSeq
       );
 
-      immediateReceiptOrder.status = "fast_ready";
+      immediateReceiptOrder.ProcessCode = "fast_ready";
 
       immediateReceiptOrder.completeTime = getTimePassedSec();
       immediateReceiptOrder.orderNumber = state.complete.length + 1;
@@ -93,7 +93,7 @@ export const OrdersDistrubutionSlice = createSlice({
       const orders = state.current;
       const readyOrder = orders.find((item) => item.STSeq === action.payload.STSeq);
 
-      readyOrder.status = "ready";
+      readyOrder.ProcessCode = "ready";
       readyOrder.readyTime = getTimePassedSec();
       readyOrder.orderNumber = state.complete.length + 1;
 
@@ -116,7 +116,7 @@ export const OrdersDistrubutionSlice = createSlice({
         cancellationReason === "고객 요청에 따른 취소 처리" ||
         cancellationReason === "가게 사정에 따른 취소"
       ) {
-        canceledOrder.status = "cancel";
+        canceledOrder.ProcessCode = "cancel";
       }
       canceledOrder.cancelTime = getTimePassedSec();
 

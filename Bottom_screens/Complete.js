@@ -31,13 +31,13 @@ const Complete = () => {
   }, [isLoggedIn]);
 
   // onSelectStatus 함수 정의
-  const onSelectStatus = (status) => {
+  const onSelectStatus = (ProcessCode) => {
     const filteredOrders = readyOrders.filter(
-      (order) => order.status.toLowerCase() === status.toLowerCase()
+      (order) => order.ProcessCode.toLowerCase() === ProcessCode.toLowerCase()
     );
     console.log("Filtered Orders:", filteredOrders);
     setOrders(filteredOrders); // 필터링된 주문 목록을 로컬 state에 업데이트
-    console.log(`Selected status: ${status}`);
+    console.log(`Selected ProcessCode: ${ProcessCode}`);
   };
 
   return (

@@ -21,8 +21,8 @@ const Sales = () => {
   //   if (completeOrders && completeOrders.length > 0) {
   //     // completeOrders 배열의 각 항목에서 필요한 정보만 출력
   //     completeOrders.forEach((order) => {
-  //       const { date, name, sumPrice, status } = order;
-  //       console.log("Order Details:", { date, name, sumPrice, status });
+  //       const { SDDate, name, sumPrice, ProcessCode } = order;
+  //       console.log("Order Details:", { SDDate, name, sumPrice, ProcessCode });
   //       console.log(
   //         "----------------------------------------------------------"
   //       );
@@ -52,13 +52,13 @@ const Sales = () => {
     useState(false);
   const readyOrders = completeOrders.filter(
     (order) =>
-      order.status === "fast_ready" ||
-      order.status === "ready" ||
-      order.status === "cancel"
+      order.ProcessCode === "fast_ready" ||
+      order.ProcessCode === "ready" ||
+      order.ProcessCode === "cancel"
   ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
   // 모든 주문이 "cancel" 상태인지 확인합니다.
   const hasOnlyCancelOrders = completeOrders.every(
-    (order) => order.status === "cancel"
+    (order) => order.ProcessCode === "cancel"
   );
   //cancel 목록만!
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -74,20 +74,20 @@ const Sales = () => {
   useEffect(() => {
     const initialMarkedDates = {}; // markedDates 객체 초기화
 
-    // 각 주문에 대해 "date" 속성 값에 해당하는 캘린더 상자에 dot 표시하기! (텍스트 표현은 할 수 없네ㅠㅠ )
+    // 각 주문에 대해 "SDDate" 속성 값에 해당하는 캘린더 상자에 dot 표시하기! (텍스트 표현은 할 수 없네ㅠㅠ )
     readyOrders.forEach((order) => {
-      const { date } = order;
-      const dateOnly = date.split(" ")[0];
+      const { SDDate } = order;
+      const dateOnly = SDDate.split(" ")[0];
 
       // 해당 날짜에 대한 주문 목록이 모두 "cancel" 상태이고 그 주문이 존재하는 경우에만 빨간색으로 설정합니다.
       initialMarkedDates[dateOnly] = {
         marked: true,
         dotColor:
-          hasOnlyCancelOrders && order.status === "cancel" ? "red" : "blue",
+          hasOnlyCancelOrders && order.ProcessCode === "cancel" ? "red" : "blue",
       };
     });
 
-    setMarkedDates(initialMarkedDates); // Update markedDates status
+    setMarkedDates(initialMarkedDates); // Update markedDates ProcessCode
   }, [completeOrders]);
 
   //월 매출 계산하는 함수!
@@ -95,11 +95,11 @@ const Sales = () => {
     let Month_Final_Price = 0;
 
     const readyOrders = completeOrders.filter(
-      (order) => order.status === "fast_ready" || order.status === "ready"
+      (order) => order.ProcessCode === "fast_ready" || order.ProcessCode === "ready"
     );
 
     readyOrders.forEach((order) => {
-      const month = order.date.substring(0, 7);
+      const month = order.SDDate.substring(0, 7);
 
       if (month === selectedMonth) {
         Month_Final_Price += order.orders.reduce(
@@ -119,29 +119,29 @@ const Sales = () => {
 
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
     const readyOrders = completeOrders.filter(
-      (order) => order.status === "fast_ready" || order.status === "ready"
+      (order) => order.ProcessCode === "fast_ready" || order.ProcessCode === "ready"
     );
 
     // "cancel" 상태의 주문 목록 필터링
     const cancelOrders = completeOrders.filter(
-      (order) => order.status === "cancel"
+      (order) => order.ProcessCode === "cancel"
     );
 
     // "fast_ready" 및 "ready" 상태 +  선택한 날짜
     const selectedOrders = readyOrders.filter((order) => {
-      const dateOnly = order.date.split(" ")[0];
+      const dateOnly = order.SDDate.split(" ")[0];
       return dateOnly === day.dateString;
     });
 
     // "cancel" 상태의 주문 목록 필터링 + 선택한 날짜
     const selectedcancelOrders = cancelOrders.filter((order) => {
-      const dateOnly = order.date.split(" ")[0];
+      const dateOnly = order.SDDate.split(" ")[0];
       return dateOnly === day.dateString;
     });
 
     // 선택된 월에 해당하는 주문들
     const selectedMonthOrders = readyOrders.filter((order) => {
-      return order.date.substring(0, 7) === selectedMonth;
+      return order.SDDate.substring(0, 7) === selectedMonth;
     });
 
     //선택된 날짜에 대한 "cancel" 상태의 주문들의 전체 취소 금액
@@ -167,13 +167,13 @@ const Sales = () => {
     setseletedtotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
     setselectedcancelSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
 
-    setSelectedDate(day.dateString); // Set the selected date
+    setSelectedDate(day.dateString); // Set the selected SDDate
 
     // markedDates 객체 업데이트: 모든 날짜의 강조 해제, 선택된 날짜를 특정 색으로 표시
     const updatedMarkedDates = {};
-    Object.keys(markedDates).forEach((date) => {
-      updatedMarkedDates[date] = {
-        ...markedDates[date],
+    Object.keys(markedDates).forEach((SDDate) => {
+      updatedMarkedDates[SDDate] = {
+        ...markedDates[SDDate],
         selected: false,
         selectedColor: undefined,
       };
@@ -194,15 +194,15 @@ const Sales = () => {
   };
 
   // 선택한 날짜에 해당되는 주문 목록 가져오기
-  const getOrdersByDate = (status) => {
+  const getOrdersByDate = (ProcessCode) => {
     // 해당 상태의 주문 목록 필터링
     const filteredOrders = completeOrders.filter(
-      (order) => order.status === status
+      (order) => order.ProcessCode === ProcessCode
     );
 
     // 선택한 날짜에 해당되는 주문 목록만 반환
     return filteredOrders.filter((order) => {
-      const dateOnly = order.date.split(" ")[0];
+      const dateOnly = order.SDDate.split(" ")[0];
       return dateOnly === selectedDate;
     });
   };
@@ -212,7 +212,7 @@ const Sales = () => {
     // 만약 주문 번호를 입력하지 않았다면 선택한 날짜에 해당하는 모든 주문 목록을 표시합니다.
     if (!searchOrder) {
       const selectedDateOrders = completeOrders.filter((order) => {
-        const dateOnly = order.date.split(" ")[0];
+        const dateOnly = order.SDDate.split(" ")[0];
         return dateOnly === selectedDate; // 선택한 날짜에 해당하는 주문만 필터링합니다.
       });
 
@@ -236,7 +236,7 @@ const Sales = () => {
       // 만약 검색된 주문이 있다면
       // 검색된 주문이 선택한 날짜에 해당하는 것인지 확인하여 업데이트합니다.
       const selectedDateOrders = foundOrders.filter((order) => {
-        const dateOnly = order.date.split(" ")[0];
+        const dateOnly = order.SDDate.split(" ")[0];
         return dateOnly === selectedDate;
       });
 
@@ -245,10 +245,10 @@ const Sales = () => {
 
       // 주문 상태에 따라 버튼의 투명도를 설정합니다.
       const hasReadyOrder = selectedDateOrders.some(
-        (order) => order.status === "ready" || order.status === "fast_ready"
+        (order) => order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
       );
       const hasCancelOrder = selectedDateOrders.some(
-        (order) => order.status === "cancel"
+        (order) => order.ProcessCode === "cancel"
       );
 
       setReadyButtonTranslucent(!hasReadyOrder);
@@ -263,16 +263,16 @@ const Sales = () => {
     }
   };
 
-  // 모달창 status 필터링 버튼 클릭에 대한 처리 함수
-  const handleOrderStatusButtonClick = (status) => {
-    if (status === "ready") {
+  // 모달창 ProcessCode 필터링 버튼 클릭에 대한 처리 함수
+  const handleOrderStatusButtonClick = (ProcessCode) => {
+    if (ProcessCode === "ready") {
       setSelectedOrders(
         getOrdersByDate("fast_ready").concat(getOrdersByDate("ready"))
       );
       setselectedcancelOrders([]);
       setDeclineButtonTranslucent(true); // "취소목록" 버튼을 투명하게 만듭니다.
       setReadyButtonTranslucent(false); // "즉시수령,완료" 버튼의 투명도를 다시 1로 변경합니다.
-    } else if (status === "cancel") {
+    } else if (ProcessCode === "cancel") {
       setSelectedOrders([]);
       setselectedcancelOrders(getOrdersByDate("cancel"));
       setReadyButtonTranslucent(true); // "즉시수령,완료" 버튼을 투명하게 만듭니다.
@@ -304,7 +304,7 @@ const Sales = () => {
     const month = today.getMonth() + 1; // Month starts from 0, so +1.
     const day = today.getDate(); // Get the day of the month.
 
-    // Display the selected date and move the calendar to that month.
+    // Display the selected SDDate and move the calendar to that month.
     const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
       day < 10 ? "0" + day : day
     }`;
@@ -347,7 +347,7 @@ const Sales = () => {
               selectedcancelOrders={selectedcancelOrders}
               setSearchOrder={setSearchOrder}
               handleSearchOrder={handleSearchOrder} // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
-              handleOrderStatusButtonClick={handleOrderStatusButtonClick} // 모달창 status 필터링 버튼 클릭에 대한 처리 함수
+              handleOrderStatusButtonClick={handleOrderStatusButtonClick} // 모달창 ProcessCode 필터링 버튼 클릭에 대한 처리 함수
               closeModal={closeModal} // 모달창 close 하는 함수!
               scrollToBottom={scrollToBottom} // 스크롤 아래로 이동하는 함수
               scrollToTop={scrollToTop} // 스크롤 위로 이동하는 함수
