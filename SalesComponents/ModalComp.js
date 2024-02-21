@@ -123,10 +123,10 @@ const ModalComp = ({
               <Text style={styles.orderText}>
                 [주문 목록]:{"\n\n"}
                 {order.orders.map((item, index) => (
-                  <View key={item.name} style={styles.menuItemContainer}>
-                    <Text style={styles.menuItemName}>메뉴명: {item.name}</Text>
+                  <View key={item.MISimpleName} style={styles.menuItemContainer}>
+                    <Text style={styles.menuItemName}>메뉴명: {item.MISimpleName}</Text>
                     <Text style={styles.menuItemDetail}>
-                      수량: {item.quantity} | 금액: {item.price * item.quantity}{" "}
+                      수량: {item.MICnt} | 금액: {item.TotPrice}{" "}
                       원
                     </Text>
                   </View>
@@ -137,7 +137,7 @@ const ModalComp = ({
               <Text style={styles.orderText}>
                 총 가격 :{" "}
                 {order.orders.reduce(
-                  (sum, item) => sum + item.price * item.quantity,
+                  (sum, item) => sum +item.TotPrice,
                   0
                 )}{" "}
                 원

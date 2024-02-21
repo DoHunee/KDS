@@ -20,57 +20,87 @@
       "CancleUser": null,
       "orders": [
         {
-          "name": "Cheesburger",
-          "price": 8000,
-          "quantity": 2
+          "ItemSeq": 1,
+          "MICode": "0000002970",
+          "MISimpleName": "싸이버거세트",
+          "OriginPrice": 7500,
+          "MIPrice": 8000,
+          "MICnt": 1,
+          "TotPrice": 8000,
+          "SideYN": "Y",
+          "SubItems": [
+            {
+              "SideSeq": 1,
+              "SMICode": "0000002969",
+              "SMISimpleName": "싸이버거",
+              "SMIPrice": 0,
+              "SMICnt": 1,
+              "STotPrice": 0
+            },
+            {
+              "SideSeq": 2,
+              "SMICode": "0000002992",
+              "SMISimpleName": "케이준양념감자(중)",
+              "SMIPrice": 500,
+              "SMICnt": 1,
+              "STotPrice": 500
+            },
+            {
+              "SideSeq": 3,
+              "SMICode": "0000002968",
+              "SMISimpleName": "스프라이트",
+              "SMIPrice": 0,
+              "SMICnt": 1,
+              "STotPrice": 0
+            }
+          ]
         },
         {
-          "name": "Hamburger",
-          "price": 7500,
-          "quantity": 1
-        },
-        {
-          "name": "Coca-Cola",
-          "price": 1500,
-          "quantity": 1
-        },
-        {
-          "name": "Pizza",
-          "price": 15500,
-          "quantity": 1
+          "ItemSeq": 2,
+          "MICode": "0000002971",
+          "MISimpleName": "딥치즈버거",
+          "OriginPrice": 6100,
+          "MIPrice": 6100,
+          "MICnt": 1,
+          "TotPrice": 6100,
+          "SideYN": "N",
+          "SubItems": []
         }
       ]
     },
+
     {
-      "UserHp": "010-4567-8525",
-      "UserName": "조준호",
+      "UserHp": "010-4746-6846",
+      "UserName": "상형",
       "OrderKey": 2,
       "UserKey": 2,
       "SDDate": "2024-02-20",
-      "SDTime": "14:13:00",
+      "SDTime": "15:17:00",
       "STCode": "0093",
       "STSeq": 10002,
       "ProcessCode": "pending",
-      "TotalPrice": 14100,
-      "TotalQuantity": 2,
+      "TotalPrice": 10400,
+      "TotalQuantity": 1,
       "ActiveYN": "Y",
-      "InsertDate": "2024-02-20T13:40:00.000Z",
+      "InsertDate": "2024-02-20T00:00:00.000Z",
       "InsertUser": "1807001",
       "CancleCode": null,
       "CancleDate": null,
       "CancleUser": null,
       "orders": [
         {
-          "name": "Cheesburger",
-          "price": 8000,
-          "quantity": 2
-        },
-        {
-          "name": "Hamburger",
-          "price": 7500,
-          "quantity": 1
+          "ItemSeq": 1,
+          "MICode": "0000002979",
+          "MISimpleName": "순살치킨(8조각)",
+          "OriginPrice": 10400,
+          "MIPrice": 10400,
+          "MICnt": 1,
+          "TotPrice": 10400,
+          "SideYN": "N",
+          "SubItems": []
         }
       ]
     }
+    
   ]
 }

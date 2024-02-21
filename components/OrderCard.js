@@ -9,28 +9,30 @@ const OrderCard = ({
   STSeq,
   UserName,
   UserHp,
-  orders,
+  orders,  //details로 변경하려면 여기를 수정!
   ProcessCode,
   onPress,
   buttons,
   SDDate,
   SDTime,
-  declineReason
+  declineReason,
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
-  const handleOnPress = (data) => {onPress({ action: data, STSeq: STSeq });};
+  const handleOnPress = (data) => {
+    onPress({ action: data, STSeq: STSeq });
+  };
 
-  const [hours, minutes] = SDTime.split(':').map(num => parseInt(num, 10));
+  const [hours, minutes] = SDTime.split(":").map((num) => parseInt(num, 10));
 
   // 24시간제를 12시간제로 변환하고, 오전/오후 결정
   const isPM = hours >= 12;
   const formattedHours = hours % 12 || 12; // 0시는 12시(오전)으로, 12시는 12시(오후)로 표시
-  const amPm = isPM ? 'PM' : 'AM';
-  
-  // 시간과 분을 "HH:MM AM/PM" 형식의 문자열로 조합
-  const formattedTime = `${formattedHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${amPm}`;
+  const amPm = isPM ? "PM" : "AM";
 
-  
+  // 시간과 분을 "HH:MM AM/PM" 형식의 문자열로 조합
+  const formattedTime = `${formattedHours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")} ${amPm}`;
 
   // 배달 시간 나타내주는 네모 창 => 계속 변하는 친구!!!
   let dynamicChange = {
@@ -91,8 +93,8 @@ const OrderCard = ({
   else if (ProcessCode === "decline") {
     dynamicChange.backgroundColor = "pink";
     topLeft = `거절사유: ${declineReason}`; // 거부 이유를 표시
-  } 
-  
+  }
+
   // 취소처리
   else if (ProcessCode === "cancel") {
     dynamicChange.backgroundColor = "red";
@@ -127,27 +129,35 @@ const OrderCard = ({
       */}
       <View style={styles.namePhone}>
         <View>
-          <Text style={styles.text}>
-            {UserName} 【{UserHp}】
+          <Text style={styles.text}>{UserName} 【{UserHp}】
           </Text>
           <Text>{formattedTime}</Text>
-          
         </View>
         <View>
           <Text style={styles.orderText}>
-          <Text>no.{STSeq}</Text>
+            <Text>no.{STSeq}</Text>
           </Text>
         </View>
       </View>
 
       <View style={styles.orders}>
-        {orders.map((order, index) => {
+      {orders && orders.map((order, orderIndex) => {
           return (
-            <View style={styles.orderItem} key={index}>
+            <View style={styles.orderItem} key={orderIndex}>
               <Text style={{ color: "black" }}>
-                {" "}
-                ▶ {order.name} : {order.quantity}
+                ▶ {order.MISimpleName} : {order.MICnt}
               </Text>
+              {order.SideYN === "Y" &&
+                order.SubItems &&
+                order.SubItems.length > 0 && (
+                  <View style={styles.subItems}>
+                    {order.SubItems.map((subItem, subItemIndex) => (
+                      <Text style={{ color: "grey" }} key={subItemIndex}>
+                        - {subItem.SMISimpleName} : {subItem.SMICnt}
+                      </Text>
+                    ))}
+                  </View>
+                )}
             </View>
           );
         })}
@@ -225,7 +235,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  subItems: {
+    paddingLeft: 20, // 부가 항목을 주문 항목보다 들여쓰기
+    paddingTop: 5,
+  },
 });
 
 export default OrderCard;
-
