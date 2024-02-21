@@ -42,7 +42,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             STSeq={item.STSeq}
             UserName={item.UserName}
             UserHp={item.UserHp}
-            orders={item.orders}
+            Details={item.Details}
             ProcessCode={item.ProcessCode}
             onPress={handleOnPress}
             buttons={buttons}

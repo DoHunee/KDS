@@ -18,7 +18,7 @@
       "CancleCode": null,
       "CancleDate": null,
       "CancleUser": null,
-      "orders": [
+      "Details": [
         {
           "ItemSeq": 1,
           "MICode": "0000002970",
@@ -87,7 +87,7 @@
       "CancleCode": null,
       "CancleDate": null,
       "CancleUser": null,
-      "orders": [
+      "Details": [
         {
           "ItemSeq": 1,
           "MICode": "0000002979",
@@ -100,7 +100,76 @@
           "SubItems": []
         }
       ]
-    }
-    
+    },
+
+    {
+          "UserHp": "010-9546-8521",
+          "UserName": "준호",
+          "OrderKey": 3,
+          "UserKey": 3,
+          "SDDate": "2024-02-20",
+          "SDTime": "21:20:00",
+          "STCode": "0093",
+          "STSeq": 10003,
+          "ProcessCode": "pending",
+          "TotalPrice": 14100,
+          "TotalQuantity": 2,
+          "ActiveYN": "Y",
+          "InsertDate": "2024-02-20T13:40:00.000Z",
+          "InsertUser": "1807001",
+          "CancleCode": null,
+          "CancleDate": null,
+          "CancleUser": null,
+          "Details": [
+            {
+              "ItemSeq": 1,
+              "MICode": "0000002970",
+              "MISimpleName": "싸이버거세트",
+              "OriginPrice": 7500,
+              "MIPrice": 8000,
+              "MICnt": 1,
+              "TotPrice": 8000,
+              "SideYN": "Y",
+              "SubItems": [
+                {
+                  "SideSeq": 1,
+                  "SMICode": "0000002969",
+                  "SMISimpleName": "싸이버거",
+                  "SMIPrice": 0,
+                  "SMICnt": 1,
+                  "STotPrice": 0
+                },
+                {
+                  "SideSeq": 2,
+                  "SMICode": "0000002992",
+                  "SMISimpleName": "케이준양념감자(중)",
+                  "SMIPrice": 500,
+                  "SMICnt": 1,
+                  "STotPrice": 500
+                },
+                {
+                  "SideSeq": 3,
+                  "SMICode": "0000002968",
+                  "SMISimpleName": "스프라이트",
+                  "SMIPrice": 0,
+                  "SMICnt": 1,
+                  "STotPrice": 0
+                }
+              ]
+            },
+            {
+              "ItemSeq": 2,
+              "MICode": "0000002971",
+              "MISimpleName": "휠렛버거",
+              "OriginPrice": 5900,
+              "MIPrice": 5900,
+              "MICnt": 1,
+              "TotPrice": 5900,
+              "SideYN": "N",
+              "SubItems": []
+            }
+          ]
+        }
+
   ]
 }

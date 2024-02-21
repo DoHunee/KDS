@@ -122,7 +122,7 @@ const ModalComp = ({
               )}
               <Text style={styles.orderText}>
                 [주문 목록]:{"\n\n"}
-                {order.orders.map((item, index) => (
+                {order.Details.map((item, index) => (
                   <View key={item.MISimpleName} style={styles.menuItemContainer}>
                     <Text style={styles.menuItemName}>메뉴명: {item.MISimpleName}</Text>
                     <Text style={styles.menuItemDetail}>
@@ -136,7 +136,7 @@ const ModalComp = ({
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>
                 총 가격 :{" "}
-                {order.orders.reduce(
+                {order.Details.reduce(
                   (sum, item) => sum +item.TotPrice,
                   0
                 )}{" "}

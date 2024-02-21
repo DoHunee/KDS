@@ -9,7 +9,7 @@ const OrderCard = ({
   STSeq,
   UserName,
   UserHp,
-  orders,  //details로 변경하려면 여기를 수정!
+  Details,  //details로 변경하려면 여기를 수정!
   ProcessCode,
   onPress,
   buttons,
@@ -140,8 +140,8 @@ const OrderCard = ({
         </View>
       </View>
 
-      <View style={styles.orders}>
-      {orders && orders.map((order, orderIndex) => {
+      <View style={styles.Details}>
+      {Details && Details.map((order, orderIndex) => {
           return (
             <View style={styles.orderItem} key={orderIndex}>
               <Text style={{ color: "black" }}>
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  orders: {
+  Details: {
     borderTopColor: "skyblue",
     borderTopWidth: 2,
     marginTop: 5,

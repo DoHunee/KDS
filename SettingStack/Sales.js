@@ -99,7 +99,7 @@ const Sales = () => {
       const month = order.SDDate.substring(0, 7);
 
       if (month === selectedMonth) {
-        Month_Final_Price += order.orders.reduce(
+        Month_Final_Price += order.Details.reduce(
           (sum, item) => sum + item.TotPrice,
           0
         );
@@ -145,7 +145,7 @@ const Sales = () => {
     const Decline_Final_Price = selectedcancelOrders.reduce(
       (total, order) =>
         total +
-        order.orders.reduce((sum, item) => sum + item.TotPrice, 0),
+        order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
       0
     );
 
@@ -153,7 +153,7 @@ const Sales = () => {
     const Final_Price = selectedOrders.reduce(
       (total, order) =>
         total +
-        order.orders.reduce((sum, item) => sum + item.TotPrice, 0),
+        order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
       0
     );
 
