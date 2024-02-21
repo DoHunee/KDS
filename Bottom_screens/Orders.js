@@ -146,7 +146,9 @@ const Orders = ({ navigation }) => {
 
   // Pending 주문 상태 변경 감지
   useEffect(() => {
-    setOrders(pendingOrders);
+    if (Array.isArray(pendingOrders)) {
+      setOrders(pendingOrders);
+    }
   }, [pendingOrders]);
 
 
