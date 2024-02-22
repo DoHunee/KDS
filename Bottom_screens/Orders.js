@@ -128,7 +128,7 @@ const Orders = ({ navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>거절 이유를 선택해주세요:</Text>
+            <Text style={styles.modalText}>주문 거절 사유를 선택해주세요</Text>
             <TouchableOpacity style={styles.button} onPress={() => handleDeclineReason("재료소진")}>
               <Text style={styles.textStyle}>재료소진</Text>
             </TouchableOpacity>

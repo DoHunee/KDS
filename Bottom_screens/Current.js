@@ -91,7 +91,7 @@ const Current = ({ navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>주문 취소 사유를 선택해주세요:</Text>
+            <Text style={styles.modalText}>주문 취소 사유를 선택해주세요</Text>
             <TouchableOpacity style={styles.button} onPress={() => handleCancelReason("고객 요청에 따른 취소")}>
               <Text style={styles.textStyle}>고객 요청에 따른 취소</Text>
             </TouchableOpacity>
