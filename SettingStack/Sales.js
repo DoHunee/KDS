@@ -45,8 +45,7 @@ const Sales = () => {
 
   const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
-  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =
-    useState(false);
+  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
   const readyOrders = completeOrders.filter(
     (order) =>
       order.ProcessCode === "fast_ready" ||
@@ -54,11 +53,11 @@ const Sales = () => {
       order.ProcessCode === "cancel"
   ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
   // 모든 주문이 "cancel" 상태인지 확인합니다.
-  const hasOnlyCancelOrders = completeOrders.every(
-    (order) => order.ProcessCode === "cancel"
-  );
+  const hasOnlyCancelOrders = completeOrders.every((order) => order.ProcessCode === "cancel");
   //cancel 목록만!
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const [current, setCurrent] = useState(); // 현재 캘린더의 월을 관리하는 상태
+  const [calendarKey, setCalendarKey] = useState("calendar"); // 캘린더 컴포넌트의 키를 관리하는 상태
 
   // 로그인 관련
   useEffect(() => {
@@ -299,12 +298,14 @@ const Sales = () => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1; // Month starts from 0, so +1.
-    const day = today.getDate(); // Get the day of the month.
+    const day = today.getDate();
 
-    // Display the selected SDDate and move the calendar to that month.
     const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
       day < 10 ? "0" + day : day
     }`;
+
+    setCurrent(formattedDate); // 캘린더의 현재 월을 오늘 날짜가 속한 월로 설정
+    setCalendarKey(`calendar-${new Date().getTime()}`); // 캘린더 컴포넌트의 키를 변경하여 리렌더링 강제
     handleCalenderDay({ dateString: formattedDate });
   };
 
@@ -316,6 +317,8 @@ const Sales = () => {
             {/* 캘린더 부분 */}
             <CalendarComp
               markedDates={markedDates}
+              current={current}
+              calendarKey ={calendarKey}
               handleCalenderDay={handleCalenderDay}
               handleSelectToday={handleSelectToday}
             />

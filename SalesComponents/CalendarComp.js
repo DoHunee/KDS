@@ -1,5 +1,5 @@
 // CalendarComp.js
-import React from "react";
+import React, { useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { LocaleConfig } from "react-native-calendars";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
@@ -49,6 +49,8 @@ LocaleConfig.defaultLocale = "ko"; // set default language
 
 const CalendarComp = ({
   markedDates,
+  current,
+  calendarKey,
   handleCalenderDay,
   handleSelectToday,
 }) => {
@@ -60,6 +62,8 @@ const CalendarComp = ({
 
       <Calendar
         style={styles.calendar}
+        key={calendarKey} // 캘린더 컴포넌트에 키를 할당
+        current={current} // 현재 보여질 월을 current 상태로 설정
         markedDates={markedDates}
         onDayPress={(day) => {
           handleCalenderDay(day);
