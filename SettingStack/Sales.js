@@ -45,7 +45,8 @@ const Sales = () => {
 
   const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
-  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
+  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =
+    useState(false);
   const readyOrders = completeOrders.filter(
     (order) =>
       order.ProcessCode === "fast_ready" ||
@@ -53,11 +54,14 @@ const Sales = () => {
       order.ProcessCode === "cancel"
   ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
   // 모든 주문이 "cancel" 상태인지 확인합니다.
-  const hasOnlyCancelOrders = completeOrders.every((order) => order.ProcessCode === "cancel");
+  const hasOnlyCancelOrders = completeOrders.every(
+    (order) => order.ProcessCode === "cancel"
+  );
   //cancel 목록만!
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [current, setCurrent] = useState(); // 현재 캘린더의 월을 관리하는 상태
   const [calendarKey, setCalendarKey] = useState("calendar"); // 캘린더 컴포넌트의 키를 관리하는 상태
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false); // 날짜 선택 모달의 표시 상태를 관리하기 위한 상태
 
   // 로그인 관련
   useEffect(() => {
@@ -79,7 +83,9 @@ const Sales = () => {
       initialMarkedDates[dateOnly] = {
         marked: true,
         dotColor:
-          hasOnlyCancelOrders && order.ProcessCode === "cancel" ? "red" : "blue",
+          hasOnlyCancelOrders && order.ProcessCode === "cancel"
+            ? "red"
+            : "blue",
       };
     });
 
@@ -91,7 +97,8 @@ const Sales = () => {
     let Month_Final_Price = 0;
 
     const readyOrders = completeOrders.filter(
-      (order) => order.ProcessCode === "fast_ready" || order.ProcessCode === "ready"
+      (order) =>
+        order.ProcessCode === "fast_ready" || order.ProcessCode === "ready"
     );
 
     readyOrders.forEach((order) => {
@@ -115,7 +122,8 @@ const Sales = () => {
 
     // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
     const readyOrders = completeOrders.filter(
-      (order) => order.ProcessCode === "fast_ready" || order.ProcessCode === "ready"
+      (order) =>
+        order.ProcessCode === "fast_ready" || order.ProcessCode === "ready"
     );
 
     // "cancel" 상태의 주문 목록 필터링
@@ -143,16 +151,14 @@ const Sales = () => {
     //선택된 날짜에 대한 "cancel" 상태의 주문들의 전체 취소 금액
     const Decline_Final_Price = selectedcancelOrders.reduce(
       (total, order) =>
-        total +
-        order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
+        total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
       0
     );
 
     //선택된 날짜에 대한 주문 목록(selectedOrders)에서 총 주문 가격
     const Final_Price = selectedOrders.reduce(
       (total, order) =>
-        total +
-        order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
+        total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
       0
     );
 
@@ -241,7 +247,8 @@ const Sales = () => {
 
       // 주문 상태에 따라 버튼의 투명도를 설정합니다.
       const hasReadyOrder = selectedDateOrders.some(
-        (order) => order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
+        (order) =>
+          order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
       );
       const hasCancelOrder = selectedDateOrders.some(
         (order) => order.ProcessCode === "cancel"
@@ -309,6 +316,41 @@ const Sales = () => {
     handleCalenderDay({ dateString: formattedDate });
   };
 
+  // DateTimePickerModal로 선택한 날짜를 표시하고 캘린더를 해당 월로 이동하는 함수
+  const handleDateChange = (date) => {
+    // 선택된 날짜를 YYYY-MM-DD 형식의 문자열로 변환
+    const selectedDate = date.toISOString().split("T")[0];
+
+    // 캘린더의 현재 월을 사용자가 선택한 날짜가 속한 월로 설정
+    setCurrent(selectedDate);
+
+    // 캘린더 컴포넌트의 키를 변경하여 리렌더링 강제
+    setCalendarKey(`calendar-${new Date().getTime()}`);
+
+    // 사용자가 선택한 날짜를 처리하는 로직 구현
+    // 예: setSelectedDate(selectedDate);
+
+    // 선택된 날짜를 기반으로 추가적인 로직 처리가 필요한 경우
+    // 예를 들어, 해당 날짜에 해당하는 주문 목록을 표시하거나, 특정 이벤트를 트리거할 수 있음
+    handleCalenderDay({ dateString: selectedDate });
+  };
+
+  // 날짜 선택 모달을 열기 위한 함수
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  // 날짜 선택 모달을 닫기 위한 함수
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  // 사용자가 날짜를 선택했을 때 실행되는 함수
+  const handleConfirm = (date) => {
+    hideDatePicker(); // 모달 닫기
+    handleDateChange(date); // 사용자가 선택한 날짜를 처리하는 함수 호출
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
@@ -318,12 +360,16 @@ const Sales = () => {
             <CalendarComp
               markedDates={markedDates}
               current={current}
-              calendarKey ={calendarKey}
+              calendarKey={calendarKey}
+              isDatePickerVisible = {isDatePickerVisible}
               handleCalenderDay={handleCalenderDay}
               handleSelectToday={handleSelectToday}
+              handleDateChange={handleDateChange}
+              showDatePicker={showDatePicker}
+              hideDatePicker ={hideDatePicker}
+              handleConfirm = {handleConfirm}
             />
-            
-            
+
             {/* 매출 나타내는 부분 */}
             <SalesComp
               selectedOrders={selectedOrders}
@@ -334,8 +380,7 @@ const Sales = () => {
               selectedMonthSales={selectedMonthSales}
               handleModal={() => setModalVisible(true)}
             />
-            
-            
+
             {/* 모달창을 나타내는 부분 */}
             <ModalComp
               modalVisible={modalVisible}
@@ -359,12 +404,10 @@ const Sales = () => {
   );
 };
 
-const styles = StyleSheet.create(
-  {
+const styles = StyleSheet.create({
   container: {
-    flex : 1,
+    flex: 1,
   },
-
 });
 
 export default Sales;

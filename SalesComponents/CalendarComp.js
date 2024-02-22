@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { LocaleConfig } from "react-native-calendars";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import DateTimePicker from "react-native-modal-datetime-picker";
 
 //한국어 세팅
 LocaleConfig.locales["ko"] = {
@@ -51,14 +52,35 @@ const CalendarComp = ({
   markedDates,
   current,
   calendarKey,
+  isDatePickerVisible,
   handleCalenderDay,
   handleSelectToday,
+  handleDateChange,
+  showDatePicker,
+  hideDatePicker,
+  handleConfirm,
 }) => {
+
   return (
     <View>
-      <TouchableOpacity style={styles.TodayButton} onPress={handleSelectToday}>
-        <Text style={styles.buttonText}>Today</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.Button, styles.firstButton]}
+          onPress={handleSelectToday}
+        >
+          <Text style={styles.buttonText}>Today</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.Button} onPress={showDatePicker}>
+          <Text style={styles.buttonText}>날짜 선택</Text>
+        </TouchableOpacity>
+      </View>
+      <DateTimePicker
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
 
       <Calendar
         style={styles.calendar}
@@ -74,27 +96,36 @@ const CalendarComp = ({
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: "row", // 가로로 나열
+    justifyContent: "flex-end", // 컨테이너의 오른쪽 끝에 자식 요소들을 정렬
+    marginTop: 20,
+    marginBottom: 10,
+  },
+
   calendar: {
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
   },
 
-  TodayButton: {
+  Button: {
+    // 기존 스타일을 유지하되, marginRight과 alignSelf 제거
     backgroundColor: "white",
-    paddingVertical: 10, // 상하 여백을 작게 조정합니다.
-    paddingHorizontal: 20, // 좌우 여백을 작게 조정합니다.
-    borderRadius: 8, // 둥근 모서리의 반경을 작게 조정합니다.
-    marginTop: 30,
-    alignSelf: "flex-end", // 오른쪽 정렬합니다.
-    marginRight: 20, // 오른쪽 여백을 추가합니다.
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
-
   buttonText: {
     color: "black",
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+  },
+
+  // 첫 번째 버튼의 스타일을 수정하여 오른쪽에 간격 추가
+  firstButton: {
+    marginRight: 10, // 첫 번째 버튼과 두 번째 버튼 사이의 간격
   },
 });
 
