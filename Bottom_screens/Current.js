@@ -1,5 +1,5 @@
-import { StyleSheet, View, Alert } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, View, Modal, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OrderList from "../components/OrderList";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,8 @@ const Current = ({ navigation }) => {
   const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
   const socket = useRef(null);
   const { stCode } = useSelector((state) => state.auth);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   // 소켓
   useEffect(() => {
@@ -39,11 +41,10 @@ const Current = ({ navigation }) => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+      navigation.navigate("Login");
     }
   }, [isLoggedIn]);
 
-  // 주문 상태를 업데이트하는 함수
   const buttonPress = (data) => {
     if (data.action === "준비완료") {
       dispatch(onReady({ STSeq: data.STSeq }));
@@ -53,43 +54,14 @@ const Current = ({ navigation }) => {
         message: "고객님의 주문이 준비 완료되었습니다!",
       });
     } else if (data.action === "주문취소") {
-      cancelOrder(data.STSeq);
+      setSelectedOrderId(data.STSeq);
+      setIsModalVisible(true);
     }
   };
 
-  // 주문 취소 액션을 디스패치하고 사용자로부터 취소 이유를 선택받는 함수
-  const cancelOrder = (orderId) => {
-    Alert.alert(
-      "취소 이유 선택", // 알림 창 제목
-      "취소 사유를 선택해주세요:", // 알림 창 메시지
-      [
-        {
-          text: "고객 요청에 따른 취소 처리", // 첫 번째 버튼 텍스트
-          onPress: () =>
-            dispatch(
-              onCancel({
-                STSeq: orderId,
-                cancellationReason: "고객 요청에 따른 취소 처리",
-              })
-            ),
-        },
-        {
-          text: "가게 사정에 따른 취소", // 두 번째 버튼 텍스트
-          onPress: () =>
-            dispatch(
-              onCancel({
-                STSeq: orderId,
-                cancellationReason: "가게 사정에 따른 취소",
-              })
-            ),
-        },
-        {
-          text: "취소", // 취소 버튼 텍스트
-          style: "cancel", // 취소 버튼 스타일
-        },
-      ],
-      { cancelable: false } // 알림 창이 뒤로 버튼으로 닫히지 않도록 설정
-    );
+  const handleCancelReason = (reason) => {
+    dispatch(onCancel({ STSeq: selectedOrderId, cancellationReason: reason }));
+    setIsModalVisible(false);
   };
 
   return (
@@ -110,6 +82,28 @@ const Current = ({ navigation }) => {
           </SafeAreaView>
         </>
       ) : null}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>주문 취소 사유를 선택해주세요:</Text>
+            <TouchableOpacity style={styles.button} onPress={() => handleCancelReason("고객 요청에 따른 취소")}>
+              <Text style={styles.textStyle}>고객 요청에 따른 취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => handleCancelReason("가게 사정에 따른 취소")}>
+              <Text style={styles.textStyle}>가게 사정에 따른 취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => setIsModalVisible(false)}>
+              <Text style={styles.textStyle}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -118,6 +112,43 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#AFA8BA",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  button: {
+    backgroundColor: "#694fad",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginTop: 10,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

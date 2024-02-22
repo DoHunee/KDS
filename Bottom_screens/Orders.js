@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef  } from "react";
-import { StyleSheet, SafeAreaView, Alert } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
 import EmptyOrders from "../components/EmptyOrders";
@@ -20,6 +20,8 @@ const Orders = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
   const socket = useRef(null);
   const { stCode } = useSelector((state) => state.auth);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   // 소켓 여러번 접근하는 문제를 해결하기 위해!
   useEffect(() => {
@@ -47,9 +49,9 @@ const Orders = ({ navigation }) => {
         message: "고객님의 주문이 접수되었습니다!",
       });
     } else if (data.action === "거절") {
-      declineOrder(data.STSeq);
+      setSelectedOrderId(data.STSeq);
+      setIsModalVisible(true);
     } else if (data.action === "즉시수령") {
-      // "즉시수령" 버튼을 눌렀을 때 알림 표시
       Alert.alert(
         "즉시 수령 확인",
         "정말로 즉시 수령하시겠습니까?",
@@ -75,56 +77,16 @@ const Orders = ({ navigation }) => {
     }
   };
 
-  // 주문 거절 처리 함수
-  const declineOrder = (orderId) => {
-    Alert.alert(
-      "거절 이유 선택", // 알림 창 제목
-      "거절 사유를 선택해주세요:", // 알림 창 메시지
-      [
-        {
-          text: "재료소진", // 첫 번째 버튼 텍스트
-          onPress: () => {
-            dispatch(
-              onDecline({
-                STSeq: orderId,
-                declineReason: "재료소진",
-              })
-            );
-            // 거절 사유와 함께 거절 이벤트를 서버로 전송
-            socket.current.emit("declineOrder", {
-              stCode: stCode,
-              STSeq: orderId,
-              declineReason: "재료소진",
-            });
-          },
-        },
-        {
-          text: "품절", // 두 번째 버튼 텍스트
-          onPress: () => {
-            dispatch(
-              onDecline({
-                STSeq: orderId,
-                declineReason: "품절",
-              })
-            );
-            // 거절 사유와 함께 거절 이벤트를 서버로 전송
-            socket.current.emit("declineOrder", {
-              stCode: stCode,
-              STSeq: orderId,
-              declineReason: "품절",
-            });
-          },
-        },
-        {
-          text: "취소", // 취소 버튼 텍스트
-          style: "cancel", // 취소 버튼 스타일
-        },
-      ],
-      { cancelable: false } // 알림 창이 뒤로 버튼으로 닫히지 않도록 설정
-    );
+  const handleDeclineReason = (reason) => {
+    dispatch(onDecline({ STSeq: selectedOrderId, declineReason: reason }));
+    socket.current.emit("declineOrder", {
+      stCode: stCode,
+      STSeq: selectedOrderId,
+      declineReason: reason,
+    });
+    setIsModalVisible(false);
   };
 
-  // 주문 모두승인
   const handleAcceptAllOrders = () => {
     orders.forEach((order) => {
       dispatch(onConfirm({ STSeq: order.STSeq }));
@@ -132,42 +94,53 @@ const Orders = ({ navigation }) => {
     setOrders([]);
   };
 
-  //isLoggined = false일때 로그인하세요!!
   useEffect(() => {
     if (!isLoggedIn) {
-      // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
+      navigation.navigate("Login");
     }
   }, [isLoggedIn]);
 
-  // Pending 주문 불러오기
   useEffect(() => {
     dispatch(handlePending());
   }, []);
 
-  // Pending 주문 상태 변경 감지
   useEffect(() => {
     if (Array.isArray(pendingOrders)) {
       setOrders(pendingOrders);
     }
   }, [pendingOrders]);
 
-
   return (
     <SafeAreaView style={styles.container}>
       {isLoggedIn ? (
         <>
           {orders.length === 0 && <EmptyOrders name="Pending" />}
-          <OrdersNumbers
-            length={orders.length}
-            onAcceptAll={handleAcceptAllOrders}
-          />
-          <OrderList
-            buttons={["수락", "거절", "즉시수령"]}
-            itemsData={orders}
-            buttonPress={handleButtonPress}
-          />
+          <OrdersNumbers length={orders.length} onAcceptAll={handleAcceptAllOrders} />
+          <OrderList buttons={["수락", "거절", "즉시수령"]} itemsData={orders} buttonPress={handleButtonPress} />
         </>
       ) : null}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>거절 이유를 선택해주세요:</Text>
+            <TouchableOpacity style={styles.button} onPress={() => handleDeclineReason("재료소진")}>
+              <Text style={styles.textStyle}>재료소진</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => handleDeclineReason("품절")}>
+              <Text style={styles.textStyle}>품절</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => setIsModalVisible(false)}>
+              <Text style={styles.textStyle}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -177,36 +150,43 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#AFA8BA",
   },
-  modalContainer: {
-    backgroundColor: "white",
-    padding: 22,
+  centeredView: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 4,
-    borderColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#694fad",
+    borderRadius: 20,
     padding: 10,
+    elevation: 2,
     marginTop: 10,
-    borderRadius: 4,
   },
-  buttonText: {
+  textStyle: {
     color: "white",
-    fontSize: 16,
-  },
-  reasonButton: {
-    backgroundColor: "#AFA8BA",
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 4,
-  },
-  logoutButton: {
-    backgroundColor: "#61dafb",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 30,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
+
 export default Orders;

@@ -114,7 +114,7 @@ export const OrdersDistrubutionSlice = createSlice({
 
       // 취소 사유에 따라 상태 설정
       if (
-        cancellationReason === "고객 요청에 따른 취소 처리" ||
+        cancellationReason === "고객 요청에 따른 취소" ||
         cancellationReason === "가게 사정에 따른 취소"
       ) {
         canceledOrder.ProcessCode = "cancel";
