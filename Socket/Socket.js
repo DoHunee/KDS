@@ -2,6 +2,7 @@
 
 import io from "socket.io-client";
 import { Alert } from "react-native";
+import storeSlice from "../store/storeSlice";
 
 // 서버 주소를 변수로 분리하여 필요에 따라 쉽게 변경할 수 있도록 했습니다.
 const SERVER_URL = "http://211.54.171.41:8025/admin";
@@ -61,6 +62,11 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
 
   socket.on("mainMenuSoldOut", (mainMenu) => {
     console.log("메인 품절:", mainMenu);
+  });
+
+  // 'handlePending' 액션을 디스패치하여 대기 중인 주문 목록을 업데이트합니다.
+  socket.on('newOrderList', (orderList) => {
+    // storeSlice.dispatch(handlePending(orderList));
   });
   
   

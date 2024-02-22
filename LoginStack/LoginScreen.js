@@ -153,13 +153,8 @@ const LoginScreen = ({ navigation, route }) => {
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
       if (!socket.current) {
         // 어차피 example 값과 맞아야 로그인이 되니까 이렇게 해도 상관없네!
-        socket.current = connectToServer(
-          storedNumberExample,
-          CategoryNumberExample,
-          EmployeeIDExample,
-          dispatch
-        );
-        // console.log(storedNumberExample, CategoryNumberExample, EmployeeIDExample);
+        socket.current = connectToServer(storedNumberExample,CategoryNumberExample,EmployeeIDExample,dispatch);
+        console.log(storedNumberExample, CategoryNumberExample, EmployeeIDExample);
 
         // const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch);
         // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
@@ -168,6 +163,12 @@ const LoginScreen = ({ navigation, route }) => {
         socket.current.emit("open", {
           stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
         });
+        
+        // 주문내역 소켓으로 받는 부분!
+        socket.current.emit("requestNewOrderList", {
+        stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
+        });
+      
       }
     } else {
       // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);

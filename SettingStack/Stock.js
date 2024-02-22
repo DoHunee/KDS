@@ -19,7 +19,7 @@ const Stock = () => {
   const [menuItems, setMenuItems] = useState([]);
   const socket = useRef(null);
 
-  // 로그인 상태 접근
+  // 로그인 상태 접근 , //API로 데이터 가져오기!!
   useEffect(() => {
     if (isLoggedIn) {
       fetchMenuData(); //API로 데이터 가져오기!!
