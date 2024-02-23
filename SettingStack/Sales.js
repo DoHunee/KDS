@@ -248,7 +248,7 @@ const markDatesBetweenStartAndEnd = (startDate, endDate) => {
     setModalVisible(true); //모달창이 뜨게 된다!!
   };
 
-  // 선택한 날짜에 해당되는 주문 목록 가져오기
+  // 선택한 날짜에 해당되는 주문 목록 가져오기 (단일날짜!!!)
   const getOrdersByDate = (ProcessCode) => {
     // 해당 상태의 주문 목록 필터링
     const filteredOrders = completeOrders.filter(
@@ -262,79 +262,97 @@ const markDatesBetweenStartAndEnd = (startDate, endDate) => {
     });
   };
 
+  // 선택된 날짜 범위에 해당하는 주문 목록을 가져옵니다. (기간날짜!!!)
+  const getOrdersByDateRange = (ProcessCode) => {
+    // 해당 상태의 주문 목록을 필터링합니다.
+    const filteredOrders = completeOrders.filter(
+      (order) => order.ProcessCode === ProcessCode
+    );
+
+    // 선택된 날짜 범위에 해당하는 주문 목록만 반환합니다.
+    return filteredOrders.filter((order) => {
+      const orderDate = order.SDDate.split(" ")[0];
+      return new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
+    });
+  };
+
   // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
-    // 만약 주문 번호를 입력하지 않았다면 선택한 날짜에 해당하는 모든 주문 목록을 표시합니다.
+    // 주문 번호가 입력되지 않은 경우, 선택된 날짜 범위에 해당하는 모든 주문 목록을 표시합니다.
     if (!searchOrder) {
-      const selectedDateOrders = completeOrders.filter((order) => {
-        const dateOnly = order.SDDate.split(" ")[0];
-        return dateOnly === selectedDate; // 선택한 날짜에 해당하는 주문만 필터링합니다.
+      const selectedDateRangeOrders = completeOrders.filter((order) => {
+        const orderDate = order.SDDate.split(" ")[0];
+        return new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
       });
-
+  
       // 필터링된 주문 목록을 업데이트합니다.
-      setSelectedOrders(selectedDateOrders);
-      setselectedcancelOrders([]); // 다음 검색에서 중복 값을 피하기 위해 취소된 주문 목록을 초기화합니다.
-
+      setSelectedOrders(selectedDateRangeOrders);
+      setselectedcancelOrders([]); // 다음 검색 시 중복 값이 발생하지 않도록 취소된 주문 목록을 초기화합니다.
+  
       // 버튼의 투명도를 설정합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
-
+  
       return;
     }
-
+  
     // 입력된 주문 번호를 찾습니다.
     const foundOrders = completeOrders.filter((order) =>
       order.STSeq.toString().includes(searchOrder)
     );
-
+  
     if (foundOrders.length > 0) {
-      // 만약 검색된 주문이 있다면
-      // 검색된 주문이 선택한 날짜에 해당하는 것인지 확인하여 업데이트합니다.
-      const selectedDateOrders = foundOrders.filter((order) => {
-        const dateOnly = order.SDDate.split(" ")[0];
-        return dateOnly === selectedDate;
+      // 검색된 주문이 있는 경우
+      // 검색된 주문이 선택된 날짜 범위에 해당하는지 확인하고 업데이트합니다.
+      const selectedDateRangeOrders = foundOrders.filter((order) => {
+        const orderDate = order.SDDate.split(" ")[0];
+        return new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
       });
-
-      setSelectedOrders(selectedDateOrders);
+  
+      setSelectedOrders(selectedDateRangeOrders);
       setselectedcancelOrders([]);
-
+  
       // 주문 상태에 따라 버튼의 투명도를 설정합니다.
-      const hasReadyOrder = selectedDateOrders.some(
+      const hasReadyOrder = selectedDateRangeOrders.some(
         (order) =>
           order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
       );
-      const hasCancelOrder = selectedDateOrders.some(
+      const hasCancelOrder = selectedDateRangeOrders.some(
         (order) => order.ProcessCode === "cancel"
       );
-
+  
       setReadyButtonTranslucent(!hasReadyOrder);
       setDeclineButtonTranslucent(!hasCancelOrder);
     } else {
-      // 만약 검색된 주문이 없다면
+      // 주문을 찾을 수 없는 경우
       alert("주문을 찾을 수 없습니다.");
-
-      // 버튼의 투명도를 리셋합니다.
+  
+      // 버튼의 투명도를 재설정합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
     }
   };
 
-  // 모달창 ProcessCode 필터링 버튼 클릭에 대한 처리 함수
-  const handleOrderStatusButtonClick = (ProcessCode) => {
-    if (ProcessCode === "ready") {
-      setSelectedOrders(
-        getOrdersByDate("fast_ready").concat(getOrdersByDate("ready"))
-      );
-      setselectedcancelOrders([]);
-      setDeclineButtonTranslucent(true); // "취소목록" 버튼을 투명하게 만듭니다.
-      setReadyButtonTranslucent(false); // "즉시수령,완료" 버튼의 투명도를 다시 1로 변경합니다.
-    } else if (ProcessCode === "cancel") {
-      setSelectedOrders([]);
-      setselectedcancelOrders(getOrdersByDate("cancel"));
-      setReadyButtonTranslucent(true); // "즉시수령,완료" 버튼을 투명하게 만듭니다.
-      setDeclineButtonTranslucent(false); // "취소목록" 버튼의 투명도를 다시 1로 변경합니다.
-    }
-  };
+  
+
+// 모달 창에서 ProcessCode 필터링 버튼을 클릭하는 경우의 처리 함수입니다.
+const handleOrderStatusButtonClick = (ProcessCode) => {
+  if (ProcessCode === "ready") {
+    // 준비된 주문과 빠른 준비된 주문을 가져와서 선택된 주문 목록에 설정합니다.
+    setSelectedOrders(
+      getOrdersByDateRange("ready").concat(getOrdersByDateRange("fast_ready"))
+    );
+    setselectedcancelOrders([]);
+    setDeclineButtonTranslucent(true); // "취소 목록" 버튼을 투명하게 만듭니다.
+    setReadyButtonTranslucent(false); // "즉시 수령, 완료" 버튼의 투명도를 1로 변경합니다.
+  } else if (ProcessCode === "cancel") {
+    // 취소된 주문을 가져와서 선택된 취소된 주문 목록에 설정합니다.
+    setSelectedOrders([]);
+    setselectedcancelOrders(getOrdersByDateRange("cancel"));
+    setReadyButtonTranslucent(true); // "즉시 수령, 완료" 버튼을 투명하게 만듭니다.
+    setDeclineButtonTranslucent(false); // "취소 목록" 버튼의 투명도를 1로 변경합니다.
+  }
+};
 
   // 모달 닫는 부분
   const closeModal = () => {
