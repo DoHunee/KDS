@@ -77,6 +77,7 @@ const Orders = ({ navigation }) => {
     }
   };
 
+  // 주문 거절 사유를 소켓으로 전달!
   const handleDeclineReason = (reason) => {
     dispatch(onDecline({ STSeq: selectedOrderId, declineReason: reason }));
     socket.current.emit("declineOrder", {

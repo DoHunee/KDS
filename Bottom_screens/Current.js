@@ -59,8 +59,14 @@ const Current = ({ navigation }) => {
     }
   };
 
+   // 주문 취소 사유를 소켓으로 전달!
   const handleCancelReason = (reason) => {
     dispatch(onCancel({ STSeq: selectedOrderId, cancellationReason: reason }));
+    socket.current.emit("CancleOrder", {
+      stCode: stCode,
+      STSeq: selectedOrderId,
+      cancellationReason: reason,
+    });
     setIsModalVisible(false);
   };
 
