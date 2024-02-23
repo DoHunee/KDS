@@ -13,20 +13,6 @@ import SalesComp from "../SalesComponents/SalesComp";
 import CalendarComp from "../SalesComponents/CalendarComp";
 
 const Sales = () => {
-  // // useEffect를 사용하여 completeOrders의 변경을 계속 확인
-  // useEffect(() => {
-  //   if (completeOrders && completeOrders.length > 0) {
-  //     // completeOrders 배열의 각 항목에서 필요한 정보만 출력
-  //     completeOrders.forEach((order) => {
-  //       const { SDDate, name, sumPrice, ProcessCode } = order;
-  //       console.log("Order Details:", { SDDate, name, sumPrice, ProcessCode });
-  //       console.log(
-  //         "----------------------------------------------------------"
-  //       );
-  //     });
-  //   }
-  // }, [completeOrders]);
-
   const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete); // useSelector를 사용하여 complete 상태 가져오기
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]); //선택한날짜의 모든 주문 목록
@@ -44,6 +30,8 @@ const Sales = () => {
   const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
   const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
+
+  const [selectedTotalSales, setSelectedTotalSales] = useState(0); // 초기값은 0 또는 적절한 값으로 설정
   
   const readyOrders = completeOrders.filter(
     (order) =>
@@ -60,6 +48,11 @@ const Sales = () => {
   const [current, setCurrent] = useState(); // 현재 캘린더의 월을 관리하는 상태
   const [calendarKey, setCalendarKey] = useState("calendar"); // 캘린더 컴포넌트의 키를 관리하는 상태
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false); // 날짜 선택 모달의 표시 상태를 관리하기 위한 상태
+
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [selectedCancelSales, setSelectedCancelSales] = useState(0);
+  
 
   // 로그인 관련
   useEffect(() => {
@@ -90,36 +83,54 @@ const Sales = () => {
     setMarkedDates(initialMarkedDates); // Update markedDates ProcessCode
   }, [completeOrders]);
 
-  const handleCalendarSelection = (startDay, endDay = startDay) => {
-    setSelectedStartDate(startDay);
-    setSelectedEndDate(endDay);
+// 날짜 범위에 해당하는 주문 목록 필터링 및 표시
+const handleCalendarSelection = (startDay, endDay = startDay) => {
+  setSelectedStartDate(startDay);
+  setSelectedEndDate(endDay);
 
-    const filteredOrders = completeOrders.filter((order) => {
-      const orderDate = order.SDDate.split(" ")[0];
-      return new Date(orderDate) >= new Date(startDay) && new Date(orderDate) <= new Date(endDay);
-    });
+  // 선택된 날짜 범위에 해당하는 주문 목록 필터링
+  const filteredOrders = completeOrders.filter((order) => {
+    const orderDate = order.SDDate.split(" ")[0];
+    return new Date(orderDate) >= new Date(startDay) && new Date(orderDate) <= new Date(endDay);
+  });
 
-    setSelectedOrders(filteredOrders);
-    // 여기에 필요한 통계 계산 로직 추가
+  // 필터링된 주문 목록을 상태에 저장
+  setSelectedOrders(filteredOrders);
 
-    const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay);
-    setMarkedDates(newMarkedDates);
-  };
+  // 선택된 날짜 범위에 대한 총 판매액 계산 및 상태 업데이트
+  const totalSales = filteredOrders.reduce((total, order) => total + order.totalPrice, 0);
+  setSelectedTotalSales(totalSales);
 
-  const markDatesBetweenStartAndEnd = (startDate, endDate) => {
-    const marked = {};
-    let current = new Date(startDate);
-    const end = new Date(endDate);
-
-    while (current <= end) {
-      const dateStr = current.toISOString().split("T")[0];
-      marked[dateStr] = { selected: true, marked: false, selectedColor: "black" };
-      current.setDate(current.getDate() + 1);
+  // 선택된 날짜 범위에 대한 총 취소액 계산 및 상태 업데이트
+  const totalCancelSales = filteredOrders.reduce((total, order) => {
+    // 여기에서 주문 취소 조건을 확인하고 취소액을 계산합니다.
+    if (order.ProcessCode === "cancel") {
+      return total + order.totalPrice; // 주문 취소액을 더합니다.
     }
+    return total;
+  }, 0);
+  setSelectedCancelSales(totalCancelSales);
 
-    return marked;
-  };
+  // 달력에 선택된 날짜 범위 표시
+  const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay);
+  setMarkedDates(newMarkedDates);
+};
 
+
+// 시작일과 종료일 사이의 날짜들을 달력에 표시하는 함수
+const markDatesBetweenStartAndEnd = (startDate, endDate) => {
+  const marked = {};
+  let current = new Date(startDate);
+  const end = new Date(endDate);
+
+  while (current <= end) {
+    const dateStr = current.toISOString().split("T")[0];
+    marked[dateStr] = { selected: true, marked: true, selectedColor: "skyblue" };
+    current.setDate(current.getDate() + 1);
+  }
+
+  return marked;
+};
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
@@ -213,7 +224,7 @@ const Sales = () => {
     updatedMarkedDates[day.dateString] = {
       ...updatedMarkedDates[day.dateString],
       selected: true,
-      selectedColor: "black",
+      selectedColor: "skyblue",
     };
 
     setMarkedDates(updatedMarkedDates);
