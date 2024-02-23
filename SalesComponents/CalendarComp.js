@@ -88,6 +88,8 @@ const CalendarComp = ({
     setStartDatePickerVisibility(false);
     setEndDatePickerVisibility(false);
     handleCalendarSelection("", ""); // 날짜 초기화를 Sales.js에도 알림
+
+    
   };
 
   // 시작 날짜 handling

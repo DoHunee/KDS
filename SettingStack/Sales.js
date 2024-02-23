@@ -103,7 +103,6 @@ const handleCalendarSelection = (startDay, endDay = startDay) => {
 
   // 선택된 날짜 범위에 대한 총 취소액 계산 및 상태 업데이트
   const totalCancelSales = filteredOrders.reduce((total, order) => {
-    // 여기에서 주문 취소 조건을 확인하고 취소액을 계산합니다.
     if (order.ProcessCode === "cancel") {
       return total + order.totalPrice; // 주문 취소액을 더합니다.
     }
@@ -111,21 +110,35 @@ const handleCalendarSelection = (startDay, endDay = startDay) => {
   }, 0);
   setSelectedCancelSales(totalCancelSales);
 
-  // 달력에 선택된 날짜 범위 표시
-  const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay);
+  // 날짜 범위 선택 시 기존에 마킹된 날짜들 중 선택된 색상을 초기화
+  const updatedMarkedDates = { ...markedDates };
+  Object.keys(updatedMarkedDates).forEach((date) => {
+    if (updatedMarkedDates[date].selected) {
+      delete updatedMarkedDates[date].selected; // 선택된 날짜의 'selected' 속성 제거
+      delete updatedMarkedDates[date].selectedColor; // 선택된 날짜의 'selectedColor' 속성 제거
+    }
+  });
+
+  // 선택된 날짜 범위를 캘린더에 표시
+  const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay, updatedMarkedDates);
   setMarkedDates(newMarkedDates);
 };
 
 
 // 시작일과 종료일 사이의 날짜들을 달력에 표시하는 함수
 const markDatesBetweenStartAndEnd = (startDate, endDate) => {
-  const marked = {};
+  const marked = { ...markedDates }; // 기존에 표시된 점 정보를 유지하기 위해 markedDates 상태를 복사합니다.
   let current = new Date(startDate);
   const end = new Date(endDate);
 
   while (current <= end) {
-    const dateStr = current.toISOString().split("T")[0];
-    marked[dateStr] = { selected: true, marked: true, selectedColor: "skyblue" };
+    const dateStr = current.toISOString().split('T')[0];
+    // 이미 표시된 점이 있는 날짜에는 selectedColor만 추가하고, 없는 날짜에는 새로운 표시를 추가합니다.
+    if (marked[dateStr]) {
+      marked[dateStr] = { ...marked[dateStr], selected: true, selectedColor: 'skyblue' };
+    } else {
+      marked[dateStr] = { selected: true, marked: false, selectedColor: 'skyblue' };
+    }
     current.setDate(current.getDate() + 1);
   }
 
