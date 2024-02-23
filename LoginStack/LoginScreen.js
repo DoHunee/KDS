@@ -160,15 +160,10 @@ const LoginScreen = ({ navigation, route }) => {
         // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
 
         // 소켓 연결 후 "open" 이벤트 전송
-        socket.current.emit("open", {
-          stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
-        });
+        // socket.current.emit("open", {
+        //   stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
+        // });
         
-        // 주문내역 소켓으로 받는 부분!
-        socket.current.emit("requestNewOrderList", {
-        stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
-        });
-      
       }
     } else {
       // console.log("로그아웃 후 isLoggedIn:", isLoggedIn);

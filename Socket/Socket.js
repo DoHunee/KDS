@@ -65,8 +65,9 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
   });
 
   // 'handlePending' 액션을 디스패치하여 대기 중인 주문 목록을 업데이트합니다.
-  socket.on('newOrderList', (orderList) => {
+  socket.on('newOrderCreate', (orderList) => {
     // storeSlice.dispatch(handlePending(orderList));
+    console.log(orderList);
   });
   
   

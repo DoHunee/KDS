@@ -351,6 +351,25 @@ const Sales = () => {
     handleDateChange(date); // 사용자가 선택한 날짜를 처리하는 함수 호출
   };
 
+  // Sales.js에 추가할 함수: 시작날짜부터 종료날짜까지의 모든 날짜를 마킹하는 함수
+  const markDatesBetweenStartAndEnd = (startDate, endDate) => {
+    // console.log('시작 날짜:', startDate); // 콘솔에 시작 날짜 출력
+    // console.log('종료 날짜:', endDate); // 콘솔에 종료 날짜 출력
+
+    const markedDates = {};
+
+    // 시작날짜부터 종료날짜까지의 모든 날짜를 반복하여 마킹
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const dateString = currentDate.toISOString().split("T")[0];
+      markedDates[dateString] = { marked: true, dotColor: "green" }; // 예시로 dotColor를 초록색으로 설정
+      console.log("마킹된 날짜:", dateString); // 콘솔에 마킹된 날짜 출력
+      currentDate.setDate(currentDate.getDate() + 1); // 다음 날짜로 이동
+    }
+
+    return markedDates;
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
@@ -368,6 +387,7 @@ const Sales = () => {
               showDatePicker={showDatePicker}
               hideDatePicker ={hideDatePicker}
               handleConfirm = {handleConfirm}
+              markDatesBetweenStartAndEnd = {markDatesBetweenStartAndEnd}
             />
 
             {/* 매출 나타내는 부분 */}

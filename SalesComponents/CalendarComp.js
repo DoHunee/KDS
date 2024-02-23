@@ -65,6 +65,7 @@ const CalendarComp = ({
   showDatePicker,
   hideDatePicker,
   handleConfirm,
+  markDatesBetweenStartAndEnd,
 }) => {
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
@@ -72,6 +73,11 @@ const CalendarComp = ({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isInputFocused, setInputFocused] = useState(false);
+
+  const updatedMarkedDates = {
+    ...markedDates,
+    ...markDatesBetweenStartAndEnd(startDate, endDate),
+  };
 
   // 시작 날짜와 종료 날짜 초기화 함수
   const resetDates = () => {
@@ -87,7 +93,12 @@ const CalendarComp = ({
     const formattedDate = formatDate(date); // 날짜를 원하는 형식으로 변환
     setStartDate(formattedDate); // 변환된 날짜를 상태에 저장
     setStartDatePickerVisibility(false); // 날짜 선택기를 숨김
-    // 필요한 경우 markedDates 상태 업데이트 로직 추가
+    const updatedMarkedDates = {
+      ...markedDates,
+      ...markDatesBetweenStartAndEnd(formattedDate, endDate),
+    };
+    // markedDates 업데이트
+    handleMarkedDatesUpdate(updatedMarkedDates);
   };
 
   // 종료 날짜 handling
@@ -99,9 +110,14 @@ const CalendarComp = ({
       Alert.alert("경고", "시작 날짜보다 빠릅니다.");
     } else {
       setEndDate(formattedDate); // 변환된 날짜를 상태에 저장
+      setEndDatePickerVisibility(false); // 날짜 선택기를 숨김
+      const updatedMarkedDates = {
+        ...markedDates,
+        ...markDatesBetweenStartAndEnd(startDate, formattedDate),
+      };
+      // markedDates 업데이트
+      handleMarkedDatesUpdate(updatedMarkedDates);
     }
-    setEndDatePickerVisibility(false); // 날짜 선택기를 숨김
-    // 필요한 경우 markedDates 상태 업데이트 로직 추가
   };
 
   // 텍스트 인풋안에 date 형식
@@ -187,7 +203,7 @@ const CalendarComp = ({
         style={styles.calendar}
         key={calendarKey} // 캘린더 컴포넌트에 키를 할당
         current={current} // 현재 보여질 월을 current 상태로 설정
-        markedDates={markedDates}
+        markedDates={updatedMarkedDates}
         onDayPress={(day) => {
           handleCalenderDay(day);
         }}
