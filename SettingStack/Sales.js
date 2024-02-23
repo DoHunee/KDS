@@ -27,9 +27,7 @@ const Sales = () => {
   //   }
   // }, [completeOrders]);
 
-  const completeOrders = useSelector(
-    (state) => state.OrdersDistrubutionSclie.complete
-  ); // useSelector를 사용하여 complete 상태 가져오기
+  const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete); // useSelector를 사용하여 complete 상태 가져오기
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]); //선택한날짜의 모든 주문 목록
   const [selectedcancelOrders, setselectedcancelOrders] = useState([]); //선택한날짜의 취소처리 주문목록
@@ -45,8 +43,8 @@ const Sales = () => {
 
   const [modalVisible, setModalVisible] = useState(false); // 모달이 열려있으면 true, 닫혀있으면 false입니다.
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
-  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =
-    useState(false);
+  const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
+  
   const readyOrders = completeOrders.filter(
     (order) =>
       order.ProcessCode === "fast_ready" ||
@@ -91,6 +89,37 @@ const Sales = () => {
 
     setMarkedDates(initialMarkedDates); // Update markedDates ProcessCode
   }, [completeOrders]);
+
+  const handleCalendarSelection = (startDay, endDay = startDay) => {
+    setSelectedStartDate(startDay);
+    setSelectedEndDate(endDay);
+
+    const filteredOrders = completeOrders.filter((order) => {
+      const orderDate = order.SDDate.split(" ")[0];
+      return new Date(orderDate) >= new Date(startDay) && new Date(orderDate) <= new Date(endDay);
+    });
+
+    setSelectedOrders(filteredOrders);
+    // 여기에 필요한 통계 계산 로직 추가
+
+    const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay);
+    setMarkedDates(newMarkedDates);
+  };
+
+  const markDatesBetweenStartAndEnd = (startDate, endDate) => {
+    const marked = {};
+    let current = new Date(startDate);
+    const end = new Date(endDate);
+
+    while (current <= end) {
+      const dateStr = current.toISOString().split("T")[0];
+      marked[dateStr] = { selected: true, marked: false, selectedColor: "black" };
+      current.setDate(current.getDate() + 1);
+    }
+
+    return marked;
+  };
+
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
@@ -351,24 +380,6 @@ const Sales = () => {
     handleDateChange(date); // 사용자가 선택한 날짜를 처리하는 함수 호출
   };
 
-  // Sales.js에 추가할 함수: 시작날짜부터 종료날짜까지의 모든 날짜를 마킹하는 함수
-  const markDatesBetweenStartAndEnd = (startDate, endDate) => {
-    // console.log('시작 날짜:', startDate); // 콘솔에 시작 날짜 출력
-    // console.log('종료 날짜:', endDate); // 콘솔에 종료 날짜 출력
-
-    const markedDates = {};
-
-    // 시작날짜부터 종료날짜까지의 모든 날짜를 반복하여 마킹
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      const dateString = currentDate.toISOString().split("T")[0];
-      markedDates[dateString] = { marked: true, dotColor: "green" }; // 예시로 dotColor를 초록색으로 설정
-      console.log("마킹된 날짜:", dateString); // 콘솔에 마킹된 날짜 출력
-      currentDate.setDate(currentDate.getDate() + 1); // 다음 날짜로 이동
-    }
-
-    return markedDates;
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -381,13 +392,13 @@ const Sales = () => {
               current={current}
               calendarKey={calendarKey}
               isDatePickerVisible = {isDatePickerVisible}
+              handleCalendarSelection={handleCalendarSelection}
               handleCalenderDay={handleCalenderDay}
               handleSelectToday={handleSelectToday}
               handleDateChange={handleDateChange}
               showDatePicker={showDatePicker}
               hideDatePicker ={hideDatePicker}
               handleConfirm = {handleConfirm}
-              markDatesBetweenStartAndEnd = {markDatesBetweenStartAndEnd}
             />
 
             {/* 매출 나타내는 부분 */}

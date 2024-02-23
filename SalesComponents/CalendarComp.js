@@ -1,5 +1,5 @@
 // CalendarComp.js
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Calendar } from "react-native-calendars";
 import { LocaleConfig } from "react-native-calendars";
 import {
@@ -60,63 +60,57 @@ const CalendarComp = ({
   current,
   calendarKey,
   isDatePickerVisible,
+  handleCalendarSelection,
   handleCalenderDay,
   handleSelectToday,
   showDatePicker,
   hideDatePicker,
   handleConfirm,
-  markDatesBetweenStartAndEnd,
 }) => {
-  const [isStartDatePickerVisible, setStartDatePickerVisibility] =
-    useState(false);
+  const [isStartDatePickerVisible, setStartDatePickerVisibility] =useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [isInputFocused, setInputFocused] = useState(false);
 
-  const updatedMarkedDates = {
-    ...markedDates,
-    ...markDatesBetweenStartAndEnd(startDate, endDate),
-  };
+
+  useEffect(() => {
+    // 시작 날짜와 종료 날짜가 모두 설정되었을 때 Sales.js로 전달
+    if (startDate && endDate) {
+      handleCalendarSelection(startDate, endDate);
+    }
+  }, [startDate, endDate]);
+
 
   // 시작 날짜와 종료 날짜 초기화 함수
   const resetDates = () => {
     setStartDate("");
     setEndDate("");
-    // setMarkedDates({});
-    setStartDatePickerVisibility(false); // 시작 날짜 선택기 상태 초기화
-    setEndDatePickerVisibility(false); // 종료 날짜 선택기 상태 초기화
+    setStartDatePickerVisibility(false);
+    setEndDatePickerVisibility(false);
+    handleCalendarSelection("", ""); // 날짜 초기화를 Sales.js에도 알림
   };
 
   // 시작 날짜 handling
   const handleConfirmStartDate = (date) => {
-    const formattedDate = formatDate(date); // 날짜를 원하는 형식으로 변환
-    setStartDate(formattedDate); // 변환된 날짜를 상태에 저장
-    setStartDatePickerVisibility(false); // 날짜 선택기를 숨김
-    const updatedMarkedDates = {
-      ...markedDates,
-      ...markDatesBetweenStartAndEnd(formattedDate, endDate),
-    };
-    // markedDates 업데이트
-    handleMarkedDatesUpdate(updatedMarkedDates);
+    const formattedDate = formatDate(date);
+    setStartDate(formattedDate);
+    // 여기서 endDate가 이미 설정되어 있다면, 날짜 범위를 Sales.js로 전달
+    if (endDate) {
+      handleCalendarSelection(formattedDate, endDate);
+    }
   };
 
   // 종료 날짜 handling
   const handleConfirmEndDate = (date) => {
-    const formattedDate = formatDate(date); // 날짜를 원하는 형식으로 변환
-    // 종료 날짜가 시작 날짜보다 빠른지 확인
+    const formattedDate = formatDate(date);
     if (startDate && formattedDate < startDate) {
-      // 알람 창으로 메시지 표시
       Alert.alert("경고", "시작 날짜보다 빠릅니다.");
     } else {
-      setEndDate(formattedDate); // 변환된 날짜를 상태에 저장
-      setEndDatePickerVisibility(false); // 날짜 선택기를 숨김
-      const updatedMarkedDates = {
-        ...markedDates,
-        ...markDatesBetweenStartAndEnd(startDate, formattedDate),
-      };
-      // markedDates 업데이트
-      handleMarkedDatesUpdate(updatedMarkedDates);
+      setEndDate(formattedDate);
+      // 여기서 startDate가 이미 설정되어 있다면, 날짜 범위를 Sales.js로 전달
+      if (startDate) {
+        handleCalendarSelection(startDate, formattedDate);
+      }
     }
   };
 
@@ -203,7 +197,7 @@ const CalendarComp = ({
         style={styles.calendar}
         key={calendarKey} // 캘린더 컴포넌트에 키를 할당
         current={current} // 현재 보여질 월을 current 상태로 설정
-        markedDates={updatedMarkedDates}
+        markedDates={markedDates} 
         onDayPress={(day) => {
           handleCalenderDay(day);
         }}
