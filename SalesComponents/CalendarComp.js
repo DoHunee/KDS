@@ -1,5 +1,5 @@
 // CalendarComp.js
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar } from "react-native-calendars";
 import { LocaleConfig } from "react-native-calendars";
 import {
@@ -67,11 +67,11 @@ const CalendarComp = ({
   hideDatePicker,
   handleConfirm,
 }) => {
-  const [isStartDatePickerVisible, setStartDatePickerVisibility] =useState(false);
+  const [isStartDatePickerVisible, setStartDatePickerVisibility] =
+    useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
 
   useEffect(() => {
     // 시작 날짜와 종료 날짜가 모두 설정되었을 때 Sales.js로 전달
@@ -80,7 +80,6 @@ const CalendarComp = ({
     }
   }, [startDate, endDate]);
 
-
   // 시작 날짜와 종료 날짜 초기화 함수
   const resetDates = () => {
     setStartDate("");
@@ -88,8 +87,6 @@ const CalendarComp = ({
     setStartDatePickerVisibility(false);
     setEndDatePickerVisibility(false);
     handleCalendarSelection("", ""); // 날짜 초기화를 Sales.js에도 알림
-
-    
   };
 
   // 시작 날짜 handling
@@ -129,7 +126,10 @@ const CalendarComp = ({
       <View style={styles.dateContainer}>
         {/* 시작 날짜 선택 텍스트 입력 필드 */}
         <TouchableOpacity
-          onPress={() => setStartDatePickerVisibility(true)}
+          onPress={() => {
+            setStartDatePickerVisibility(true);
+            setEndDatePickerVisibility(false); // Ensure only one picker is visible at a time
+          }}
           style={styles.dateInput}
         >
           <TextInput
@@ -142,7 +142,10 @@ const CalendarComp = ({
 
         {/* 종료 날짜 선택 텍스트 입력 필드 */}
         <TouchableOpacity
-          onPress={() => setEndDatePickerVisibility(true)}
+          onPress={() => {
+            setEndDatePickerVisibility(true);
+            setStartDatePickerVisibility(false); // Ensure only one picker is visible at a time
+          }}
           style={styles.dateInput}
         >
           <TextInput
@@ -199,7 +202,7 @@ const CalendarComp = ({
         style={styles.calendar}
         key={calendarKey} // 캘린더 컴포넌트에 키를 할당
         current={current} // 현재 보여질 월을 current 상태로 설정
-        markedDates={markedDates} 
+        markedDates={markedDates}
         onDayPress={(day) => {
           handleCalenderDay(day);
         }}
