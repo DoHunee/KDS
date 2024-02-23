@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
   TextInput,
+  Alert,
 } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
@@ -56,7 +57,6 @@ LocaleConfig.defaultLocale = "ko"; // set default language
 
 const CalendarComp = ({
   markedDates,
-  setMarkedDates,
   current,
   calendarKey,
   isDatePickerVisible,
@@ -66,16 +66,50 @@ const CalendarComp = ({
   hideDatePicker,
   handleConfirm,
 }) => {
-  const [isStartDatePickerVisible, setStartDatePickerVisibility] =useState(false);
+  const [isStartDatePickerVisible, setStartDatePickerVisibility] =
+    useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isInputFocused, setInputFocused] = useState(false);
 
   // 시작 날짜와 종료 날짜 초기화 함수
   const resetDates = () => {
     setStartDate("");
     setEndDate("");
-    // markedDates 상태도 초기화해야 한다면 여기에 로직 추가
+    // setMarkedDates({});
+    setStartDatePickerVisibility(false); // 시작 날짜 선택기 상태 초기화
+    setEndDatePickerVisibility(false); // 종료 날짜 선택기 상태 초기화
+  };
+
+  // 시작 날짜 handling
+  const handleConfirmStartDate = (date) => {
+    const formattedDate = formatDate(date); // 날짜를 원하는 형식으로 변환
+    setStartDate(formattedDate); // 변환된 날짜를 상태에 저장
+    setStartDatePickerVisibility(false); // 날짜 선택기를 숨김
+    // 필요한 경우 markedDates 상태 업데이트 로직 추가
+  };
+
+  // 종료 날짜 handling
+  const handleConfirmEndDate = (date) => {
+    const formattedDate = formatDate(date); // 날짜를 원하는 형식으로 변환
+    // 종료 날짜가 시작 날짜보다 빠른지 확인
+    if (startDate && formattedDate < startDate) {
+      // 알람 창으로 메시지 표시
+      Alert.alert("경고", "시작 날짜보다 빠릅니다.");
+    } else {
+      setEndDate(formattedDate); // 변환된 날짜를 상태에 저장
+    }
+    setEndDatePickerVisibility(false); // 날짜 선택기를 숨김
+    // 필요한 경우 markedDates 상태 업데이트 로직 추가
+  };
+
+  // 텍스트 인풋안에 date 형식
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   return (
@@ -87,7 +121,7 @@ const CalendarComp = ({
           style={styles.dateInput}
         >
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: "black" }]} // fontWeight 속성 추가
             placeholder="시작 날짜"
             editable={false} // 사용자가 직접 텍스트를 입력하지 못하도록 설정
             value={startDate ? startDate : "시작 날짜"} // startDate 상태를 표시
@@ -100,7 +134,7 @@ const CalendarComp = ({
           style={styles.dateInput}
         >
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: "black" }]} // fontWeight 속성 추가
             placeholder="종료 날짜"
             editable={false} // 사용자가 직접 텍스트를 입력하지 못하도록 설정
             value={endDate ? endDate : "종료 날짜"} // endDate 상태를 표시
@@ -112,6 +146,22 @@ const CalendarComp = ({
           <Text style={styles.resetButtonText}>날짜 초기화</Text>
         </TouchableOpacity>
       </View>
+
+      {/* 시작 날짜 선택을 위한 DateTimePicker*/}
+      <DateTimePicker
+        isVisible={isStartDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirmStartDate} // 이 부분을 확인하세요
+        onCancel={() => setStartDatePickerVisibility(false)}
+      />
+
+      {/* 종료 날짜 선택을 위한 DateTimePicker*/}
+      <DateTimePicker
+        isVisible={isEndDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirmEndDate} // 이 부분을 확인하세요
+        onCancel={() => setEndDatePickerVisibility(false)}
+      />
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -125,6 +175,7 @@ const CalendarComp = ({
           <Text style={styles.buttonText}>날짜 선택</Text>
         </TouchableOpacity>
       </View>
+
       <DateTimePicker
         isVisible={isDatePickerVisible}
         mode="date"
@@ -194,7 +245,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
   },
 
   dateContainer: {
@@ -202,9 +253,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", // 자식 컴포넌트 사이의 공간을 균등하게 분배
     padding: 10, // 적당한 패딩으로 레이아웃을 조정
   },
+
   dateInput: {
     flex: 1, // 사용 가능한 공간을 두 입력 필드가 균등하게 나누어 가짐
     marginHorizontal: 5, // 입력 필드 사이의 수평 마진
+  },
+
+  inputFocused: {
+    fontWeight: "bold",
+    color: "black",
   },
 });
 
