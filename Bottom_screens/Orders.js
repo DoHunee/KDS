@@ -101,6 +101,7 @@ const Orders = ({ navigation }) => {
     }
   }, [isLoggedIn]);
 
+  // 소켓으로 가져온 주문목록 StoreSlice.js에서 지정된 handlePending
   useEffect(() => {
     dispatch(handlePending());
   }, []);

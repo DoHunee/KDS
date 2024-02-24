@@ -10,7 +10,7 @@ const SERVER_URL = "http://211.54.171.41:8025/admin";
 const connectToServer = (stCode, posSeq, userId, setData) => {
 
   const socket = io(SERVER_URL, {
-    reconnection: false, // 자동 재접속 비활성화
+    // reconnection: false, // 자동 재접속 비활성화
     query: {
       stCode,
       posSeq,
@@ -66,7 +66,8 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
 
   // 'handlePending' 액션을 디스패치하여 대기 중인 주문 목록을 업데이트합니다.
   socket.on('newOrderCreate', (orderList) => {
-    // storeSlice.dispatch(handlePending(orderList));
+    // const safeOrderList = orderList || [];   // orderList가 undefined일 경우 빈 배열을 기본값으로 설정
+    // storeSlice.dispatch(handlePending(orderList)); // 이런식으로 정의해야 주문목록 들어올때마다 리렌더링
     console.log(orderList);
   });
   

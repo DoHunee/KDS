@@ -1,5 +1,5 @@
 // ModalComp.js
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Modal,
   ScrollView,
@@ -11,6 +11,7 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 
 const ModalComp = ({
   modalVisible,
@@ -30,6 +31,59 @@ const ModalComp = ({
   useEffect(() => {
     handleSearchOrder(); // searchOrder가 변경될 때마다 주문을 검색하고 업데이트합니다.
   }, [searchOrder]); // searchOrder가 변경될 때마다 useEffect가 실행됩니다.
+
+  const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
+  const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
+
+  // API로 결제내역 가져오는 코드!
+  const fetchPaymentDetails = async (orderKey) => {
+    try {
+      const response = await axios.post(
+        "http://211.54.171.41:3000/api/order/orderPaymentListbyOrderKey",
+        { OrderKey: orderKey },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("결제 내역 응답:", response.data); // 응답 로깅
+      setPaymentDetails(response.data); // 응답 데이터를 상태에 저장
+      // 여기에 결제 내역을 표시하는 로직을 추가할 수 있습니다 (예: 모달 열기)
+    } catch (error) {
+      console.error("결제 내역 조회 중 오류 발생:", error);
+    }
+  };
+
+  // 결제 내역 섹션을 렌더링하는 함수
+  const renderPaymentDetails = (orderKey) => {
+    if (!paymentDetails || !showPaymentDetails[orderKey]) return null; // 해당 주문의 결제 내역 데이터가 없거나 표시 상태가 false일 경우 렌더링하지 않음
+
+    // 결제 내역 데이터를 렌더링하는 UI 구성
+    return (
+      <View style={styles.paymentDetailsContainer}>
+        <Text style={styles.paymentDetailsTitle}>결제 상세 정보:</Text>
+        {paymentDetails.map((detail, index) => (
+          <View key={index} style={styles.paymentDetailItem}>
+            <Text style={styles.paymentDetailText}>
+              금액: {detail.Amount}원
+            </Text>
+            <Text style={styles.paymentDetailText}>
+              카드명: {detail.CardName}
+            </Text>
+            <Text style={styles.paymentDetailText}>
+              카드번호: {detail.CardNo}
+            </Text>
+            <Text style={styles.paymentDetailText}>
+              승인번호: {detail.AppNo}
+            </Text>
+            <Text style={styles.paymentDetailText}>
+              결제시간: {detail.AppTime}
+            </Text>
+            {/* 필요에 따라 더 많은 결제 정보를 추가할 수 있음 */}
+          </View>
+        ))}
+      </View>
+    );
+  };
 
   return (
     //  모달창을 나타내는 부분
@@ -97,20 +151,25 @@ const ModalComp = ({
                 backgroundColor:
                   order.ProcessCode === "cancel"
                     ? "red"
-                    : order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
+                    : order.ProcessCode === "ready" ||
+                      order.ProcessCode === "fast_ready"
                     ? "green"
                     : "lightgreen",
               },
             ]}
           >
             <View style={styles.orderBackground}>
-              <Text style={styles.orderText}>이름: {order.UserName} [{order.UserHp}]</Text>
+              <Text style={styles.orderText}>
+                이름: {order.UserName} [{order.UserHp}]
+              </Text>
               <Text style={styles.orderText}>OrderKey : {order.OrderKey}</Text>
-                
+
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
               <Text style={styles.orderText}>판매시간 : {order.SDTime} </Text>
-              <Text style={styles.orderText}>주문상태 : {order.ProcessCode} </Text>
+              <Text style={styles.orderText}>
+                주문상태 : {order.ProcessCode}{" "}
+              </Text>
               {/* 주문 상태가 "cancel"일 때만 취소 이유를 표시하는 부분 */}
               {order.ProcessCode === "cancel" && (
                 <>
@@ -123,11 +182,15 @@ const ModalComp = ({
               <Text style={styles.orderText}>
                 [주문 목록]:{"\n\n"}
                 {order.Details.map((item, index) => (
-                  <View key={item.MISimpleName} style={styles.menuItemContainer}>
-                    <Text style={styles.menuItemName}>메뉴명: {item.MISimpleName}</Text>
+                  <View
+                    key={item.MISimpleName}
+                    style={styles.menuItemContainer}
+                  >
+                    <Text style={styles.menuItemName}>
+                      메뉴명: {item.MISimpleName}
+                    </Text>
                     <Text style={styles.menuItemDetail}>
-                      수량: {item.MICnt} | 금액: {item.TotPrice}{" "}
-                      원
+                      수량: {item.MICnt} | 금액: {item.TotPrice} 원
                     </Text>
                   </View>
                 ))}
@@ -136,16 +199,16 @@ const ModalComp = ({
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>
                 총 가격 :{" "}
-                {order.Details.reduce(
-                  (sum, item) => sum +item.TotPrice,
-                  0
-                )}{" "}
-                원
+                {order.Details.reduce((sum, item) => sum + item.TotPrice, 0)} 원
               </Text>
 
               <TouchableOpacity
                 onPress={() => {
-                  /* 여기에 결제 상세 정보를 보여주는 로직을 추가하세요. */
+                  fetchPaymentDetails(order.OrderKey); // 결제 내역 조회
+                  setShowPaymentDetails((prevState) => ({
+                    ...prevState,
+                    [order.OrderKey]: !prevState[order.OrderKey], // 해당 주문의 상태 토글
+                  }));
                 }}
                 style={styles.paymentDetailsButton}
               >
@@ -153,6 +216,7 @@ const ModalComp = ({
                   결제 상세 보기
                 </Text>
               </TouchableOpacity>
+              {renderPaymentDetails(order.OrderKey)}
             </View>
           </View>
         ))}
@@ -353,6 +417,24 @@ const styles = StyleSheet.create({
   paymentDetailsButtonText: {
     color: "white", // 텍스트 색상
     fontWeight: "bold", // 텍스트 굵기
+  },
+
+  paymentDetailsContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#eee",
+    borderRadius: 5,
+  },
+  paymentDetailsTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  paymentDetailItem: {
+    marginBottom: 10,
+  },
+  paymentDetailText: {
+    fontSize: 14,
   },
 });
 
