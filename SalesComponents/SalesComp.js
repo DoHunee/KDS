@@ -4,9 +4,7 @@ import { Text, View, Button , StyleSheet  } from "react-native";
 
 const SalesComp = ({
   selectedOrders,
-  selectedcancelOrders,
   seletedtotalSales,
-  selectedcancelSales,
   selectedMonthOrders,
   selectedMonthSales,
   handleModal,
@@ -17,11 +15,6 @@ const SalesComp = ({
       <Text style={styles.totalSalesText}>
         ■ 실매출액({selectedOrders.length}건):{"              "}
         {seletedtotalSales} 원
-      </Text>
-      <Text style={styles.totalSalesText}>
-        ■ 주문취소({selectedcancelOrders.length}건):
-        {"              "}
-        {selectedcancelSales} 원
       </Text>
       <Text style={styles.monthlySalesText}>
         ■ 당월매출금액({selectedMonthOrders.length}건):{"              "}

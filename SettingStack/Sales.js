@@ -31,7 +31,6 @@ const Sales = () => {
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
   const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
 
-  const [selectedTotalSales, setSelectedTotalSales] = useState(0); // 초기값은 0 또는 적절한 값으로 설정
   
   const readyOrders = completeOrders.filter(
     (order) =>
@@ -51,7 +50,6 @@ const Sales = () => {
 
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
-  const [selectedCancelSales, setSelectedCancelSales] = useState(0);
   
 
   // 로그인 관련
@@ -60,6 +58,7 @@ const Sales = () => {
       // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
+
 
   // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
@@ -83,67 +82,78 @@ const Sales = () => {
     setMarkedDates(initialMarkedDates); // Update markedDates ProcessCode
   }, [completeOrders]);
 
-// 날짜 범위에 해당하는 주문 목록 필터링 및 표시
-const handleCalendarSelection = (startDay, endDay = startDay) => {
-  setSelectedStartDate(startDay);
-  setSelectedEndDate(endDay);
+  // 날짜 범위에 해당하는 주문 목록 필터링 및 표시
+  const handleCalendarSelection = (startDay, endDay = startDay) => {
+    setSelectedStartDate(startDay); // 선택한 시작 날짜 상태 업데이트
+    setSelectedEndDate(endDay); // 선택한 종료 날짜 상태 업데이트
 
-  // 선택된 날짜 범위에 해당하는 주문 목록 필터링
-  const filteredOrders = completeOrders.filter((order) => {
-    const orderDate = order.SDDate.split(" ")[0];
-    return new Date(orderDate) >= new Date(startDay) && new Date(orderDate) <= new Date(endDay);
-  });
+      // 시작 날짜가 속한 월로 캘린더 이동
+    setCurrent(startDay);
+    setCalendarKey(`calendar-${new Date().getTime()}`); // 캘린더 컴포넌트의 key 업데이트
 
-  // 필터링된 주문 목록을 상태에 저장
-  setSelectedOrders(filteredOrders);
 
-  // 선택된 날짜 범위에 대한 총 판매액 계산 및 상태 업데이트
-  const totalSales = filteredOrders.reduce((total, order) => total + order.totalPrice, 0);
-  setSelectedTotalSales(totalSales);
+    // 선택된 날짜 범위에 해당하는 주문 목록 필터링
+    const filteredOrders = completeOrders.filter((order) => {
+      const orderDate = order.SDDate.split(" ")[0]; // 주문 날짜 추출
+      return new Date(orderDate) >= new Date(startDay) && new Date(orderDate) <= new Date(endDay); // 날짜 범위 비교
+    });
 
-  // 선택된 날짜 범위에 대한 총 취소액 계산 및 상태 업데이트
-  const totalCancelSales = filteredOrders.reduce((total, order) => {
-    if (order.ProcessCode === "cancel") {
-      return total + order.totalPrice; // 주문 취소액을 더합니다.
+    setSelectedOrders(filteredOrders); // 필터링된 주문 목록 상태 업데이트
+
+    // 선택된 날짜 범위 내에서 'ready' 또는 'fast_ready' 상태의 주문 금액 합산하여 실매출액 계산
+    const totalSales = filteredOrders.reduce((total, order) => {
+      if (order.ProcessCode === 'ready' || order.ProcessCode === 'fast_ready') {
+        return total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0); // 주문별 금액 합산
+      }
+      return total;
+    }, 0);
+
+    setseletedtotalSales(totalSales); // 계산된 실매출액 상태 업데이트
+
+    // // 선택된 날짜 범위 내에서 'cancel' 상태의 주문 금액 합산하여 총 취소액 계산
+    // const totalCancelSales = filteredOrders.reduce((total, order) => {
+    //   if (order.ProcessCode === 'cancel') {
+    //     return total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0); // 취소 주문별 금액 합산
+    //   }
+    //   return total;
+    // }, 0);
+
+    // setselectedcancelSales(totalCancelSales); // 계산된 총 취소액 상태 업데이트
+
+    // 선택된 날짜 범위를 캘린더에 표시하기 위해 기존에 마킹된 날짜들 중 선택된 색상 초기화
+    const updatedMarkedDates = { ...markedDates };
+    Object.keys(updatedMarkedDates).forEach((date) => {
+      if (updatedMarkedDates[date].selected) {
+        delete updatedMarkedDates[date].selected; // 'selected' 속성 제거
+        delete updatedMarkedDates[date].selectedColor; // 'selectedColor' 속성 제거
+      }
+    });
+
+    // 선택된 날짜 범위에 해당하는 날짜들을 캘린더에 표시
+    const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay, updatedMarkedDates);
+    setMarkedDates(newMarkedDates); // 업데이트된 마킹된 날짜 상태 업데이트
+  };
+
+
+  // 시작일과 종료일 사이의 날짜들을 달력에 표시하는 함수
+  const markDatesBetweenStartAndEnd = (startDate, endDate) => {
+    const marked = { ...markedDates }; // 기존에 표시된 점 정보를 유지하기 위해 markedDates 상태를 복사합니다.
+    let current = new Date(startDate);
+    const end = new Date(endDate);
+
+    while (current <= end) {
+      const dateStr = current.toISOString().split('T')[0];
+      // 이미 표시된 점이 있는 날짜에는 selectedColor만 추가하고, 없는 날짜에는 새로운 표시를 추가합니다.
+      if (marked[dateStr]) {
+        marked[dateStr] = { ...marked[dateStr], selected: true, selectedColor: 'skyblue' };
+      } else {
+        marked[dateStr] = { selected: true, marked: false, selectedColor: 'skyblue' };
+      }
+      current.setDate(current.getDate() + 1);
     }
-    return total;
-  }, 0);
-  setSelectedCancelSales(totalCancelSales);
 
-  // 날짜 범위 선택 시 기존에 마킹된 날짜들 중 선택된 색상을 초기화
-  const updatedMarkedDates = { ...markedDates };
-  Object.keys(updatedMarkedDates).forEach((date) => {
-    if (updatedMarkedDates[date].selected) {
-      delete updatedMarkedDates[date].selected; // 선택된 날짜의 'selected' 속성 제거
-      delete updatedMarkedDates[date].selectedColor; // 선택된 날짜의 'selectedColor' 속성 제거
-    }
-  });
-
-  // 선택된 날짜 범위를 캘린더에 표시
-  const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay, updatedMarkedDates);
-  setMarkedDates(newMarkedDates);
-};
-
-
-// 시작일과 종료일 사이의 날짜들을 달력에 표시하는 함수
-const markDatesBetweenStartAndEnd = (startDate, endDate) => {
-  const marked = { ...markedDates }; // 기존에 표시된 점 정보를 유지하기 위해 markedDates 상태를 복사합니다.
-  let current = new Date(startDate);
-  const end = new Date(endDate);
-
-  while (current <= end) {
-    const dateStr = current.toISOString().split('T')[0];
-    // 이미 표시된 점이 있는 날짜에는 selectedColor만 추가하고, 없는 날짜에는 새로운 표시를 추가합니다.
-    if (marked[dateStr]) {
-      marked[dateStr] = { ...marked[dateStr], selected: true, selectedColor: 'skyblue' };
-    } else {
-      marked[dateStr] = { selected: true, marked: false, selectedColor: 'skyblue' };
-    }
-    current.setDate(current.getDate() + 1);
-  }
-
-  return marked;
-};
+    return marked;
+  };
 
   //월 매출 계산하는 함수!
   const calculateSelectedMonthSales = (selectedMonth) => {
@@ -446,9 +456,7 @@ const handleOrderStatusButtonClick = (ProcessCode) => {
             {/* 매출 나타내는 부분 */}
             <SalesComp
               selectedOrders={selectedOrders}
-              selectedcancelOrders={selectedcancelOrders}
               seletedtotalSales={seletedtotalSales}
-              selectedcancelSales={selectedcancelSales}
               selectedMonthOrders={selectedMonthOrders}
               selectedMonthSales={selectedMonthSales}
               handleModal={() => setModalVisible(true)}

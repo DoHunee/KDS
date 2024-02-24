@@ -166,6 +166,7 @@ const ModalComp = ({
 
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
+              <Text style={styles.orderText}>판매날짜 : {order.SDDate} </Text>
               <Text style={styles.orderText}>판매시간 : {order.SDTime} </Text>
               <Text style={styles.orderText}>
                 주문상태 : {order.ProcessCode}{" "}
