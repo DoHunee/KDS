@@ -13,15 +13,30 @@ import SalesComp from "../SalesComponents/SalesComp";
 import CalendarComp from "../SalesComponents/CalendarComp";
 
 const Sales = () => {
-  const completeOrders = useSelector((state) => state.OrdersDistrubutionSclie.complete); // useSelector를 사용하여 complete 상태 가져오기
+  const completeOrders = useSelector(
+    (state) => state.OrdersDistrubutionSclie.complete
+  ); // useSelector를 사용하여 complete 상태 가져오기
+  const readyOrders = completeOrders.filter(
+    (order) =>
+      order.ProcessCode === "fast_ready" ||
+      order.ProcessCode === "ready" ||
+      order.ProcessCode === "cancel"
+  ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
+
+  // 모든 주문이 "cancel" 상태인지 확인합니다.
+  const hasOnlyCancelOrders = completeOrders.every(
+    (order) => order.ProcessCode === "cancel"
+  );
+  //cancel 목록만!
+
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]); //선택한날짜의 모든 주문 목록
   const [selectedcancelOrders, setselectedcancelOrders] = useState([]); //선택한날짜의 취소처리 주문목록
   const [selectedMonthOrders, setselectedMonthOrders] = useState([]); //선택한날짜가 속한 월에 해당되는 주문목록
 
-  const [seletedtotalSales, setseletedtotalSales] = useState(0); // 선택한 날짜에 대한 전체 판매 금액을 나타내는 변수입니다.
-  const [selectedMonthSales, setSelectedMonthSales] = useState(0); // 선택한 월에 대한 전체 판매 금액을 나타내는 변수입니다.
+  const [selectedOrdersSales, setselectedOrdersSales] = useState(0); // 선택한 날짜에 대한 전체 판매 금액을 나타내는 변수입니다.
   const [selectedcancelSales, setselectedcancelSales] = useState(0); //선택한 날짜에 대한 전체 주문 취소 금액을 나타내는 변수입니다.
+  const [selectedMonthSales, setSelectedMonthSales] = useState(0); // 선택한 월에 대한 전체 판매 금액을 나타내는 변수입니다.
 
   const scrollViewRef = useRef(null); // 스크롤 위치를 조작할 때 사용됩니다.
   const [searchOrder, setSearchOrder] = useState(""); // 주문 번호 검색 상태값으로, 주문 번호를 검색하는데 사용됩니다
@@ -31,18 +46,6 @@ const Sales = () => {
   const [readyButtonTranslucent, setReadyButtonTranslucent] = useState(false);
   const [cancelButtonTranslucent, setDeclineButtonTranslucent] =useState(false);
 
-  
-  const readyOrders = completeOrders.filter(
-    (order) =>
-      order.ProcessCode === "fast_ready" ||
-      order.ProcessCode === "ready" ||
-      order.ProcessCode === "cancel"
-  ); // "fast_ready" 및 "ready" 상태의 주문 목록 필터링
-  // 모든 주문이 "cancel" 상태인지 확인합니다.
-  const hasOnlyCancelOrders = completeOrders.every(
-    (order) => order.ProcessCode === "cancel"
-  );
-  //cancel 목록만!
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [current, setCurrent] = useState(); // 현재 캘린더의 월을 관리하는 상태
   const [calendarKey, setCalendarKey] = useState("calendar"); // 캘린더 컴포넌트의 키를 관리하는 상태
@@ -50,7 +53,6 @@ const Sales = () => {
 
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
-  
 
   // 로그인 관련
   useEffect(() => {
@@ -58,7 +60,6 @@ const Sales = () => {
       // Alert.alert("로그인 필요", "사용하기 전에 로그인이 필요합니다.");
     }
   }, [isLoggedIn]);
-
 
   // 해당되는 주문목록(즉시수령과 주문처리완료만!!! 즉 소득이 있는 날짜만!!!) 날짜에 dot표시 해주는 부분
   useEffect(() => {
@@ -87,38 +88,31 @@ const Sales = () => {
     setSelectedStartDate(startDay); // 선택한 시작 날짜 상태 업데이트
     setSelectedEndDate(endDay); // 선택한 종료 날짜 상태 업데이트
 
-      // 시작 날짜가 속한 월로 캘린더 이동
+    // 시작 날짜가 속한 월로 캘린더 이동
     setCurrent(startDay);
     setCalendarKey(`calendar-${new Date().getTime()}`); // 캘린더 컴포넌트의 key 업데이트
 
-
-    // 선택된 날짜 범위에 해당하는 주문 목록 필터링
+    // 선택된 날짜 범위에 해당하면서 'ready' 또는 'fast_ready' 상태의 주문 목록 필터링
     const filteredOrders = completeOrders.filter((order) => {
       const orderDate = order.SDDate.split(" ")[0]; // 주문 날짜 추출
-      return new Date(orderDate) >= new Date(startDay) && new Date(orderDate) <= new Date(endDay); // 날짜 범위 비교
+      const isWithinRange =
+        new Date(orderDate) >= new Date(startDay) &&
+        new Date(orderDate) <= new Date(endDay); // 날짜 범위 비교
+      const isEligibleStatus =
+        order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"; // 상태 필터링
+      return isWithinRange && isEligibleStatus;
     });
 
     setSelectedOrders(filteredOrders); // 필터링된 주문 목록 상태 업데이트
 
     // 선택된 날짜 범위 내에서 'ready' 또는 'fast_ready' 상태의 주문 금액 합산하여 실매출액 계산
     const totalSales = filteredOrders.reduce((total, order) => {
-      if (order.ProcessCode === 'ready' || order.ProcessCode === 'fast_ready') {
-        return total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0); // 주문별 금액 합산
-      }
-      return total;
+      return (
+        total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0)
+      ); // 주문별 금액 합산
     }, 0);
 
-    setseletedtotalSales(totalSales); // 계산된 실매출액 상태 업데이트
-
-    // // 선택된 날짜 범위 내에서 'cancel' 상태의 주문 금액 합산하여 총 취소액 계산
-    // const totalCancelSales = filteredOrders.reduce((total, order) => {
-    //   if (order.ProcessCode === 'cancel') {
-    //     return total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0); // 취소 주문별 금액 합산
-    //   }
-    //   return total;
-    // }, 0);
-
-    // setselectedcancelSales(totalCancelSales); // 계산된 총 취소액 상태 업데이트
+    setselectedOrdersSales(totalSales); // 계산된 실매출액 상태 업데이트
 
     // 선택된 날짜 범위를 캘린더에 표시하기 위해 기존에 마킹된 날짜들 중 선택된 색상 초기화
     const updatedMarkedDates = { ...markedDates };
@@ -130,10 +124,13 @@ const Sales = () => {
     });
 
     // 선택된 날짜 범위에 해당하는 날짜들을 캘린더에 표시
-    const newMarkedDates = markDatesBetweenStartAndEnd(startDay, endDay, updatedMarkedDates);
+    const newMarkedDates = markDatesBetweenStartAndEnd(
+      startDay,
+      endDay,
+      updatedMarkedDates
+    );
     setMarkedDates(newMarkedDates); // 업데이트된 마킹된 날짜 상태 업데이트
   };
-
 
   // 시작일과 종료일 사이의 날짜들을 달력에 표시하는 함수
   const markDatesBetweenStartAndEnd = (startDate, endDate) => {
@@ -142,12 +139,20 @@ const Sales = () => {
     const end = new Date(endDate);
 
     while (current <= end) {
-      const dateStr = current.toISOString().split('T')[0];
+      const dateStr = current.toISOString().split("T")[0];
       // 이미 표시된 점이 있는 날짜에는 selectedColor만 추가하고, 없는 날짜에는 새로운 표시를 추가합니다.
       if (marked[dateStr]) {
-        marked[dateStr] = { ...marked[dateStr], selected: true, selectedColor: 'skyblue' };
+        marked[dateStr] = {
+          ...marked[dateStr],
+          selected: true,
+          selectedColor: "skyblue",
+        };
       } else {
-        marked[dateStr] = { selected: true, marked: false, selectedColor: 'skyblue' };
+        marked[dateStr] = {
+          selected: true,
+          marked: false,
+          selectedColor: "skyblue",
+        };
       }
       current.setDate(current.getDate() + 1);
     }
@@ -229,7 +234,7 @@ const Sales = () => {
     setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
     setselectedcancelOrders(selectedcancelOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + cancel
 
-    setseletedtotalSales(Final_Price); // 당일총매출(Final_Price) 업데이트
+    setselectedOrdersSales(Final_Price); // 당일총매출(Final_Price) 업데이트
     setselectedcancelSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
 
     setSelectedDate(day.dateString); // Set the selected SDDate
@@ -282,87 +287,104 @@ const Sales = () => {
     // 선택된 날짜 범위에 해당하는 주문 목록만 반환합니다.
     return filteredOrders.filter((order) => {
       const orderDate = order.SDDate.split(" ")[0];
-      return new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
+      return (
+        new Date(orderDate) >= new Date(selectedStartDate) &&
+        new Date(orderDate) <= new Date(selectedEndDate)
+      );
     });
   };
 
   // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
-    // 주문 번호가 입력되지 않은 경우, 선택된 날짜 범위에 해당하는 모든 주문 목록을 표시합니다.
+    let filteredOrders = [];
+  
+    // 주문 번호가 입력되지 않은 경우
     if (!searchOrder) {
-      const selectedDateRangeOrders = completeOrders.filter((order) => {
-        const orderDate = order.SDDate.split(" ")[0];
-        return new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
-      });
+      // 기존 로직 유지
+    } else {
+      // 주문 번호가 입력된 경우
+      filteredOrders = completeOrders.filter((order) =>
+        order.STSeq.toString().includes(searchOrder)
+      );
   
-      // 필터링된 주문 목록을 업데이트합니다.
-      setSelectedOrders(selectedDateRangeOrders);
-      setselectedcancelOrders([]); // 다음 검색 시 중복 값이 발생하지 않도록 취소된 주문 목록을 초기화합니다.
-  
-      // 버튼의 투명도를 설정합니다.
-      setReadyButtonTranslucent(false);
-      setDeclineButtonTranslucent(false);
-  
-      return;
+      if (selectedDate) {
+        // 캘린더에서 단일 날짜 선택 시
+        filteredOrders = filteredOrders.filter((order) => {
+          const orderDate = order.SDDate.split(" ")[0];
+          return orderDate === selectedDate;
+        });
+      } else {
+        // 날짜 범위 선택 시
+        filteredOrders = filteredOrders.filter((order) => {
+          const orderDate = order.SDDate.split(" ")[0];
+          return (
+            new Date(orderDate) >= new Date(selectedStartDate) &&
+            new Date(orderDate) <= new Date(selectedEndDate)
+          );
+        });
+      }
     }
   
-    // 입력된 주문 번호를 찾습니다.
-    const foundOrders = completeOrders.filter((order) =>
-      order.STSeq.toString().includes(searchOrder)
-    );
+    // 필터링 결과 업데이트
+    setSelectedOrders(filteredOrders);
+    setselectedcancelOrders([]);
   
-    if (foundOrders.length > 0) {
-      // 검색된 주문이 있는 경우
-      // 검색된 주문이 선택된 날짜 범위에 해당하는지 확인하고 업데이트합니다.
-      const selectedDateRangeOrders = foundOrders.filter((order) => {
-        const orderDate = order.SDDate.split(" ")[0];
-        return new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
-      });
-  
-      setSelectedOrders(selectedDateRangeOrders);
-      setselectedcancelOrders([]);
-  
-      // 주문 상태에 따라 버튼의 투명도를 설정합니다.
-      const hasReadyOrder = selectedDateRangeOrders.some(
+    // 주문 상태에 따른 버튼 투명도 설정
+    setReadyButtonTranslucent(
+      !filteredOrders.some(
         (order) =>
           order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
-      );
-      const hasCancelOrder = selectedDateRangeOrders.some(
-        (order) => order.ProcessCode === "cancel"
-      );
+      )
+    );
+    setDeclineButtonTranslucent(
+      !filteredOrders.some((order) => order.ProcessCode === "cancel")
+    );
   
-      setReadyButtonTranslucent(!hasReadyOrder);
-      setDeclineButtonTranslucent(!hasCancelOrder);
-    } else {
-      // 주문을 찾을 수 없는 경우
+    if (filteredOrders.length === 0) {
       alert("주문을 찾을 수 없습니다.");
-  
-      // 버튼의 투명도를 재설정합니다.
       setReadyButtonTranslucent(false);
       setDeclineButtonTranslucent(false);
     }
   };
 
-  
+  // 모달 창에서 ProcessCode 필터링 버튼을 클릭하는 경우의 처리 함수입니다.
+  const handleOrderStatusButtonClick = (ProcessCode) => {
+    let filteredOrders = [];
 
-// 모달 창에서 ProcessCode 필터링 버튼을 클릭하는 경우의 처리 함수입니다.
-const handleOrderStatusButtonClick = (ProcessCode) => {
-  if (ProcessCode === "ready") {
-    // 준비된 주문과 빠른 준비된 주문을 가져와서 선택된 주문 목록에 설정합니다.
-    setSelectedOrders(
-      getOrdersByDateRange("ready").concat(getOrdersByDateRange("fast_ready"))
-    );
-    setselectedcancelOrders([]);
-    setDeclineButtonTranslucent(true); // "취소 목록" 버튼을 투명하게 만듭니다.
-    setReadyButtonTranslucent(false); // "즉시 수령, 완료" 버튼의 투명도를 1로 변경합니다.
-  } else if (ProcessCode === "cancel") {
-    // 취소된 주문을 가져와서 선택된 취소된 주문 목록에 설정합니다.
-    setSelectedOrders([]);
-    setselectedcancelOrders(getOrdersByDateRange("cancel"));
-    setReadyButtonTranslucent(true); // "즉시 수령, 완료" 버튼을 투명하게 만듭니다.
-    setDeclineButtonTranslucent(false); // "취소 목록" 버튼의 투명도를 1로 변경합니다.
-  }
-};
+    // 단일 날짜 선택 시 또는 날짜 범위 선택 시 필터링
+    if (selectedDate) {
+      // 캘린더에서 단일 날짜 선택 시
+      filteredOrders = completeOrders.filter((order) => {
+        const orderDate = order.SDDate.split(" ")[0];
+        return orderDate === selectedDate && order.ProcessCode === ProcessCode;
+      });
+    } else {
+      // 날짜 범위 선택 시
+      filteredOrders = completeOrders.filter((order) => {
+        const orderDate = order.SDDate.split(" ")[0];
+        return (
+          new Date(orderDate) >= new Date(selectedStartDate) &&
+          new Date(orderDate) <= new Date(selectedEndDate) &&
+          order.ProcessCode === ProcessCode
+        );
+      });
+    }
+
+    // 'ready' 또는 'fast_ready' 상태의 주문 설정
+    if (ProcessCode === "ready" || ProcessCode === "fast_ready") {
+      setSelectedOrders(filteredOrders);
+      setselectedcancelOrders([]);
+      setDeclineButtonTranslucent(true);
+      setReadyButtonTranslucent(false);
+    }
+    // 'cancel' 상태의 주문 설정
+    else if (ProcessCode === "cancel") {
+      setSelectedOrders([]);
+      setselectedcancelOrders(filteredOrders);
+      setReadyButtonTranslucent(true);
+      setDeclineButtonTranslucent(false);
+    }
+  };
 
   // 모달 닫는 부분
   const closeModal = () => {
@@ -432,7 +454,6 @@ const handleOrderStatusButtonClick = (ProcessCode) => {
     handleDateChange(date); // 사용자가 선택한 날짜를 처리하는 함수 호출
   };
 
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
@@ -443,20 +464,20 @@ const handleOrderStatusButtonClick = (ProcessCode) => {
               markedDates={markedDates}
               current={current}
               calendarKey={calendarKey}
-              isDatePickerVisible = {isDatePickerVisible}
+              isDatePickerVisible={isDatePickerVisible}
               handleCalendarSelection={handleCalendarSelection}
               handleCalenderDay={handleCalenderDay}
               handleSelectToday={handleSelectToday}
               handleDateChange={handleDateChange}
               showDatePicker={showDatePicker}
-              hideDatePicker ={hideDatePicker}
-              handleConfirm = {handleConfirm}
+              hideDatePicker={hideDatePicker}
+              handleConfirm={handleConfirm}
             />
 
             {/* 매출 나타내는 부분 */}
             <SalesComp
               selectedOrders={selectedOrders}
-              seletedtotalSales={seletedtotalSales}
+              selectedOrdersSales={selectedOrdersSales}
               selectedMonthOrders={selectedMonthOrders}
               selectedMonthSales={selectedMonthSales}
               handleModal={() => setModalVisible(true)}
