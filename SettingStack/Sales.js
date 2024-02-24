@@ -300,8 +300,32 @@ const Sales = () => {
   
     // 주문 번호가 입력되지 않은 경우
     if (!searchOrder) {
-      // 기존 로직 유지
-    } else {
+      if (selectedDate) {
+        // 캘린더에서 단일 날짜 선택 시
+        filteredOrders = completeOrders.filter((order) => {
+          const orderDate = order.SDDate.split(" ")[0];
+          return orderDate === selectedDate;
+        });
+      }else {
+        // 날짜 범위 선택 시 로직
+        filteredOrders = completeOrders.filter((order) => {
+          const orderDate = order.SDDate.split(" ")[0];
+          const isWithinRange =
+            new Date(orderDate) >= new Date(selectedStartDate) &&
+            new Date(orderDate) <= new Date(selectedEndDate);
+          const isEligibleStatus =
+            order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"; // 'ready' 또는 'fast_ready' 상태의 주문만 포함
+          return isWithinRange && isEligibleStatus;
+        });
+      }
+  
+      setSelectedOrders(filteredOrders);
+      setselectedcancelOrders([]);
+      setReadyButtonTranslucent(false);
+      setDeclineButtonTranslucent(false);
+    } 
+    
+    else {
       // 주문 번호가 입력된 경우
       filteredOrders = completeOrders.filter((order) =>
         order.STSeq.toString().includes(searchOrder)
@@ -323,27 +347,25 @@ const Sales = () => {
           );
         });
       }
-    }
   
-    // 필터링 결과 업데이트
-    setSelectedOrders(filteredOrders);
-    setselectedcancelOrders([]);
-  
-    // 주문 상태에 따른 버튼 투명도 설정
-    setReadyButtonTranslucent(
-      !filteredOrders.some(
-        (order) =>
-          order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
-      )
-    );
-    setDeclineButtonTranslucent(
-      !filteredOrders.some((order) => order.ProcessCode === "cancel")
-    );
-  
-    if (filteredOrders.length === 0) {
-      alert("주문을 찾을 수 없습니다.");
-      setReadyButtonTranslucent(false);
-      setDeclineButtonTranslucent(false);
+      if (filteredOrders.length > 0) {
+        setSelectedOrders(filteredOrders);
+        setselectedcancelOrders([]);
+    
+        // 주문 상태에 따른 버튼 투명도 설정
+        setReadyButtonTranslucent(
+          !filteredOrders.some(
+            (order) => order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
+          )
+        );
+        setDeclineButtonTranslucent(
+          !filteredOrders.some((order) => order.ProcessCode === "cancel")
+        );
+      } else {
+        alert("주문을 찾을 수 없습니다.");
+        setReadyButtonTranslucent(false);
+        setDeclineButtonTranslucent(false);
+      }
     }
   };
 

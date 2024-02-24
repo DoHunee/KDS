@@ -21,10 +21,14 @@ export const OrdersDistrubutionSlice = createSlice({
   initialState: { ...initialState, ...globalState },
   // initialState,
   reducers: {
+  
     // 대기 중인 주문 목록을 초기 데이터로 설정
     handlePending: (state, action) => {
-      state.pending = data;
-      // state.pending = action.payload;
+      // state.pending = data;
+
+      console.log("Before update:", state.pending);
+      state.pending = action.payload;
+      console.log("After update:", state.pending);
     },
 
     // 주문 확인 및 현재 상태로 이동

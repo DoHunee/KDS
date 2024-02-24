@@ -106,11 +106,14 @@ const Orders = ({ navigation }) => {
     dispatch(handlePending());
   }, []);
 
+  //pendingOrders 상태에 변경사항이 있을 때마다 orders 상태가 업데이트되고, 이는 OrderList 컴포넌트에 반영되어 UI가 업데이트되어야 합니다.
   useEffect(() => {
     if (Array.isArray(pendingOrders)) {
       setOrders(pendingOrders);
+      console.log("이거 확인해!!", pendingOrders);
     }
   }, [pendingOrders]);
+
 
   return (
     <SafeAreaView style={styles.container}>
