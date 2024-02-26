@@ -66,11 +66,21 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
   });
 
   // 'handlePending' 액션을 디스패치하여 대기 중인 주문 목록을 업데이트합니다.
-  socket.on('newOrderCreate', (orderList) => {
-    // console.log(orderList);
-    store.dispatch(handlePending(orderList));
-  });
+  socket.on('newOrderCreate', (orderListString) => {
+    // 문자열을 JSON 객체로 파싱
+    const orderList = JSON.parse(orderListString);
+  
+    // 파싱된 객체를 배열로 감싸기
+    const wrappedOrderList = Array.isArray(orderList) ? orderList : [orderList];
+  
+    // 원본 형태 확인!
+    // console.log(JSON.stringify(wrappedOrderList, null, 2));
+    
+    store.dispatch(handlePending(wrappedOrderList)); // 배열로 감싼 orderList를 store의 dispatch 함수에 전달
+    
+    
 
+  });
   
   
   

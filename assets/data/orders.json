@@ -1,40 +1,7 @@
 [
   {
-    "UserHp": "010-7923-1077",
-    "UserName": "영주",
-    "OrderKey": 35,
-    "UserKey": 2,
-    "SDDate": "2024-02-23",
-    "SDTime": "21:00:06",
-    "STCode": "0093",
-    "STName": "맘스터치(DP)",
-    "STSeq": 36,
-    "ProcessCode": "pending",
-    "TotalPrice": 3000,
-    "TotalQuantity": 1,
-    "ActiveYN": "Y",
-    "InsertDate": "2024-02-23T21:00:06.817Z",
-    "InsertUser": "msystem",
-    "CancleCode": null,
-    "CancleDate": null,
-    "CancleUser": null,
-    "Details": [
-      {
-        "ItemSeq": 1,
-        "MICode": "0000002982",
-        "MISimpleName": "에이드(레몬)",
-        "OriginPrice": 3000,
-        "MIPrice": 3000,
-        "MICnt": 1,
-        "TotPrice": 3000,
-        "SideYN": "N",
-        "SubItems": []
-      }
-    ]
-  },
-  {
     "UserHp": "010-5526-1387",
-    "UserName": "도훈",
+    "UserName": "장도훈",
     "OrderKey": 1,
     "UserKey": 1,
     "SDDate": "2024-02-20",
@@ -135,7 +102,7 @@
   {
     "UserHp": "010-9546-8521",
     "UserName": "준호",
-    "OrderKey": 37,
+    "OrderKey": 3,
     "UserKey": 3,
     "SDDate": "2024-02-20",
     "SDTime": "12:20:00",
@@ -370,10 +337,10 @@
   },
   {
     "UserHp": "010-5330-8521",
-    "UserName": "준성",
+    "UserName": "영주",
     "OrderKey": 7,
     "UserKey": 7,
-    "SDDate": "2024-02-24",
+    "SDDate": "2024-02-17",
     "SDTime": "15:30:00",
     "STCode": "0093",
     "STSeq": 10012,
@@ -431,6 +398,39 @@
         "MIPrice": 5900,
         "MICnt": 1,
         "TotPrice": 5900,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
+  },
+  {
+    "UserHp": "010-7923-1077",
+    "UserName": "조준호",
+    "OrderKey": 37,
+    "UserKey": 2,
+    "SDDate": "2024-02-23",
+    "SDTime": "21:00:06",
+    "STCode": "0093",
+    "STName": "맘스터치(DP)",
+    "STSeq": 36,
+    "ProcessCode": "pending",
+    "TotalPrice": 3000,
+    "TotalQuantity": 1,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-23T21:00:06.817Z",
+    "InsertUser": "msystem",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002982",
+        "MISimpleName": "에이드(레몬)",
+        "OriginPrice": 3000,
+        "MIPrice": 3000,
+        "MICnt": 1,
+        "TotPrice": 3000,
         "SideYN": "N",
         "SubItems": []
       }
