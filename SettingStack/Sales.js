@@ -294,11 +294,12 @@ const Sales = () => {
     });
   };
 
-  // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
-    // 이전에 필터링된 목록을 초기화
+    // 모든 필터링된 목록과 날짜 관련 상태를 초기화
     setSelectedOrders([]);
     setselectedcancelOrders([]);
+    setReadyButtonTranslucent(false);
+    setDeclineButtonTranslucent(false);
   
     let filteredOrders = [];
   
@@ -327,16 +328,15 @@ const Sales = () => {
     }
   
     // 필터링된 주문 목록 설정
-    setSelectedOrders(filteredOrders.length > 0 ? filteredOrders : []);
-    setReadyButtonTranslucent(false);
-    setDeclineButtonTranslucent(false);
+    setSelectedOrders(filteredOrders);
   };
-
-  // 모달 창에서 ProcessCode 필터링 버튼을 클릭하는 경우의 처리 함수입니다.
+  
   const handleOrderStatusButtonClick = (ProcessCode) => {
-    // 이전에 필터링된 목록을 초기화
+    // 모든 필터링된 목록과 날짜 관련 상태를 초기화
     setSelectedOrders([]);
     setselectedcancelOrders([]);
+    setReadyButtonTranslucent(false);
+    setDeclineButtonTranslucent(false);
   
     // 날짜 범위 선택 시 단일 날짜 선택 초기화
     if (selectedStartDate && selectedEndDate) {
@@ -348,7 +348,13 @@ const Sales = () => {
       const isWithinDateRange = selectedDate
         ? orderDate === selectedDate
         : new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
-      return isWithinDateRange && order.ProcessCode === ProcessCode;
+  
+      // "ready" 상태일 때 "fast_ready" 상태도 포함하여 필터링
+      const isEligibleStatus = ProcessCode === "ready" 
+        ? (order.ProcessCode === "ready" || order.ProcessCode === "fast_ready")
+        : order.ProcessCode === ProcessCode;
+  
+      return isWithinDateRange && isEligibleStatus;
     });
   
     // 필터링된 주문 목록 설정

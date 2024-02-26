@@ -30,6 +30,17 @@ const ModalComp = ({
   selectedcancelOrders,
 }) => {
   useEffect(() => {
+    if (modalVisible) { // 모달이 보이는 상태일 때만 경고창을 띄웁니다.
+      Alert.alert(
+        "안내", // 경고창의 제목
+        "주문목록을 가져오기 위해 검색 버튼을 눌러주세요.", // 경고창의 내용
+        [{ text: "확인", onPress: () => console.log("확인 버튼 클릭") }], // 버튼 배열
+        { cancelable: false } // 밖을 눌러서 닫을 수 없게 설정
+      );
+    }
+  }, [modalVisible]); // modalVisible이 변경될 때마다 useEffect가 실행됩니다.
+  
+  useEffect(() => {
     handleSearchOrder(); // searchOrder가 변경될 때마다 주문을 검색하고 업데이트합니다.
   }, [searchOrder]); // searchOrder가 변경될 때마다 useEffect가 실행됩니다.
 
