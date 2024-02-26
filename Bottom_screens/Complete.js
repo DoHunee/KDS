@@ -10,7 +10,7 @@ const Complete = () => {
   // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); //로그인 전 후 접근제한을 위해
   const readyOrders = useSelector(
-    (state) => state.OrdersDistrubutionSclie.complete
+    (state) => state.OrdersDistrubutionSlice.complete
   );
   const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 readyOrders를 업데이트
 

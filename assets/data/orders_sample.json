@@ -67,7 +67,6 @@
       }
     ]
   },
-
   {
     "UserHp": "010-4746-6846",
     "UserName": "상형",
@@ -100,76 +99,74 @@
       }
     ]
   },
-
   {
-        "UserHp": "010-9546-8521",
-        "UserName": "준호",
-        "OrderKey": 3,
-        "UserKey": 3,
-        "SDDate": "2024-02-20",
-        "SDTime": "12:20:00",
-        "STCode": "0093",
-        "STSeq": 10003,
-        "ProcessCode": "pending",
-        "TotalPrice": 14100,
-        "TotalQuantity": 2,
-        "ActiveYN": "Y",
-        "InsertDate": "2024-02-20T13:40:00.000Z",
-        "InsertUser": "1807001",
-        "CancleCode": null,
-        "CancleDate": null,
-        "CancleUser": null,
-        "Details": [
+    "UserHp": "010-9546-8521",
+    "UserName": "준호",
+    "OrderKey": 3,
+    "UserKey": 3,
+    "SDDate": "2024-02-20",
+    "SDTime": "12:20:00",
+    "STCode": "0093",
+    "STSeq": 10003,
+    "ProcessCode": "pending",
+    "TotalPrice": 14100,
+    "TotalQuantity": 2,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-20T13:40:00.000Z",
+    "InsertUser": "1807001",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002970",
+        "MISimpleName": "휠렛버거세트",
+        "OriginPrice": 7500,
+        "MIPrice": 7500,
+        "MICnt": 1,
+        "TotPrice": 7500,
+        "SideYN": "Y",
+        "SubItems": [
           {
-            "ItemSeq": 1,
-            "MICode": "0000002970",
-            "MISimpleName": "휠렛버거세트",
-            "OriginPrice": 7500,
-            "MIPrice": 7500,
-            "MICnt": 1,
-            "TotPrice": 7500,
-            "SideYN": "Y",
-            "SubItems": [
-              {
-                "SideSeq": 1,
-                "SMICode": "0000002969",
-                "SMISimpleName": "휠렛버거",
-                "SMIPrice": 0,
-                "SMICnt": 1,
-                "STotPrice": 0
-              },
-              {
-                "SideSeq": 2,
-                "SMICode": "0000002992",
-                "SMISimpleName": "케이준양념감자(소)",
-                "SMIPrice": 0,
-                "SMICnt": 1,
-                "STotPrice": 0
-              },
-              {
-                "SideSeq": 3,
-                "SMICode": "0000002968",
-                "SMISimpleName": "코카콜라",
-                "SMIPrice": 0,
-                "SMICnt": 1,
-                "STotPrice": 0
-              }
-            ]
+            "SideSeq": 1,
+            "SMICode": "0000002969",
+            "SMISimpleName": "휠렛버거",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
           },
           {
-            "ItemSeq": 2,
-            "MICode": "0000002971",
-            "MISimpleName": "휠렛버거",
-            "OriginPrice": 5900,
-            "MIPrice": 5900,
-            "MICnt": 1,
-            "TotPrice": 5900,
-            "SideYN": "N",
-            "SubItems": []
+            "SideSeq": 2,
+            "SMICode": "0000002992",
+            "SMISimpleName": "케이준양념감자(소)",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
+          },
+          {
+            "SideSeq": 3,
+            "SMICode": "0000002968",
+            "SMISimpleName": "코카콜라",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
           }
         ]
+      },
+      {
+        "ItemSeq": 2,
+        "MICode": "0000002971",
+        "MISimpleName": "휠렛버거",
+        "OriginPrice": 5900,
+        "MIPrice": 5900,
+        "MICnt": 1,
+        "TotPrice": 5900,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
   },
-
   {
     "UserHp": "010-4141-5010",
     "UserName": "승택",
@@ -202,76 +199,74 @@
       }
     ]
   },
-
   {
-        "UserHp": "010-4646-8521",
-        "UserName": "윤상",
-        "OrderKey": 5,
-        "UserKey": 5,
-        "SDDate": "2024-02-21",
-        "SDTime": "15:30:00",
-        "STCode": "0093",
-        "STSeq": 10005,
-        "ProcessCode": "pending",
-        "TotalPrice": 14100,
-        "TotalQuantity": 2,
-        "ActiveYN": "Y",
-        "InsertDate": "2024-02-20T13:40:00.000Z",
-        "InsertUser": "1807001",
-        "CancleCode": null,
-        "CancleDate": null,
-        "CancleUser": null,
-        "Details": [
+    "UserHp": "010-4646-8521",
+    "UserName": "윤상",
+    "OrderKey": 5,
+    "UserKey": 5,
+    "SDDate": "2024-02-21",
+    "SDTime": "15:30:00",
+    "STCode": "0093",
+    "STSeq": 10005,
+    "ProcessCode": "pending",
+    "TotalPrice": 14100,
+    "TotalQuantity": 2,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-20T13:40:00.000Z",
+    "InsertUser": "1807001",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002970",
+        "MISimpleName": "불고거버거세트",
+        "OriginPrice": 7500,
+        "MIPrice": 8500,
+        "MICnt": 1,
+        "TotPrice": 8500,
+        "SideYN": "Y",
+        "SubItems": [
           {
-            "ItemSeq": 1,
-            "MICode": "0000002970",
-            "MISimpleName": "불고거버거세트",
-            "OriginPrice": 7500,
-            "MIPrice": 8500,
-            "MICnt": 1,
-            "TotPrice": 8500,
-            "SideYN": "Y",
-            "SubItems": [
-              {
-                "SideSeq": 1,
-                "SMICode": "0000002969",
-                "SMISimpleName": "불고기버거",
-                "SMIPrice": 0,
-                "SMICnt": 1,
-                "STotPrice": 0
-              },
-              {
-                "SideSeq": 2,
-                "SMICode": "0000002992",
-                "SMISimpleName": "치즈스틱",
-                "SMIPrice": 1000,
-                "SMICnt": 1,
-                "STotPrice": 1000
-              },
-              {
-                "SideSeq": 3,
-                "SMICode": "0000002968",
-                "SMISimpleName": "코카콜라",
-                "SMIPrice": 0,
-                "SMICnt": 1,
-                "STotPrice": 0
-              }
-            ]
+            "SideSeq": 1,
+            "SMICode": "0000002969",
+            "SMISimpleName": "불고기버거",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
           },
           {
-            "ItemSeq": 2,
-            "MICode": "0000002971",
-            "MISimpleName": "싸이버거",
-            "OriginPrice": 5900,
-            "MIPrice": 5900,
-            "MICnt": 1,
-            "TotPrice": 5900,
-            "SideYN": "N",
-            "SubItems": []
+            "SideSeq": 2,
+            "SMICode": "0000002992",
+            "SMISimpleName": "치즈스틱",
+            "SMIPrice": 1000,
+            "SMICnt": 1,
+            "STotPrice": 1000
+          },
+          {
+            "SideSeq": 3,
+            "SMICode": "0000002968",
+            "SMISimpleName": "코카콜라",
+            "SMIPrice": 0,
+            "SMICnt": 1,
+            "STotPrice": 0
           }
         ]
+      },
+      {
+        "ItemSeq": 2,
+        "MICode": "0000002971",
+        "MISimpleName": "싸이버거",
+        "OriginPrice": 5900,
+        "MIPrice": 5900,
+        "MICnt": 1,
+        "TotPrice": 5900,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
   },
-
   {
     "UserHp": "010-4646-8521",
     "UserName": "연지",
@@ -340,7 +335,6 @@
       }
     ]
   },
-
   {
     "UserHp": "010-5330-8521",
     "UserName": "영주",
@@ -408,6 +402,38 @@
         "SubItems": []
       }
     ]
+  },
+  {
+    "UserHp": "010-7923-1077",
+    "UserName": "조준호",
+    "OrderKey": 37,
+    "UserKey": 2,
+    "SDDate": "2024-02-23",
+    "SDTime": "21:00:06",
+    "STCode": "0093",
+    "STName": "맘스터치(DP)",
+    "STSeq": 36,
+    "ProcessCode": "pending",
+    "TotalPrice": 3000,
+    "TotalQuantity": 1,
+    "ActiveYN": "Y",
+    "InsertDate": "2024-02-23T21:00:06.817Z",
+    "InsertUser": "msystem",
+    "CancleCode": null,
+    "CancleDate": null,
+    "CancleUser": null,
+    "Details": [
+      {
+        "ItemSeq": 1,
+        "MICode": "0000002982",
+        "MISimpleName": "에이드(레몬)",
+        "OriginPrice": 3000,
+        "MIPrice": 3000,
+        "MICnt": 1,
+        "TotPrice": 3000,
+        "SideYN": "N",
+        "SubItems": []
+      }
+    ]
   }
-
 ]

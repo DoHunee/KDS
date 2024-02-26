@@ -14,7 +14,7 @@ import CalendarComp from "../SalesComponents/CalendarComp";
 
 const Sales = () => {
   const completeOrders = useSelector(
-    (state) => state.OrdersDistrubutionSclie.complete
+    (state) => state.OrdersDistrubutionSlice.complete
   ); // useSelector를 사용하여 complete 상태 가져오기
   const readyOrders = completeOrders.filter(
     (order) =>
@@ -296,112 +296,67 @@ const Sales = () => {
 
   // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
   const handleSearchOrder = () => {
+    // 이전에 필터링된 목록을 초기화
+    setSelectedOrders([]);
+    setselectedcancelOrders([]);
+  
     let filteredOrders = [];
+  
+    // 날짜 범위 선택 시 단일 날짜 선택 초기화
+    if (selectedStartDate && selectedEndDate) {
+      setSelectedDate(null); // 단일 날짜 선택 초기화
+    }
   
     // 주문 번호가 입력되지 않은 경우
     if (!searchOrder) {
-      if (selectedDate) {
-        // 캘린더에서 단일 날짜 선택 시
-        filteredOrders = completeOrders.filter((order) => {
-          const orderDate = order.SDDate.split(" ")[0];
-          return orderDate === selectedDate;
-        });
-      }else {
-        // 날짜 범위 선택 시 로직
-        filteredOrders = completeOrders.filter((order) => {
-          const orderDate = order.SDDate.split(" ")[0];
-          const isWithinRange =
-            new Date(orderDate) >= new Date(selectedStartDate) &&
-            new Date(orderDate) <= new Date(selectedEndDate);
-          const isEligibleStatus =
-            order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"; // 'ready' 또는 'fast_ready' 상태의 주문만 포함
-          return isWithinRange && isEligibleStatus;
-        });
-      }
-  
-      setSelectedOrders(filteredOrders);
-      setselectedcancelOrders([]);
-      setReadyButtonTranslucent(false);
-      setDeclineButtonTranslucent(false);
-    } 
-    
-    else {
-      // 주문 번호가 입력된 경우
+      filteredOrders = completeOrders.filter((order) => {
+        const orderDate = order.SDDate.split(" ")[0];
+        const isWithinDateRange = selectedDate
+          ? orderDate === selectedDate
+          : new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
+        return isWithinDateRange;
+      });
+    } else {
+      // 주문 번호 필터링 로직
       filteredOrders = completeOrders.filter((order) =>
-        order.STSeq.toString().includes(searchOrder)
+        order.STSeq.toString().includes(searchOrder) &&
+        (!selectedDate || order.SDDate.split(" ")[0] === selectedDate) &&
+        (!selectedStartDate || new Date(order.SDDate.split(" ")[0]) >= new Date(selectedStartDate)) &&
+        (!selectedEndDate || new Date(order.SDDate.split(" ")[0]) <= new Date(selectedEndDate))
       );
-  
-      if (selectedDate) {
-        // 캘린더에서 단일 날짜 선택 시
-        filteredOrders = filteredOrders.filter((order) => {
-          const orderDate = order.SDDate.split(" ")[0];
-          return orderDate === selectedDate;
-        });
-      } else {
-        // 날짜 범위 선택 시
-        filteredOrders = filteredOrders.filter((order) => {
-          const orderDate = order.SDDate.split(" ")[0];
-          return (
-            new Date(orderDate) >= new Date(selectedStartDate) &&
-            new Date(orderDate) <= new Date(selectedEndDate)
-          );
-        });
-      }
-  
-      if (filteredOrders.length > 0) {
-        setSelectedOrders(filteredOrders);
-        setselectedcancelOrders([]);
-    
-        // 주문 상태에 따른 버튼 투명도 설정
-        setReadyButtonTranslucent(
-          !filteredOrders.some(
-            (order) => order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
-          )
-        );
-        setDeclineButtonTranslucent(
-          !filteredOrders.some((order) => order.ProcessCode === "cancel")
-        );
-      } else {
-        alert("주문을 찾을 수 없습니다.");
-        setReadyButtonTranslucent(false);
-        setDeclineButtonTranslucent(false);
-      }
     }
+  
+    // 필터링된 주문 목록 설정
+    setSelectedOrders(filteredOrders.length > 0 ? filteredOrders : []);
+    setReadyButtonTranslucent(false);
+    setDeclineButtonTranslucent(false);
   };
 
   // 모달 창에서 ProcessCode 필터링 버튼을 클릭하는 경우의 처리 함수입니다.
   const handleOrderStatusButtonClick = (ProcessCode) => {
-    let filteredOrders = [];
-
-    // 단일 날짜 선택 시 또는 날짜 범위 선택 시 필터링
-    if (selectedDate) {
-      // 캘린더에서 단일 날짜 선택 시
-      filteredOrders = completeOrders.filter((order) => {
-        const orderDate = order.SDDate.split(" ")[0];
-        return orderDate === selectedDate && order.ProcessCode === ProcessCode;
-      });
-    } else {
-      // 날짜 범위 선택 시
-      filteredOrders = completeOrders.filter((order) => {
-        const orderDate = order.SDDate.split(" ")[0];
-        return (
-          new Date(orderDate) >= new Date(selectedStartDate) &&
-          new Date(orderDate) <= new Date(selectedEndDate) &&
-          order.ProcessCode === ProcessCode
-        );
-      });
+    // 이전에 필터링된 목록을 초기화
+    setSelectedOrders([]);
+    setselectedcancelOrders([]);
+  
+    // 날짜 범위 선택 시 단일 날짜 선택 초기화
+    if (selectedStartDate && selectedEndDate) {
+      setSelectedDate(null); // 단일 날짜 선택 초기화
     }
-
-    // 'ready' 또는 'fast_ready' 상태의 주문 설정
+  
+    let filteredOrders = completeOrders.filter((order) => {
+      const orderDate = order.SDDate.split(" ")[0];
+      const isWithinDateRange = selectedDate
+        ? orderDate === selectedDate
+        : new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
+      return isWithinDateRange && order.ProcessCode === ProcessCode;
+    });
+  
+    // 필터링된 주문 목록 설정
     if (ProcessCode === "ready" || ProcessCode === "fast_ready") {
       setSelectedOrders(filteredOrders);
-      setselectedcancelOrders([]);
-      setDeclineButtonTranslucent(true);
       setReadyButtonTranslucent(false);
-    }
-    // 'cancel' 상태의 주문 설정
-    else if (ProcessCode === "cancel") {
-      setSelectedOrders([]);
+      setDeclineButtonTranslucent(true);
+    } else if (ProcessCode === "cancel") {
       setselectedcancelOrders(filteredOrders);
       setReadyButtonTranslucent(true);
       setDeclineButtonTranslucent(false);

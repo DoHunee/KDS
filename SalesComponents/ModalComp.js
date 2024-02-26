@@ -9,6 +9,7 @@ import {
   View,
   StyleSheet,
   Platform,
+  Alert
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";

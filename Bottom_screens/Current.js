@@ -12,7 +12,7 @@ const Current = ({ navigation }) => {
   const dispatch = useDispatch(); // Redux의 useDispatch를 사용하여 액션을 디스패치
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const currentOrders = useSelector(
-    (state) => state.OrdersDistrubutionSclie.current
+    (state) => state.OrdersDistrubutionSlice.current
   ); // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
   const socket = useRef(null);

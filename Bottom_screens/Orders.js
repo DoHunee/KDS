@@ -16,7 +16,7 @@ import { io } from "socket.io-client";
 const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const pendingOrders = useSelector((state) => state.OrdersDistrubutionSclie.pending);
+  const pendingOrders = useSelector((state) => state.OrdersDistrubutionSlice.pending);
   const [orders, setOrders] = useState([]);
   const socket = useRef(null);
   const { stCode } = useSelector((state) => state.auth);
@@ -95,6 +95,7 @@ const Orders = ({ navigation }) => {
     setOrders([]);
   };
 
+  // 로그인 안했는데 다른 탭 접근
   useEffect(() => {
     if (!isLoggedIn) {
       navigation.navigate("Login");
@@ -108,9 +109,10 @@ const Orders = ({ navigation }) => {
 
   //pendingOrders 상태에 변경사항이 있을 때마다 orders 상태가 업데이트되고, 이는 OrderList 컴포넌트에 반영되어 UI가 업데이트되어야 합니다.
   useEffect(() => {
-    if (Array.isArray(pendingOrders)) {
-      setOrders(pendingOrders);
-      console.log("이거 확인해!!", pendingOrders);
+    // pendingOrders가 존재하고 배열이면 orders 상태를 업데이트합니다.
+    if (pendingOrders && Array.isArray(pendingOrders)) {
+      setOrders(pendingOrders); // pendingOrders를 orders로 업데이트합니다.
+      console.log("확인해라!!!!!!",pendingOrders)
     }
   }, [pendingOrders]);
 
