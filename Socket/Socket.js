@@ -73,13 +73,22 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
     // 파싱된 객체를 배열로 감싸기
     const wrappedOrderList = Array.isArray(orderList) ? orderList : [orderList];
   
-    // 원본 형태 확인!
-    // console.log(JSON.stringify(wrappedOrderList, null, 2));
-    
-    store.dispatch(handlePending(wrappedOrderList)); // 배열로 감싼 orderList를 store의 dispatch 함수에 전달
-    
-    
+    // 새 주문 알림 표시
+    Alert.alert(
+      "새 주문 알림", // 알림 제목
+      "새로운 주문이 도착했습니다!", // 알림 메시지
+      [
+        {
+          text: "확인", // 사용자가 '보기' 버튼을 클릭하면 어떤 동작을 할지 정의할 수 있습니다.
+          onPress: () => console.log("새 주문 확인"),
+        },
 
+      ],
+      { cancelable: false }
+    );
+  
+    // store의 dispatch 함수를 사용하여 상태 업데이트
+    store.dispatch(handlePending(wrappedOrderList));
   });
   
   
