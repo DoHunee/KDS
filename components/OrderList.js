@@ -40,6 +40,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
         renderItem={({ item }) => (
           <OrderCard
             STSeq={item.STSeq}
+            OrderKey={item.OrderKey}
             UserName={item.UserName}
             UserHp={item.UserHp}
             Details={item.Details}
@@ -49,6 +50,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             SDDate={item.SDDate}
             SDTime={item.SDTime}
             declineReason={item.declineReason}
+            cancellationReason={item.cancellationReason}
             />
         )}
         keyExtractor={(item) => item.STSeq.toString()} //고유키 추출 

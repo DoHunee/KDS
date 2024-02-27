@@ -13,13 +13,15 @@ const OrderCard = ({
   ProcessCode,
   onPress,
   buttons,
-  SDDate,
   SDTime,
   declineReason,
+  OrderKey
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
+  
+  // 여기서 data 객체를 구성하고 있는겨!!!
   const handleOnPress = (data) => {
-    onPress({ action: data, STSeq: STSeq });
+    onPress({ action: data, STSeq: STSeq ,OrderKey : OrderKey });
   };
 
   const [hours, minutes] = SDTime.split(":").map((num) => parseInt(num, 10));

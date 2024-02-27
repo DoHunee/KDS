@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { onReady, onCancel } from "../store/storeSlice";
 import EmptyOrders from "../components/EmptyOrders";
 import Length from "../RightUpBar/Length";
-import { io } from "socket.io-client";
 
 const Current = ({ navigation }) => {
   const dispatch = useDispatch(); // Redux의 useDispatch를 사용하여 액션을 디스패치
@@ -15,23 +14,9 @@ const Current = ({ navigation }) => {
     (state) => state.OrdersDistrubutionSlice.current
   ); // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
-  const socket = useRef(null);
-  const { stCode } = useSelector((state) => state.auth);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-  // 소켓
-  useEffect(() => {
-    // 컴포넌트 마운트 시 소켓 연결 생성
-    socket.current = io("http://211.54.171.41:8025/admin");
-
-    // 컴포넌트 언마운트 시 소켓 연결 종료
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
-  }, []);
 
   // currentOrders가 업데이트될 때마다 orders를 업데이트
   // 여기 24.02.19에 수정됐다!
@@ -48,11 +33,6 @@ const Current = ({ navigation }) => {
   const buttonPress = (data) => {
     if (data.action === "준비완료") {
       dispatch(onReady({ STSeq: data.STSeq }));
-      socket.current.emit("readyOrder", {
-        stCode: stCode,
-        STSeq: data.STSeq,
-        message: "고객님의 주문이 준비 완료되었습니다!",
-      });
     } else if (data.action === "주문취소") {
       setSelectedOrderId(data.STSeq);
       setIsModalVisible(true);
@@ -62,11 +42,6 @@ const Current = ({ navigation }) => {
    // 주문 취소 사유를 소켓으로 전달!
   const handleCancelReason = (reason) => {
     dispatch(onCancel({ STSeq: selectedOrderId, cancellationReason: reason }));
-    socket.current.emit("CancleOrder", {
-      stCode: stCode,
-      STSeq: selectedOrderId,
-      cancellationReason: reason,
-    });
     setIsModalVisible(false);
   };
 

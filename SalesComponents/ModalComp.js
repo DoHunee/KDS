@@ -9,7 +9,7 @@ import {
   View,
   StyleSheet,
   Platform,
-  Alert
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -30,7 +30,8 @@ const ModalComp = ({
   selectedcancelOrders,
 }) => {
   useEffect(() => {
-    if (modalVisible) { // 모달이 보이는 상태일 때만 경고창을 띄웁니다.
+    if (modalVisible) {
+      // 모달이 보이는 상태일 때만 경고창을 띄웁니다.
       Alert.alert(
         "안내", // 경고창의 제목
         "원활한 조회를 위해 검색 버튼을 1번 누르고 시작해주세요 :)", // 경고창의 내용
@@ -39,7 +40,7 @@ const ModalComp = ({
       );
     }
   }, [modalVisible]); // modalVisible이 변경될 때마다 useEffect가 실행됩니다.
-  
+
   useEffect(() => {
     handleSearchOrder(); // searchOrder가 변경될 때마다 주문을 검색하고 업데이트합니다.
   }, [searchOrder]); // searchOrder가 변경될 때마다 useEffect가 실행됩니다.
@@ -64,6 +65,12 @@ const ModalComp = ({
       console.error("결제 내역 조회 중 오류 발생:", error);
     }
   };
+
+  // API 결제취소 함수 정의
+  const handleCancelPayment = (orderKey) => {
+    console.log(`결제취소: ${orderKey}`);
+  };
+
 
   // 결제 내역 섹션을 렌더링하는 함수
   const renderPaymentDetails = (orderKey) => {
@@ -93,9 +100,17 @@ const ModalComp = ({
             {/* 필요에 따라 더 많은 결제 정보를 추가할 수 있음 */}
           </View>
         ))}
+        {/* "결제취소" 버튼 추가 */}
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => handleCancelPayment(orderKey)}
+        >
+          <Text style={styles.cancelButtonText}>결제취소</Text>
+        </TouchableOpacity>
       </View>
     );
   };
+
 
   return (
     //  모달창을 나타내는 부분
@@ -448,6 +463,22 @@ const styles = StyleSheet.create({
   },
   paymentDetailText: {
     fontSize: 14,
+  },
+  // 결제취소 버튼 스타일
+  cancelButton: {
+    marginTop: 10, // 버튼 상단 여백
+    backgroundColor: "#FF6347", // 버튼 배경색
+    paddingVertical: 10, // 수직 패딩
+    paddingHorizontal: 20, // 수평 패딩
+    borderRadius: 5, // 버튼 모서리 둥글기
+    borderWidth: 1, // 테두리 두께
+    borderColor: "#FF6347", // 테두리 색상
+    alignSelf: "center", // 컨테이너 중앙에 배치
+  },
+  cancelButtonText: {
+    color: "#FFFFFF", // 텍스트 색상
+    fontSize: 14, // 텍스트 크기
+    fontWeight: "bold", // 텍스트 굵기
   },
 });
 

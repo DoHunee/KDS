@@ -10,7 +10,6 @@ import {
   onDecline,
   onImmediateReceipt,
 } from "../store/storeSlice";
-import { io } from "socket.io-client";
 
 
 const Orders = ({ navigation }) => {
@@ -18,40 +17,59 @@ const Orders = ({ navigation }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSlice.pending);
   const [orders, setOrders] = useState([]);
-  const socket = useRef(null);
-  const { stCode } = useSelector((state) => state.auth);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-  // 소켓 여러번 접근하는 문제를 해결하기 위해!
-  useEffect(() => {
-    // 컴포넌트 마운트 시 소켓 연결 생성 및 자동 재접속 비활성화
-    socket.current = io("http://211.54.171.41:8025/admin", {
-      reconnection: false, // 자동 재접속 비활성화
-    });
-  
-    // 컴포넌트 언마운트 시 소켓 연결 종료
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
-  }, []);
+
 
   // 수락,거절 ,즉시수령 버튼 눌렀을대 event
-  const handleButtonPress = (data) => {
+  const handleButtonPress = async (data) => {
+    console.log("data 객체:", data); // data 객체의 내용을 콘솔에 출력
+    
     if (data.action === "수락") {
-      dispatch(onConfirm({ STSeq: data.STSeq }));
-      // 주문 수락 이벤트 처리
-      socket.current.emit("acceptOrder", {
-        stCode: stCode,
-        STSeq: data.STSeq, //주문번호
-        message: "고객님의 주문이 접수되었습니다!",
-      });
-    } else if (data.action === "거절") {
+      try {
+        // API 요청
+        const response = await fetch('http://211.54.171.41:3000/api/order/orderProcessUpdateforAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "OrderKey": data.OrderKey, // 주문 키 동적 할당
+            "ProcessCode": "B"
+          }),
+        });
+  
+        const result = await response.json();
+  
+        // 응답 로그 출력
+        console.log('API 응답:', result);
+  
+        // 응답 코드 확인
+        if (result.res_cd === '00') {
+          // 성공 응답 처리
+          console.log('성공:',result.res_msg);
+          dispatch(onConfirm({ STSeq: data.STSeq,res_cd: result.res_cd, }));
+          // 필요한 추가 처리 작성
+        } else {
+          // 실패 응답 처리
+          console.error('실패:', result.res_msg);
+          // 필요한 에러 처리 작성
+        }
+      } catch (error) {
+        console.error('API 요청 중 오류 발생:', error);
+        // 네트워크 에러 처리
+      }
+    } 
+    
+    // 거절인 경우!!
+    else if (data.action === "거절") {
       setSelectedOrderId(data.STSeq);
       setIsModalVisible(true);
-    } else if (data.action === "즉시수령") {
+    } 
+
+    // 즉시수령인 경우!
+    else if (data.action === "즉시수령") {
       Alert.alert(
         "즉시 수령 확인",
         "정말로 즉시 수령하시겠습니까?",
@@ -64,11 +82,7 @@ const Orders = ({ navigation }) => {
             text: "예",
             onPress: () => {
               dispatch(onImmediateReceipt({ STSeq: data.STSeq }));
-              socket.current.emit("test", {
-                stCode: stCode,
-                STSeq: data.STSeq,
-                message: "주문하신 제품을 즉시 수령해주세요",
-              });
+         
             },
           },
         ],
@@ -77,14 +91,8 @@ const Orders = ({ navigation }) => {
     }
   };
 
-  // 주문 거절 사유를 소켓으로 전달!
   const handleDeclineReason = (reason) => {
-    dispatch(onDecline({ STSeq: selectedOrderId, declineReason: reason }));
-    socket.current.emit("declineOrder", {
-      stCode: stCode,
-      STSeq: selectedOrderId,
-      declineReason: reason,
-    });
+    dispatch(onDecline({ STSeq: selectedOrderId, declineReason: reason }));  //여기에 OrderKey를 보내야곘네!
     setIsModalVisible(false);
   };
 
@@ -94,6 +102,9 @@ const Orders = ({ navigation }) => {
     });
     setOrders([]);
   };
+
+
+
 
   // 로그인 안했는데 다른 탭 접근
   useEffect(() => {

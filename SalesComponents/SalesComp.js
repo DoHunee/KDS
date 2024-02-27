@@ -13,7 +13,7 @@ const SalesComp = ({
     // 매출 나타내는 부분!
     <View style={styles.selectedDateInfoContainer}>
       <Text style={styles.totalSalesText}>
-        ■ 실매출액({selectedOrders.length}건):{"              "}
+        ■ 해당기간 실매출액({selectedOrders.length}건):{"              "}
         {selectedOrdersSales} 원
       </Text>
       <Text style={styles.monthlySalesText}>
