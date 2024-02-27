@@ -11,13 +11,11 @@ import {
 } from "react-native";
 // import menuData from "../assets/data/SoldoutMenu.json"; // 메뉴 데이터 가져오기
 import axios from "axios";
-import { io } from "socket.io-client";
 
 const Stock = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Redux 스토어에서 로그인 상태 가져오기
   const { stCode } = useSelector((state) => state.auth);
   const [menuItems, setMenuItems] = useState([]);
-  const socket = useRef(null);
 
   // 로그인 상태 접근 , //API로 데이터 가져오기!!
   useEffect(() => {
@@ -26,19 +24,6 @@ const Stock = () => {
     }
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
-  useEffect(() => {
-    // 컴포넌트 마운트 시 소켓 연결 생성 및 자동 재접속 비활성화
-    socket.current = io("http://211.54.171.41:8025/admin", {
-      reconnection: false, // 자동 재접속 비활성화
-    });
-
-    // 컴포넌트 언마운트 시 소켓 연결 종료
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
-  }, []);
   
   // 메뉴 데이터를 API로 서버로부터 가져오는 함수
   const fetchMenuData = async () => {
@@ -67,11 +52,13 @@ const Stock = () => {
         const updatedSideMenus = menuItem.SideMenus.map((sideMenu) => {
           if (sideMenu.SMCode === item.SMCode) {
             const newStatus = sideMenu.SSoldOutYN === "Y" ? "N" : "Y";
-            // 서브 메뉴 품절 처리 소켓 이벤트 발송
-            socket.current.emit("sideMenuSoldOut", {
-              SMCode: sideMenu.SMCode,
-              SSoldOutYN: newStatus,
-            });
+            
+            // 여기를 API 로 바꾸면 돼!
+            // socket.current.emit("sideMenuSoldOut", {
+            //   SMCode: sideMenu.SMCode,
+            //   SSoldOutYN: newStatus,
+            // });
+         
             return { ...sideMenu, SSoldOutYN: newStatus };
           }
           return sideMenu;
@@ -79,11 +66,13 @@ const Stock = () => {
         return { ...menuItem, SideMenus: updatedSideMenus };
       } else if (!isSideMenu && menuItem.MICode === item.MICode) {
         const newStatus = menuItem.SoldOutYN === "Y" ? "N" : "Y";
-        // 메인 메뉴 품절 처리 소켓 이벤트 발송
-        socket.current.emit("mainMenuSoldOut", {
-          MICode: menuItem.MICode,
-          SoldOutYN: newStatus,
-        });
+        
+        // 여기를 API로 바꾸면 돼!
+        // socket.current.emit("mainMenuSoldOut", {
+        //   MICode: menuItem.MICode,
+        //   SoldOutYN: newStatus,
+        // });
+        
         return { ...menuItem, SoldOutYN: newStatus };
       }
       return menuItem;

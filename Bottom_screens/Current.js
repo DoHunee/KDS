@@ -30,9 +30,41 @@ const Current = ({ navigation }) => {
     }
   }, [isLoggedIn]);
 
-  const buttonPress = (data) => {
+  const buttonPress = async (data) => {
     if (data.action === "준비완료") {
-      dispatch(onReady({ STSeq: data.STSeq }));
+      try {
+        // API 요청
+        const response = await fetch('http://211.54.171.41:3000/api/order/orderProcessUpdateforAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "OrderKey": data.OrderKey, // 주문 키 동적 할당
+            "ProcessCode": "C"
+          }),
+        });
+  
+        const result = await response.json();
+  
+        // 응답 로그 출력
+        console.log('API 응답:', result);
+  
+        // 응답 코드 확인
+        if (result.res_cd === '00') {
+          // 성공 응답 처리
+          console.log('성공:',result.res_msg);
+          dispatch(onReady({ STSeq: data.STSeq,res_cd: result.res_cd, }));
+          // 필요한 추가 처리 작성
+        } else {
+          // 실패 응답 처리
+          console.error('실패:', result.res_msg);
+          // 필요한 에러 처리 작성
+        }
+      } catch (error) {
+        console.error('API 요청 중 오류 발생:', error);
+        // 네트워크 에러 처리
+      }
     } else if (data.action === "주문취소") {
       setSelectedOrderId(data.STSeq);
       setIsModalVisible(true);

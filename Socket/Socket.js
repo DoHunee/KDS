@@ -55,18 +55,6 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
     );
   });
 
-  socket.on("test", (orderstatus) => {
-    console.log("즉시수령 목록:", orderstatus);
-  });
-
-  socket.on("sideMenuSoldOut", (sideMenu) => {
-    console.log("사이드 품절:", sideMenu);
-  });
-
-  socket.on("mainMenuSoldOut", (mainMenu) => {
-    console.log("메인 품절:", mainMenu);
-  });
-
   // 'handlePending' 액션을 디스패치하여 대기 중인 주문 목록을 업데이트합니다.
   socket.on('newOrderCreate', (orderListString) => {
     // 문자열을 JSON 객체로 파싱
@@ -102,7 +90,6 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
       store.dispatch(handlePending(orderListArray));
     }
   });
-  
   
   return socket; // 생성된 소켓 반환
 };
