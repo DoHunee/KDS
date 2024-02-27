@@ -53,7 +53,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
             cancellationReason={item.cancellationReason}
             />
         )}
-        keyExtractor={(item) => item.STSeq.toString()} //고유키 추출 
+        keyExtractor={(item) => item.OrderKey.toString()} //고유키 추출 
       />
     </View>
   );

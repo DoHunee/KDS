@@ -41,7 +41,7 @@ const Current = ({ navigation }) => {
           },
           body: JSON.stringify({
             "OrderKey": data.OrderKey, // 주문 키 동적 할당
-            "ProcessCode": "C"
+            "ProcessCode": "D"
           }),
         });
   

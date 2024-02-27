@@ -300,14 +300,11 @@ const Sales = () => {
     setselectedcancelOrders([]);
     setReadyButtonTranslucent(false);
     setDeclineButtonTranslucent(false);
-  
     let filteredOrders = [];
-  
     // 날짜 범위 선택 시 단일 날짜 선택 초기화
     if (selectedStartDate && selectedEndDate) {
       setSelectedDate(null); // 단일 날짜 선택 초기화
     }
-  
     // 주문 번호가 입력되지 않은 경우
     if (!searchOrder) {
       filteredOrders = completeOrders.filter((order) => {
@@ -319,44 +316,50 @@ const Sales = () => {
       });
     } else {
       // 주문 번호 필터링 로직
-      filteredOrders = completeOrders.filter((order) =>
-        order.STSeq.toString().includes(searchOrder) &&
-        (!selectedDate || order.SDDate.split(" ")[0] === selectedDate) &&
-        (!selectedStartDate || new Date(order.SDDate.split(" ")[0]) >= new Date(selectedStartDate)) &&
-        (!selectedEndDate || new Date(order.SDDate.split(" ")[0]) <= new Date(selectedEndDate))
+      filteredOrders = completeOrders.filter(
+        (order) =>
+          order.STSeq.toString().includes(searchOrder) &&
+          (!selectedDate || order.SDDate.split(" ")[0] === selectedDate) &&
+          (!selectedStartDate ||
+            new Date(order.SDDate.split(" ")[0]) >=
+              new Date(selectedStartDate)) &&
+          (!selectedEndDate ||
+            new Date(order.SDDate.split(" ")[0]) <= new Date(selectedEndDate))
       );
     }
-  
     // 필터링된 주문 목록 설정
     setSelectedOrders(filteredOrders);
   };
-  
   const handleOrderStatusButtonClick = (ProcessCode) => {
     // 모든 필터링된 목록과 날짜 관련 상태를 초기화
     setSelectedOrders([]);
     setselectedcancelOrders([]);
     setReadyButtonTranslucent(false);
     setDeclineButtonTranslucent(false);
-  
     // 날짜 범위 선택 시 단일 날짜 선택 초기화
     if (selectedStartDate && selectedEndDate) {
       setSelectedDate(null); // 단일 날짜 선택 초기화
     }
-  
+
     let filteredOrders = completeOrders.filter((order) => {
       const orderDate = order.SDDate.split(" ")[0];
       const isWithinDateRange = selectedDate
         ? orderDate === selectedDate
-        : new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
-  
+        : new Date(orderDate) >= new Date(selectedStartDate) &&
+          new Date(orderDate) <= new Date(selectedEndDate);
+
       // "ready" 상태일 때 "fast_ready" 상태도 포함하여 필터링
-      const isEligibleStatus = ProcessCode === "ready" 
-        ? (order.ProcessCode === "ready" || order.ProcessCode === "fast_ready")
-        : order.ProcessCode === ProcessCode;
-  
+      // "cancel" 상태일 때 "decline" 상태도 포함하여 필터링
+      const isEligibleStatus =
+        ProcessCode === "cancel"
+          ? order.ProcessCode === "cancel" || order.ProcessCode === "decline"
+          : ProcessCode === "ready"
+          ? order.ProcessCode === "ready" || order.ProcessCode === "fast_ready"
+          : order.ProcessCode === ProcessCode;
+
       return isWithinDateRange && isEligibleStatus;
     });
-  
+
     // 필터링된 주문 목록 설정
     if (ProcessCode === "ready" || ProcessCode === "fast_ready") {
       setSelectedOrders(filteredOrders);
