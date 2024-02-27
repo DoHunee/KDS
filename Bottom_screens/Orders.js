@@ -45,7 +45,7 @@ const Orders = ({ navigation }) => {
       // 주문 수락 이벤트 처리
       socket.current.emit("acceptOrder", {
         stCode: stCode,
-        STSeq: data.STSeq,
+        STSeq: data.STSeq, //주문번호
         message: "고객님의 주문이 접수되었습니다!",
       });
     } else if (data.action === "거절") {

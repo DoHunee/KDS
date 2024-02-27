@@ -20,8 +20,8 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer independent={true}>
+      <AuthProvider> 
         <SocketProvider>
-        <AuthProvider> 
           {/* Color when clicking on the bottom tab navigator */}
           <Tab.Navigator
             initialRouteName="SettingStack"
@@ -88,8 +88,8 @@ export default function App() {
               component={Complete}
             />
           </Tab.Navigator>
-        </AuthProvider>
         </SocketProvider>
+        </AuthProvider>
       </NavigationContainer>
     </Provider>
   );
