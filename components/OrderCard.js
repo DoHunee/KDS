@@ -15,7 +15,7 @@ const OrderCard = ({
   buttons,
   SDTime,
   declineReason,
-  OrderKey
+  OrderKey,
 }) => {
   const [timeElapse, setTimeElapsed] = useState(0); // timeElapsed 상태 변수를 초기화하고, 초깃값으로 0을 설정합니다.
   
@@ -131,9 +131,10 @@ const OrderCard = ({
       */}
       <View style={styles.namePhone}>
         <View>
-          <Text style={styles.text}>{UserName} 【{UserHp}】
-          </Text>
+          <Text style={styles.text}>{UserName} 【{UserHp}】</Text>
           <Text>{formattedTime}</Text>
+          <Text>OrderKey : {OrderKey}</Text>
+          <Text>ProcessCode : {ProcessCode}</Text>  
         </View>
         <View>
           <Text style={styles.orderText}>

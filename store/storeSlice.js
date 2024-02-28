@@ -12,8 +12,11 @@ const initialState = {
 // 새로운 전역 상태 추가
 const globalState = {
   // 다른 전역 상태 (예: pending, current)...
-  complete: initialState.complete,
   pending: initialState.pending,
+  current: initialState.current,
+  complete: initialState.complete,
+  
+  
 };
 
 // Redux slice 생성
@@ -63,20 +66,20 @@ export const OrdersDistrubutionSlice = createSlice({
         const declineOrder = orders?.find(
           (item) => item.STSeq === action.payload.STSeq
         );
-
+    
         // 거절 사유를 받아옴
         const declineReason = action.payload?.declineReason;
-
-        // 취소 사유에 따라 상태 설정
-        if (declineReason === "재료소진" || declineReason === "품절") {
-          declineOrder.ProcessCode = "decline";
-        }
-        declineOrder.cancelTime = getTimePassedSec();
-        declineOrder.orderNumber = state.complete.length + 1;
-
+    
+        // 거절 사유와 관계없이 ProcessCode를 'decline'으로 설정
+        declineOrder.ProcessCode = "decline";
+    
+        declineOrder.cancelTime = getTimePassedSec(); // 현재 시간을 기준으로 취소 시간 설정
+        declineOrder.orderNumber = state.complete.length + 1; // 새로운 완료 주문 번호 설정
+    
         // 취소 사유 저장
         declineOrder.declineReason = declineReason;
-
+    
+        // 완료된 주문 목록에 추가하고, 대기 중인 주문 목록에서 제거
         state.complete = [...state.complete, declineOrder];
         state.pending = state.pending.filter(
           (item) => item.STSeq !== action.payload.STSeq
@@ -137,35 +140,28 @@ export const OrdersDistrubutionSlice = createSlice({
     // 주문 취소하고 완료 목록에 이동
     onCancel: (state, action) => {
       // 결과 코드가 '00'인 경우에만 실행
-      if (action.payload.res_cd === '00') {
-        const orderId = action.payload.STSeq;
-        const canceledOrder = state.current.find(
-          (order) => order.STSeq === orderId
+      if (action.payload.res_cd === "00") {
+        const orders = state.current;
+        const canceledOrderIndex = orders.findIndex(
+          (item) => item.STSeq === action.payload.STSeq
         );
-    
+        
         // 취소 사유를 받아옴
         const cancellationReason = action.payload.cancellationReason;
-    
-        // 취소 사유에 따라 상태 설정
-        if (
-          cancellationReason === "고객 요청에 따른 취소" ||
-          cancellationReason === "가게 사정에 따른 취소"
-        ) {
+        
+        if (canceledOrderIndex !== -1) {
+          // 취소된 주문 객체 복사 및 수정
+          const canceledOrder = { ...orders[canceledOrderIndex] };
           canceledOrder.ProcessCode = "cancel";
+          canceledOrder.cancelTime = getTimePassedSec();
+          canceledOrder.cancellationReason = cancellationReason;
+          
+          // 취소된 주문을 완료 배열에 추가
+          state.complete.push(canceledOrder);
+          
+          // 현재 주문 목록에서 해당 주문 제거
+          state.current.splice(canceledOrderIndex, 1);
         }
-        canceledOrder.cancelTime = getTimePassedSec();
-    
-        // 취소 사유 저장
-        canceledOrder.cancellationReason = cancellationReason;
-    
-        // 취소된 주문을 완료 배열에 추가
-        state.complete = [...state.complete, canceledOrder];
-        state.current = state.current.filter(
-          (item) => item.STSeq !== action.payload.STSeq
-        );
-    
-        // 현재 주문 목록에서 해당 주문 제거
-        state.current = state.current.filter((order) => order.STSeq !== orderId);
       } else {
         // 결과 코드가 '00'이 아닌 경우의 처리 로직 (옵션)
         console.error('주문 취소 처리 실패:', action.payload.res_msg);
