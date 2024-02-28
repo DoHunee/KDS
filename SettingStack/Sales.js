@@ -174,7 +174,7 @@ const Sales = () => {
 
       if (month === selectedMonth) {
         Month_Final_Price += order.Details.reduce(
-          (sum, item) => sum + (item.MICnt * item.TotPrice),
+          (sum, item) => sum + item.TotPrice,
           0
         );
       }
@@ -226,7 +226,7 @@ const Sales = () => {
     //선택된 날짜에 대한 주문 목록(selectedOrders)에서 총 주문 가격
     const Final_Price = selectedOrders.reduce(
       (total, order) =>
-        total + order.Details.reduce((sum, item) => sum + (item.MICnt *item.TotPrice), 0),
+      total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
       0
     );
 

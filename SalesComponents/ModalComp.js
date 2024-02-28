@@ -227,7 +227,7 @@ const ModalComp = ({
               <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>
                 총 가격 :{" "}
-                {order.Details.reduce((sum, item) => sum + (item.MICnt *item.TotPrice), 0)} 원
+                {order.Details.reduce((sum, item) => sum + item.TotPrice, 0)} 원
               </Text>
 
               <TouchableOpacity
