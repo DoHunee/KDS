@@ -10,12 +10,14 @@ import Length from "../RightUpBar/Length";
 const Current = ({ navigation }) => {
   const dispatch = useDispatch(); // Redux의 useDispatch를 사용하여 액션을 디스패치
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const currentOrders = useSelector((state) => state.OrdersDistrubutionSlice.current); // Redux에서 상태를 가져오기 위해 useSelector를 사용
+  const currentOrders = useSelector(
+    (state) => state.OrdersDistrubutionSlice.current
+  ); // Redux에서 상태를 가져오기 위해 useSelector를 사용
   const [orders, setOrders] = useState([]); // 로컬 상태 orders를 사용하여 currentOrders를 업데이트
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [selctedAction , setSelctedAction] = useState(null);
-  const [selctedOrderKey , setSelctedOrderKey] = useState(null);
+  const [selctedAction, setSelctedAction] = useState(null);
+  const [selctedOrderKey, setSelctedOrderKey] = useState(null);
 
   // currentOrders가 업데이트될 때마다 orders를 업데이트
   useEffect(() => {
@@ -28,8 +30,9 @@ const Current = ({ navigation }) => {
     }
   }, [isLoggedIn]);
 
+  // 버튼 클릭할때 이벤트!! (준비완료 , 주문취소)
   const buttonPress = async (data) => {
-    console.log("data 객체:", data); // data 객체의 내용을 콘솔에 출력
+    console.log("접수완료에서 data 객체:", data); // data 객체의 내용을 콘솔에 출력
     if (data.action === "준비완료") {
       try {
         // API 요청
@@ -69,17 +72,27 @@ const Current = ({ navigation }) => {
       }
     } 
     else if (data.action === "주문취소") {
-      setSelectedOrderId(data.STSeq);   // 주문번호를 selectedOrderId에 할당
+      setSelectedOrderId(data.STSeq); // 주문번호를 selectedOrderId에 할당
       setSelctedAction(data.action);
       setSelctedOrderKey(data.OrderKey);
       setIsModalVisible(true);
-      
     }
   };
 
-  // 주문 취소 사유를 소켓으로 전달!  CancleCode = "A" "고객 요청에 따른 취소"
+  // 주문 취소 사유를 소켓으로 전달!  
   const handleCancelReason = async (reason) => {
-    console.log(selectedOrderId,selctedAction,selctedOrderKey)
+    // console.log(selectedOrderId, selctedAction, selctedOrderKey);
+
+    // 취소 사유에 따라 CancleCode 결정
+    let cancleCode;
+    if (reason === "고객 변심") {
+      cancleCode = "A";
+    } else if (reason === "판매 상품 품절") {
+      cancleCode = "B";
+    }else if (reason === "기타") {
+      cancleCode = "C";
+    }
+
     try {
       // API 요청
       const response = await fetch(
@@ -92,39 +105,42 @@ const Current = ({ navigation }) => {
           body: JSON.stringify({
             OrderKey: selctedOrderKey, // 주문 키 동적 할당
             ProcessCode: "V", // 취소는 무조건 "V"
-            CancleCode: "A", // 조건에 따라 결정된 CancleCode 사용
+            CancleCode: cancleCode, // 조건에 따라 결정된 CancleCode 사용
           }),
         }
       );
 
       const result = await response.json();
       console.log("API 응답:", result);
-      
+
       // 응답 코드 확인 후 처리
       if (result.res_cd === "00") {
         console.log("성공:", result.res_msg);
-        console.log("디스패치에 쓰이는 값 !!!" , selectedOrderId, result.res_cd, reason)  //  44 00 고객 요청에 따른 취소
-        dispatch(onCancel({STSeq: selectedOrderId, res_cd:result.res_cd,cancellationReason : reason}));
-        
-      } 
-      else {
+        console.log(
+          "디스패치에 쓰이는 값 !!!",
+          selectedOrderId,
+          result.res_cd,
+          reason
+        ); //  44 00 고객 요청에 따른 취소
+        dispatch(
+          onCancel({
+            STSeq: selectedOrderId,
+            res_cd: result.res_cd,
+            cancellationReason: reason,
+          })
+        );
+      } else {
         console.error("실패:", result.res_msg);
         // 필요한 에러 처리 작성
-        
       }
     } catch (error) {
-      console.log(selectedOrderId, result.res_cd, reason)
+      console.log(selectedOrderId, result.res_cd, reason);
       console.error("API 요청 중 오류 발생:", error);
       // 네트워크 에러 처리 작성
-        
-      
     } finally {
       setIsModalVisible(false); // 성공/실패 여부와 관계없이 모달 닫기
     }
   };
-
-
-
 
   return (
     <View style={styles.container}>
@@ -156,15 +172,21 @@ const Current = ({ navigation }) => {
             <Text style={styles.modalText}>주문 취소 사유를 선택해주세요</Text>
             <TouchableOpacity
               style={styles.button}
-              onPress={() =>  handleCancelReason("고객 요청에 따른 취소")}
+              onPress={() => handleCancelReason("고객 변심")}
             >
-              <Text style={styles.textStyle}>고객 요청에 따른 취소</Text>
+              <Text style={styles.textStyle}>고객 변심</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() =>  handleCancelReason("가게 사정에 따른 취소")}
+              onPress={() => handleCancelReason("판매 상품 품절")}
             >
-              <Text style={styles.textStyle}>가게 사정에 따른 취소</Text>
+              <Text style={styles.textStyle}>판매 상품 품절</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleCancelReason("기타")}
+            >
+              <Text style={styles.textStyle}>기타</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}

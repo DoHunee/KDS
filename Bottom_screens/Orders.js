@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -28,11 +28,33 @@ const Orders = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selctedAction, setSelctedAction] = useState(null);
+  const [selctedOrderKey, setSelctedOrderKey] = useState(null);
 
-  // 수락,거절 ,즉시수령 버튼 눌렀을대 event
+  // 로그인 안했는데 다른 탭 접근
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigation.navigate("Login");
+    }
+  }, [isLoggedIn]);
+
+  // 소켓으로 가져온 주문목록 StoreSlice.js에서 지정된 handlePending
+  useEffect(() => {
+    dispatch(handlePending());
+  }, []);
+
+  //pendingOrders 상태에 변경사항이 있을 때마다 orders 상태가 업데이트되고, 이는 OrderList 컴포넌트에 반영되어 UI가 업데이트되어야 합니다.
+  useEffect(() => {
+    // pendingOrders가 존재하고 배열이면 orders 상태를 업데이트합니다.
+    if (pendingOrders && Array.isArray(pendingOrders)) {
+      setOrders(pendingOrders); // pendingOrders를 orders로 업데이트합니다.
+      console.log("확인해라!!!!!!", pendingOrders);
+    }
+  }, [pendingOrders]);
+
+  // 버튼 클릭할때 이벤트!! (수락,거절 ,즉시수령 )
   const handleButtonPress = async (data) => {
-    console.log("data 객체:", data); // data 객체의 내용을 콘솔에 출력
-
+    console.log("접수대기에서 data 객체:", data); // data 객체의 내용을 콘솔에 출력
     if (data.action === "수락") {
       try {
         // API 요청
@@ -70,10 +92,7 @@ const Orders = ({ navigation }) => {
         console.error("API 요청 중 오류 발생:", error);
         // 네트워크 에러 처리
       }
-    }
-
-    // 즉시수령인 경우!
-    else if (data.action === "즉시수령") {
+    } else if (data.action === "즉시수령") {
       Alert.alert(
         "즉시 수령 확인",
         "정말로 즉시 수령하시겠습니까?",
@@ -131,18 +150,12 @@ const Orders = ({ navigation }) => {
         ],
         { cancelable: false }
       );
-    }
-
-    // 거절인 경우!!
-    else if (data.action === "거절") {
+    } else if (data.action === "거절") {
       setSelectedOrderId(data.STSeq);
+      setSelctedAction(data.action);
+      setSelctedOrderKey(data.OrderKey);
       setIsModalVisible(true);
     }
-  };
-
-  const handleDeclineReason = (reason) => {
-    dispatch(onDecline({ STSeq: selectedOrderId, declineReason: reason })); //여기에 OrderKey를 보내야곘네!
-    setIsModalVisible(false);
   };
 
   // 접수대기에 있는 모든 주문목록 수락!
@@ -150,19 +163,22 @@ const Orders = ({ navigation }) => {
     for (const order of orders) {
       try {
         // API 요청
-        const response = await fetch("http://211.54.171.41:3000/api/order/orderProcessUpdateforAdmin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            OrderKey: order.OrderKey, // 주문 키 동적 할당
-            ProcessCode: "B", // 수락 처리 코드
-          }),
-        });
-  
+        const response = await fetch(
+          "http://211.54.171.41:3000/api/order/orderProcessUpdateforAdmin",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              OrderKey: order.OrderKey, // 주문 키 동적 할당
+              ProcessCode: "B", // 수락 처리 코드
+            }),
+          }
+        );
+
         const result = await response.json();
-  
+
         // 응답 코드 확인
         if (result.res_cd === "00") {
           // 성공 응답 처리, 주문 수락 액션 디스패치
@@ -180,26 +196,58 @@ const Orders = ({ navigation }) => {
     setOrders([]);
   };
 
-  // 로그인 안했는데 다른 탭 접근
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigation.navigate("Login");
-    }
-  }, [isLoggedIn]);
+  // 주문 거절 사유를 소켓으로 전달! 
+  const handleDeclineReason = async (reason) => {
+    // console.log(selectedOrderId, selctedAction, selctedOrderKey);
 
-  // 소켓으로 가져온 주문목록 StoreSlice.js에서 지정된 handlePending
-  useEffect(() => {
-    dispatch(handlePending());
-  }, []);
-
-  //pendingOrders 상태에 변경사항이 있을 때마다 orders 상태가 업데이트되고, 이는 OrderList 컴포넌트에 반영되어 UI가 업데이트되어야 합니다.
-  useEffect(() => {
-    // pendingOrders가 존재하고 배열이면 orders 상태를 업데이트합니다.
-    if (pendingOrders && Array.isArray(pendingOrders)) {
-      setOrders(pendingOrders); // pendingOrders를 orders로 업데이트합니다.
-      console.log("확인해라!!!!!!", pendingOrders);
+    // 거절 사유에 따라 CancleCode 결정
+    let cancleCode;
+    if (reason === "고객 변심") {
+      cancleCode = "A";
+    } else if (reason === "판매 상품 품절") {
+      cancleCode = "B";
+    } else if (reason === "기타") {
+      cancleCode = "C";
     }
-  }, [pendingOrders]);
+
+    try {
+      // API 요청
+      const response = await fetch(
+        "http://211.54.171.41:3000/api/order/orderProcessUpdateforAdmin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            OrderKey: selctedOrderKey, // 주문 키 동적 할당
+            ProcessCode: "V", // 거절,취소는 무조건 "V"
+            CancleCode: cancleCode, // 조건에 따라 결정된 CancleCode 사용
+          }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("API 응답:", result);
+
+      // 응답 코드 확인 후 처리
+      if (result.res_cd === "00") {
+        console.log("성공:", result.res_msg);
+        console.log("디스패치에 쓰이는 값 !!!",selectedOrderId,result.res_cd,reason); //  44 00 고객 요청에 따른 취소
+        dispatch(onDecline({STSeq: selectedOrderId,res_cd: result.res_cd,declineReason: reason,})
+        );
+      } else {
+        console.error("실패:", result.res_msg);
+        // 필요한 에러 처리 작성
+      }
+    } catch (error) {
+      console.log(selectedOrderId, result.res_cd, reason);
+      console.error("API 요청 중 오류 발생:", error);
+      // 네트워크 에러 처리 작성
+    } finally {
+      setIsModalVisible(false); // 성공/실패 여부와 관계없이 모달 닫기
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -229,19 +277,25 @@ const Orders = ({ navigation }) => {
             <Text style={styles.modalText}>주문 거절 사유를 선택해주세요</Text>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleDeclineReason("재료소진")}
+              onPress={() => handleDeclineReason("고객 변심")}
             >
-              <Text style={styles.textStyle}>재료소진</Text>
+              <Text style={styles.textStyle}>고객 변심</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleDeclineReason("품절")}
+              onPress={() => handleDeclineReason("판매 상품 품절")}
             >
-              <Text style={styles.textStyle}>품절</Text>
+              <Text style={styles.textStyle}>판매 상품 품절</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => setIsModalVisible(false)}
+              onPress={() => handleDeclineReason("기타")}
+            >
+              <Text style={styles.textStyle}>기타</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleDeclineReason(false)}
             >
               <Text style={styles.textStyle}>취소</Text>
             </TouchableOpacity>
