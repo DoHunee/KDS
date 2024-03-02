@@ -24,7 +24,6 @@ const Stock = () => {
     }
   }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 실행
 
-  
   // 메뉴 데이터를 API로 서버로부터 가져오는 함수
   const fetchMenuData = async () => {
     if (!isLoggedIn) return;
@@ -45,39 +44,80 @@ const Stock = () => {
   };
 
   // 스위치 토글 핸들러
-  const toggleSoldOut = (item, isSideMenu = false, parentMICode = null) => {
-    const updatedMenuItems = menuItems.map((menuItem) => {
-      if (isSideMenu && menuItem.MICode === parentMICode) {
-        // 부메뉴 아이템 처리
-        const updatedSideMenus = menuItem.SideMenus.map((sideMenu) => {
-          if (sideMenu.SMCode === item.SMCode) {
-            const newStatus = sideMenu.SSoldOutYN === "Y" ? "N" : "Y";
-            
-            // 여기를 API 로 바꾸면 돼!
-            // socket.current.emit("sideMenuSoldOut", {
-            //   SMCode: sideMenu.SMCode,
-            //   SSoldOutYN: newStatus,
-            // });
-         
-            return { ...sideMenu, SSoldOutYN: newStatus };
+  const toggleSoldOut = async (
+    item,
+    isSideMenu = false,
+    parentMICode = null
+  ) => {
+    const updatedMenuItems = await Promise.all(
+      menuItems.map(async (menuItem) => {
+        // 사이드 메뉴! => (세트 안의 메뉴!)
+        if (isSideMenu && menuItem.MICode === parentMICode) {
+          const updatedSideMenus = await Promise.all(
+            menuItem.SideMenus.map(async (sideMenu) => {
+              if (sideMenu.SMCode === item.SMCode) {
+                const newStatus = sideMenu.SSoldOutYN === "Y" ? "N" : "Y";
+                const requestData = {
+                  STCode: stCode,
+                  MICode: menuItem.MICode,
+                  SMCode: sideMenu.SMCode,
+                  SoldOutYN: newStatus,
+                };
+                console.log("API 요청 데이터:", requestData); // API 요청 데이터 로깅
+                try {
+                  const response = await axios.post(
+                    "http://211.54.171.41:3000/api/store/updateStoreItemSoldOutforAdmin",
+                    requestData,
+                    {
+                      headers: { "Content-Type": "application/json" },
+                    }
+                  );
+                  // API 호출 성공 로직...
+                  console.log(response);
+                  return { ...sideMenu, SSoldOutYN: newStatus };
+                } catch (error) {
+                  console.error("메뉴 데이터 요청 중 오류 발생:", error);
+                  // 에러 처리 로직...
+                  return sideMenu; // 에러가 발생한 경우 원래 상태를 유지
+                }
+              }
+              return sideMenu;
+            })
+          );
+          return { ...menuItem, SideMenus: updatedSideMenus };
+        } 
+        // 메인메뉴
+        else if (!isSideMenu && menuItem.MICode === item.MICode) {
+          const newStatus = menuItem.SoldOutYN === "Y" ? "N" : "Y";
+          const requestData = {
+            MICode: menuItem.MICode,
+            STCode: stCode,
+            SoldOutYN: newStatus,
+          };
+          console.log("API 요청 데이터:", requestData); // API 요청 데이터 로깅
+          // 메인 메뉴 아이템의 품절 상태를 업데이트하는 API 호출 로직 추가...
+          try {
+            const response = await axios.post(
+              "http://211.54.171.41:3000/api/store/updateStoreItemSoldOut",
+              requestData,
+              {
+                headers: { "Content-Type": "application/json" },
+              }
+            );
+            // API 호출 성공 로직...
+            console.log("메인메뉴 API 응답:", response.data); // API 응답 로깅
+          } catch (error) {
+            console.error("메인 메뉴 품절 상태 업데이트 중 오류 발생:", error);
+            // 에러 처리 로직...
           }
-          return sideMenu;
-        });
-        return { ...menuItem, SideMenus: updatedSideMenus };
-      } else if (!isSideMenu && menuItem.MICode === item.MICode) {
-        const newStatus = menuItem.SoldOutYN === "Y" ? "N" : "Y";
-        
-        // 여기를 API로 바꾸면 돼!
-        // socket.current.emit("mainMenuSoldOut", {
-        //   MICode: menuItem.MICode,
-        //   SoldOutYN: newStatus,
-        // });
-        
-        return { ...menuItem, SoldOutYN: newStatus };
-      }
-      return menuItem;
-    });
-    setMenuItems(updatedMenuItems); // 상태 업데이트
+
+          return { ...menuItem, SoldOutYN: newStatus };
+        }
+        return menuItem;
+      })
+    );
+
+    setMenuItems(updatedMenuItems); // 모든 비동기 작업이 완료된 후에 상태 업데이트
   };
 
   // 렌더링 하는 부분!
