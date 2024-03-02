@@ -142,6 +142,14 @@ const ModalComp = ({
   // 결제 내역 섹션을 렌더링하는 함수
   const renderPaymentDetailsModal = (orderKey) => {
     if (!paymentDetails || !showPaymentDetails[orderKey]) return null;
+
+    // orderKey를 사용하여 현재 주문 객체 찾기
+    const currentOrder =
+      selectedOrders.find((order) => order.OrderKey === orderKey) ||
+      selectedCancelOrders.find((order) => order.OrderKey === orderKey);
+
+    if (!currentOrder) return null; // 주문을 찾을 수 없는 경우 null 반환
+
     return (
       <Modal
         animationType="slide"
@@ -152,30 +160,35 @@ const ModalComp = ({
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>결제 상세 정보</Text>
-            {paymentDetails &&
-              paymentDetails.map((detail, index) => (
-                <View key={index} style={styles.paymentDetailItem}>
-                  {/* 결제 상세 정보 항목 렌더링 */}
-                  <Text>금액: {detail.Amount}원</Text>
-                  <Text>카드명: {detail.CardName}</Text>
-                  <Text style={styles.paymentDetailText}>
-                    카드번호: {detail.CardNo}
-                  </Text>
-                  <Text style={styles.paymentDetailText}>
-                    승인번호: {detail.AppNo}
-                  </Text>
-                  <Text style={styles.paymentDetailText}>
-                    결제시간: {detail.AppTime}
-                  </Text>
-                  {/* 필요한 정보 추가 */}
-                </View>
-              ))}
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => handleCancelPayment(orderKey)}
-            >
-              <Text style={styles.cancelButtonText}>결제취소</Text>
-            </TouchableOpacity>
+            {paymentDetails.map((detail, index) => (
+              <View key={index} style={styles.paymentDetailItem}>
+                {/* 결제 상세 정보 항목 렌더링 */}
+                <Text>금액: {detail.Amount}원</Text>
+                <Text>카드명: {detail.CardName}</Text>
+                <Text style={styles.paymentDetailText}>
+                  카드번호: {detail.CardNo}
+                </Text>
+                <Text style={styles.paymentDetailText}>
+                  승인번호: {detail.AppNo}
+                </Text>
+                <Text style={styles.paymentDetailText}>
+                  결제시간: {detail.AppTime}
+                </Text>
+                {/* 필요한 정보 추가 */}
+              </View>
+            ))}
+            {/* 주문 상태가 "decline" 또는 "cancel"이 아닐 경우에만 결제 취소 버튼 렌더링 */}
+            {!(
+              currentOrder.ProcessCode === "decline" ||
+              currentOrder.ProcessCode === "cancel"
+            ) && (
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => handleCancelPayment(currentOrder.OrderKey)}
+              >
+                <Text style={styles.cancelButtonText}>결제취소</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
               onPress={() => setIsPaymentDetailsModalVisible(false)}
