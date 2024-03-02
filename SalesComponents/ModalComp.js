@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { onCancelCompleteOrder } from "../store/storeSlice";
 
 const ModalComp = ({
   modalVisible,
@@ -45,8 +47,10 @@ const ModalComp = ({
     handleSearchOrder(); // searchOrder가 변경될 때마다 주문을 검색하고 업데이트합니다.
   }, [searchOrder]); // searchOrder가 변경될 때마다 useEffect가 실행됩니다.
 
+  const dispatch = useDispatch();
   const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
   const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
+  const [cancelStatusMessage, setCancelStatusMessage] = useState("");
 
   // API로 결제내역 가져오는 코드!
   const fetchPaymentDetails = async (orderKey) => {
@@ -67,10 +71,63 @@ const ModalComp = ({
   };
 
   // API 결제취소 함수 정의
-  const handleCancelPayment = (orderKey) => {
-    console.log(`결제취소: ${orderKey}`);
-  };
+  const handleCancelPayment = async (orderKey) => {
+    try {
+      // selectedOrders에서 주문 상태 확인
+      const selectedOrder = selectedOrders.find(
+        (order) => order.OrderKey === orderKey
+      );
 
+      if (selectedOrder && selectedOrder.ProcessCode === "cancel") {
+        // 이미 "cancel" 상태인 경우 사용자에게 알림 표시
+        setCancelStatusMessage("이미 결제취소된 주문입니다");
+        Alert.alert("알림", cancelStatusMessage);
+        return; // 함수 종료
+      }
+
+      // 기존의 API 요청 로직 유지
+      const response = await fetch(
+        "http://211.54.171.41:3000/api/order/orderProcessUpdateforAdmin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            OrderKey: orderKey,
+            ProcessCode: "V", // 취소는 무조건 V
+            cancleCode: "C", // 결제 후 취소하는 거니까 C로 보내!
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      // 응답 코드 확인 및 추가 로직 처리
+      if (result.res_cd === "00") {
+        console.log("결제 취소 성공:", result.res_msg);
+        // 성공적으로 처리되었음을 사용자에게 알림
+        Alert.alert("결제 취소 성공", "결제가 성공적으로 취소되었습니다.");
+        // console.log("디스패치에 쓰이는 값 !!!",result.res_cd); //  48 00 고객 요청에 따른 취소
+        dispatch(
+          onCancelCompleteOrder({
+            STSeq: selectedOrder.STSeq,
+            res_cd: result.res_cd,
+            cancellationReason: "주문처리완료 후 주문취소",
+          })
+        );
+      } else {
+        console.error("결제 취소 실패:", result.res_msg);
+        Alert.alert("결제 취소 실패", `사유: ${result.res_msg}`);
+      }
+    } catch (error) {
+      console.error("API 요청 중 오류 발생:", error);
+      Alert.alert(
+        "오류 발생",
+        "네트워크 오류가 발생했습니다. 다시 시도해주세요."
+      );
+    }
+  };
 
   // 결제 내역 섹션을 렌더링하는 함수
   const renderPaymentDetails = (orderKey) => {
@@ -110,7 +167,6 @@ const ModalComp = ({
       </View>
     );
   };
-
 
   return (
     //  모달창을 나타내는 부분

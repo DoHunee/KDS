@@ -294,6 +294,7 @@ const Sales = () => {
     });
   };
 
+  // 모달의 검색창 관련
   const handleSearchOrder = () => {
     // 모든 필터링된 목록과 날짜 관련 상태를 초기화
     setSelectedOrders([]);
@@ -330,12 +331,15 @@ const Sales = () => {
     // 필터링된 주문 목록 설정
     setSelectedOrders(filteredOrders);
   };
+
+  // 필터링 버튼 관련 
   const handleOrderStatusButtonClick = (ProcessCode) => {
     // 모든 필터링된 목록과 날짜 관련 상태를 초기화
     setSelectedOrders([]);
     setselectedcancelOrders([]);
-    setReadyButtonTranslucent(false);
-    setDeclineButtonTranslucent(false);
+    setReadyButtonTranslucent(false);  //투명도 상태 초기화
+    setDeclineButtonTranslucent(false); //투명도 상태 초기화
+    
     // 날짜 범위 선택 시 단일 날짜 선택 초기화
     if (selectedStartDate && selectedEndDate) {
       setSelectedDate(null); // 단일 날짜 선택 초기화

@@ -234,7 +234,7 @@ const Orders = ({ navigation }) => {
       if (result.res_cd === "00") {
         console.log("성공:", result.res_msg);
         console.log("디스패치에 쓰이는 값 !!!",selectedOrderId,result.res_cd,reason); //  44 00 고객 요청에 따른 취소
-        dispatch(onDecline({STSeq: selectedOrderId,res_cd: result.res_cd,declineReason: reason,})
+        dispatch(onDecline({STSeq: selectedOrderId,res_cd: result.res_cd,declineReason: reason})
         );
       } else {
         console.error("실패:", result.res_msg);

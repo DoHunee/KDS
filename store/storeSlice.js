@@ -168,6 +168,23 @@ export const OrdersDistrubutionSlice = createSlice({
       }
     },
 
+    // 모달창에서 주문 결제 취소할때!! status만 cancel로 변경!!
+    onCancelCompleteOrder: (state, action) => {
+      if (action.payload.res_cd === "00") {
+        const orderIndex = state.complete.findIndex(order => order.STSeq === action.payload.STSeq);
+        if (orderIndex !== -1) {
+          const order = state.complete[orderIndex];
+          if (order.ProcessCode === "cancel") {
+          } else if (order.ProcessCode === "ready" || order.ProcessCode === "fast_ready") {
+            order.ProcessCode = "cancel";
+            order.cancellationReason = action.payload.cancellationReason || "사유 미제공";   
+          }
+        }
+      } else {
+        console.error('완료된 주문 취소 처리 실패:', action.payload.res_msg);
+      }
+    },
+
   },
 });
 
@@ -179,6 +196,7 @@ export const {
   onImmediateReceipt,
   onReady,
   onCancel,
+  onCancelCompleteOrder,
 } = OrdersDistrubutionSlice.actions;
 
 // Reducer를 내보냄
