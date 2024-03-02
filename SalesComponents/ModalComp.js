@@ -29,7 +29,7 @@ const ModalComp = ({
   cancelButtonTranslucent,
   handleOrderStatusButtonClick,
   selectedOrders,
-  selectedcancelOrders,
+  selectedCancelOrders,
 }) => {
   useEffect(() => {
     if (modalVisible) {
@@ -257,7 +257,7 @@ const ModalComp = ({
         </View>
 
         {/* 모달창안에 주문내역을 나타내는 부분!! */}
-        {selectedOrders.concat(selectedcancelOrders).map((order) => (
+        {selectedOrders.concat(selectedCancelOrders).map((order) => (
           <View
             key={order.STSeq}
             //  주문내역 배경을 설정하는 부분!!

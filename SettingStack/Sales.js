@@ -31,7 +31,7 @@ const Sales = () => {
 
   const [markedDates, setMarkedDates] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]); //선택한날짜의 모든 주문 목록
-  const [selectedcancelOrders, setselectedcancelOrders] = useState([]); //선택한날짜의 취소처리 주문목록
+  const [selectedCancelOrders, setselectedcancelOrders] = useState([]); //선택한날짜의 취소처리 주문목록
   const [selectedMonthOrders, setselectedMonthOrders] = useState([]); //선택한날짜가 속한 월에 해당되는 주문목록
 
   const [selectedOrdersSales, setselectedOrdersSales] = useState(0); // 선택한 날짜에 대한 전체 판매 금액을 나타내는 변수입니다.
@@ -206,7 +206,7 @@ const Sales = () => {
     });
 
     // "cancel" 상태의 주문 목록 필터링 + 선택한 날짜
-    const selectedcancelOrders = cancelOrders.filter((order) => {
+    const selectedCancelOrders = cancelOrders.filter((order) => {
       const dateOnly = order.SDDate.split(" ")[0];
       return dateOnly === day.dateString;
     });
@@ -217,7 +217,7 @@ const Sales = () => {
     });
 
     //선택된 날짜에 대한 "cancel" 상태의 주문들의 전체 취소 금액
-    const Decline_Final_Price = selectedcancelOrders.reduce(
+    const Decline_Final_Price = selectedCancelOrders.reduce(
       (total, order) =>
         total + order.Details.reduce((sum, item) => sum + item.TotPrice, 0),
       0
@@ -232,7 +232,7 @@ const Sales = () => {
 
     setSelectedOrders(selectedOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + fast-Ready + Ready
     setselectedMonthOrders(selectedMonthOrders); //당월에 해당하는 주문목록(selectedMonthOrders) 업데이트
-    setselectedcancelOrders(selectedcancelOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + cancel
+    setselectedcancelOrders(selectedCancelOrders); //당일에 해당하는 주문목록(selectedOrders) 업데이트 + cancel
 
     setselectedOrdersSales(Final_Price); // 당일총매출(Final_Price) 업데이트
     setselectedcancelSales(Decline_Final_Price); // 당일총취소금액(totalCancellationAmount) 업데이트
@@ -481,7 +481,7 @@ const Sales = () => {
               readyButtonTranslucent={readyButtonTranslucent}
               cancelButtonTranslucent={cancelButtonTranslucent}
               selectedOrders={selectedOrders}
-              selectedcancelOrders={selectedcancelOrders}
+              selectedCancelOrders={selectedCancelOrders}
               setSearchOrder={setSearchOrder}
               handleSearchOrder={handleSearchOrder} // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
               handleOrderStatusButtonClick={handleOrderStatusButtonClick} // 모달창 ProcessCode 필터링 버튼 클릭에 대한 처리 함수
