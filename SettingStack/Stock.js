@@ -98,7 +98,7 @@ const Stock = () => {
           // 메인 메뉴 아이템의 품절 상태를 업데이트하는 API 호출 로직 추가...
           try {
             const response = await axios.post(
-              "http://211.54.171.41:3000/api/store/updateStoreItemSoldOut",
+              "http://211.54.171.41:3000/api/store/updateStoreItemSoldOutforAdmin",
               requestData,
               {
                 headers: { "Content-Type": "application/json" },
