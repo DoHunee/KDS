@@ -47,10 +47,17 @@ const ModalComp = ({
     handleSearchOrder(); // searchOrder가 변경될 때마다 주문을 검색하고 업데이트합니다.
   }, [searchOrder]); // searchOrder가 변경될 때마다 useEffect가 실행됩니다.
 
+  useEffect(() => {
+    if (paymentDetails) {
+      setIsPaymentDetailsModalVisible(true);
+    }
+  }, [paymentDetails]); // paymentDetails가 변경될 때마다 실행됩니다. => 모달창 바로바로 뜨게!
+
   const dispatch = useDispatch();
   const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
   const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
-  
+  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =
+    useState(false);
 
   // API로 결제내역 가져오는 코드!
   const fetchPaymentDetails = async (orderKey) => {
@@ -64,7 +71,7 @@ const ModalComp = ({
       );
       console.log("결제 내역 응답:", response.data); // 응답 로깅
       setPaymentDetails(response.data); // 응답 데이터를 상태에 저장
-      // 여기에 결제 내역을 표시하는 로직을 추가할 수 있습니다 (예: 모달 열기)
+      setIsPaymentDetailsModalVisible(true); // 모달을 표시하기 위해 상태 업데이트
     } catch (error) {
       console.error("결제 내역 조회 중 오류 발생:", error);
     }
@@ -78,7 +85,11 @@ const ModalComp = ({
         (order) => order.OrderKey === orderKey
       );
 
-      if  (selectedOrder && (selectedOrder.ProcessCode === "cancel" || selectedOrder.ProcessCode === "decline")) {
+      if (
+        selectedOrder &&
+        (selectedOrder.ProcessCode === "cancel" ||
+          selectedOrder.ProcessCode === "decline")
+      ) {
         // 이미 "cancel" 상태인 경우 사용자에게 알림 표시
         Alert.alert("알림", "이미 결제취소된 주문입니다");
         return; // 함수 종료
@@ -129,41 +140,51 @@ const ModalComp = ({
   };
 
   // 결제 내역 섹션을 렌더링하는 함수
-  const renderPaymentDetails = (orderKey) => {
-    if (!paymentDetails || !showPaymentDetails[orderKey]) return null; // 해당 주문의 결제 내역 데이터가 없거나 표시 상태가 false일 경우 렌더링하지 않음
-
-    // 결제 내역 데이터를 렌더링하는 UI 구성
+  const renderPaymentDetailsModal = (orderKey) => {
+    if (!paymentDetails || !showPaymentDetails[orderKey]) return null;
     return (
-      <View style={styles.paymentDetailsContainer}>
-        <Text style={styles.paymentDetailsTitle}>결제 상세 정보:</Text>
-        {paymentDetails.map((detail, index) => (
-          <View key={index} style={styles.paymentDetailItem}>
-            <Text style={styles.paymentDetailText}>
-              금액: {detail.Amount}원
-            </Text>
-            <Text style={styles.paymentDetailText}>
-              카드명: {detail.CardName}
-            </Text>
-            <Text style={styles.paymentDetailText}>
-              카드번호: {detail.CardNo}
-            </Text>
-            <Text style={styles.paymentDetailText}>
-              승인번호: {detail.AppNo}
-            </Text>
-            <Text style={styles.paymentDetailText}>
-              결제시간: {detail.AppTime}
-            </Text>
-            {/* 필요에 따라 더 많은 결제 정보를 추가할 수 있음 */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isPaymentDetailsModalVisible}
+        onRequestClose={() => setIsPaymentDetailsModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>결제 상세 정보</Text>
+            {paymentDetails &&
+              paymentDetails.map((detail, index) => (
+                <View key={index} style={styles.paymentDetailItem}>
+                  {/* 결제 상세 정보 항목 렌더링 */}
+                  <Text>금액: {detail.Amount}원</Text>
+                  <Text>카드명: {detail.CardName}</Text>
+                  <Text style={styles.paymentDetailText}>
+                    카드번호: {detail.CardNo}
+                  </Text>
+                  <Text style={styles.paymentDetailText}>
+                    승인번호: {detail.AppNo}
+                  </Text>
+                  <Text style={styles.paymentDetailText}>
+                    결제시간: {detail.AppTime}
+                  </Text>
+                  {/* 필요한 정보 추가 */}
+                </View>
+              ))}
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => handleCancelPayment(orderKey)}
+            >
+              <Text style={styles.cancelButtonText}>결제취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setIsPaymentDetailsModalVisible(false)}
+            >
+              <Text style={styles.textStyle}>닫기</Text>
+            </TouchableOpacity>
           </View>
-        ))}
-        {/* "결제취소" 버튼 추가 */}
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => handleCancelPayment(orderKey)}
-        >
-          <Text style={styles.cancelButtonText}>결제취소</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </Modal>
     );
   };
 
@@ -299,7 +320,8 @@ const ModalComp = ({
                   결제 상세 보기
                 </Text>
               </TouchableOpacity>
-              {renderPaymentDetails(order.OrderKey)}
+              {showPaymentDetails[order.OrderKey] &&
+                renderPaymentDetailsModal(order.OrderKey)}
             </View>
           </View>
         ))}
@@ -529,11 +551,53 @@ const styles = StyleSheet.create({
     borderWidth: 1, // 테두리 두께
     borderColor: "#FF6347", // 테두리 색상
     alignSelf: "center", // 컨테이너 중앙에 배치
+    marginBottom: 20,
   },
   cancelButtonText: {
     color: "#FFFFFF", // 텍스트 색상
     fontSize: 14, // 텍스트 크기
     fontWeight: "bold", // 텍스트 굵기
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    borderWidth: 2, // 선의 두께를 더 두껍게 설정
+    borderColor: "#000", // 선의 색상을 검정색으로 설정
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4, // 그림자의 세로 오프셋을 더 크게 설정하여 그림자가 더 길게 보이도록 함
+    },
+    shadowOpacity: 0.5, // 그림자의 투명도를 더 낮추어 그림자를 더 진하게 함
+    shadowRadius: 6, // 그림자의 블러 반경을 더 크게 설정하여 그림자가 더 넓게 퍼지도록 함
+    elevation: 10, // 안드로이드에서의 그림자 깊이를 더 크게 설정하여 그림자가 더 뚜렷하게 보이도록 함
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });
 
