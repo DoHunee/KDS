@@ -50,7 +50,7 @@ const ModalComp = ({
   const dispatch = useDispatch();
   const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
   const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
-  const [cancelStatusMessage, setCancelStatusMessage] = useState("");
+  
 
   // API로 결제내역 가져오는 코드!
   const fetchPaymentDetails = async (orderKey) => {
@@ -78,10 +78,9 @@ const ModalComp = ({
         (order) => order.OrderKey === orderKey
       );
 
-      if (selectedOrder && selectedOrder.ProcessCode === "cancel") {
+      if  (selectedOrder && (selectedOrder.ProcessCode === "cancel" || selectedOrder.ProcessCode === "decline")) {
         // 이미 "cancel" 상태인 경우 사용자에게 알림 표시
-        setCancelStatusMessage("이미 결제취소된 주문입니다");
-        Alert.alert("알림", cancelStatusMessage);
+        Alert.alert("알림", "이미 결제취소된 주문입니다");
         return; // 함수 종료
       }
 
