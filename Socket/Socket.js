@@ -32,10 +32,10 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
   });
 
   socket.on("open", (data) => {
-    console.log("Opening and closing points? : ", data);
+    // console.log("Opening and closing points? : ", data);
     Alert.alert(
-      "소켓 데이터 수신", // 알림 창 제목
-      `${JSON.stringify(data)}`, // 열기를 원하십니까??
+      "< OPEN >", // 알림 창 제목
+      "개점을 원하십니까?", // 열기를 원하십니까??
       [
         {
           text: "확인",

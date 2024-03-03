@@ -105,15 +105,11 @@ const LoginScreen = ({ navigation, route }) => {
   // 로그아웃 로직
   const handleLogout = async () => {
     Alert.alert(
-      "로그아웃",
+      "< CLOSE >",
       "정말로 로그아웃 하시겠습니까?",
       [
         {
-          text: "취소",
-          style: "cancel",
-        },
-        {
-          text: "로그아웃",
+          text: "폐점",
           onPress: async () => {
             dispatch(logout()); // 전역으로 업데이트
             setIsLoggedIn(false); // 로컬 상태 업데이트
@@ -122,6 +118,22 @@ const LoginScreen = ({ navigation, route }) => {
               socket.current = null; // 소켓 상태 초기화
             }
           },
+        },
+        {
+          text: "로그아웃",
+          onPress: async () => {
+            dispatch(logout()); // 전역으로 업데이트
+            setIsLoggedIn(false); // 로컬 상태 업데이트
+            if (socket.current) {
+              socket.current.emit("close", {stCode: storedNumberExample}); //폐점 신호를 서버에 전달!
+              socket.current.disconnect(); // 소켓 연결 해제
+              socket.current = null; // 소켓 상태 초기화
+            }
+          },
+        },
+        {
+          text: "취소",
+          style: "cancel",
         },
       ],
       { cancelable: false }
@@ -160,9 +172,9 @@ const LoginScreen = ({ navigation, route }) => {
         // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
 
         // 소켓 연결 후 "open" 이벤트 전송
-        // socket.current.emit("open", {
-        //   stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
-        // });
+        socket.current.emit("open", {
+          stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
+        });
         
       }
     } else {

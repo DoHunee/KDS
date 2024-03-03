@@ -31,6 +31,11 @@ const ModalComp = ({
   selectedOrders,
   selectedCancelOrders,
 }) => {
+  const dispatch = useDispatch();
+  const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
+  const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
+  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] = useState(false);
+
   useEffect(() => {
     if (modalVisible) {
       // 모달이 보이는 상태일 때만 경고창을 띄웁니다.
@@ -52,12 +57,6 @@ const ModalComp = ({
       setIsPaymentDetailsModalVisible(true);
     }
   }, [paymentDetails]); // paymentDetails가 변경될 때마다 실행됩니다. => 모달창 바로바로 뜨게!
-
-  const dispatch = useDispatch();
-  const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
-  const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
-  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =
-    useState(false);
 
   // API로 결제내역 가져오는 코드!
   const fetchPaymentDetails = async (orderKey) => {
@@ -141,6 +140,7 @@ const ModalComp = ({
 
   // 결제 내역 섹션을 렌더링하는 함수
   const renderPaymentDetailsModal = (orderKey) => {
+    
     if (!paymentDetails || !showPaymentDetails[orderKey]) return null;
 
     // orderKey를 사용하여 현재 주문 객체 찾기

@@ -134,7 +134,6 @@ const OrderCard = ({
           <Text style={styles.text}>{UserName} 【{UserHp}】</Text>
           <Text>{formattedTime}</Text>
           <Text>OrderKey : {OrderKey}</Text>
-          <Text>ProcessCode : {ProcessCode}</Text>  
         </View>
         <View>
           <Text style={styles.orderText}>
