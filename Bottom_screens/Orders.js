@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  ScrollView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../components/OrderList";
@@ -18,18 +19,18 @@ import {
   onDecline,
   onImmediateReceipt,
 } from "../store/storeSlice";
+import { Ionicons } from "@expo/vector-icons";
 
 const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const pendingOrders = useSelector(
-    (state) => state.OrdersDistrubutionSlice.pending
-  );
+  const pendingOrders = useSelector((state) => state.OrdersDistrubutionSlice.pending);
   const [orders, setOrders] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selctedAction, setSelctedAction] = useState(null);
   const [selctedOrderKey, setSelctedOrderKey] = useState(null);
+  const scrollViewRef = useRef(null); // 스크롤 위치를 조작할 때 사용됩니다.
 
   // 로그인 안했는데 다른 탭 접근
   useEffect(() => {
@@ -249,6 +250,19 @@ const Orders = ({ navigation }) => {
     }
   };
 
+    // 스크롤 내리는 함수 정의
+  const scrollToBottom = () => {
+    scrollViewRef.current.scrollToEnd({ animated: true });
+    // console.log("아래로 이동합니다!");
+  };
+
+  // 스크롤 위로 이동하는 함수
+  const scrollToTop = () => {
+    scrollViewRef.current.scrollToOffset({ animated: true, offset: 0 });
+  };
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       {isLoggedIn ? (
@@ -258,11 +272,33 @@ const Orders = ({ navigation }) => {
             length={orders.length}
             onAcceptAll={handleAcceptAllOrders}
           />
+          <SafeAreaView style={{ flex: 1 }}>
           <OrderList
+            ref={scrollViewRef}
             buttons={["수락", "거절", "즉시수령"]}
             itemsData={orders}
             buttonPress={handleButtonPress}
           />
+          </SafeAreaView>
+
+           {/* up-down 버튼! */}
+           <View style={styles.buttonContainer}>
+            {/* 위로 이동하는 버튼 */}
+            <TouchableOpacity
+              style={styles.scrollToTopButton}
+              onPress={scrollToTop}
+            >
+              <Ionicons name="arrow-up" size={24} color="white" />
+            </TouchableOpacity>
+
+            {/* 아래로 이동하는 버튼 */}
+            <TouchableOpacity
+              style={styles.scrollToBottomButton}
+              onPress={scrollToBottom}
+            >
+              <Ionicons name="arrow-down" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
         </>
       ) : null}
 
@@ -347,6 +383,30 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+
+  buttonContainer: {
+    flexDirection: "column", // column으로 변경하여 수직으로 배치
+    alignItems: "center", // 가운데 정렬
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+  },
+
+  scrollToTopButton: {
+    backgroundColor: "skyblue",
+    padding: 7,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  scrollToBottomButton: {
+    backgroundColor: "skyblue",
+    padding: 7,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

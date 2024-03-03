@@ -3,10 +3,10 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , forwardRef  } from "react";
 import OrderCard from "./OrderCard";
 
-const OrderList = ({ itemsData, buttons, buttonPress }) => {
+const OrderList = forwardRef(({ itemsData, buttons, buttonPress }, ref) => {
   
   const [listItems, setListItems] = useState([]);
   
@@ -36,6 +36,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
   return (
     <View>
       <FlatList
+        ref={ref}
         data={listItems} // 수정된 listItems를 사용
         renderItem={({ item }) => (
           <OrderCard
@@ -57,7 +58,7 @@ const OrderList = ({ itemsData, buttons, buttonPress }) => {
       />
     </View>
   );
-};
+});
 
 export default OrderList;
 
