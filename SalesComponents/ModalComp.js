@@ -31,13 +31,14 @@ const ModalComp = ({
   selectedOrders,
   selectedCancelOrders,
   searchCriteria,
-  setSearchCriteria
+  setSearchCriteria,
 }) => {
   const dispatch = useDispatch();
   const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
   const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
-  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =useState(false);
-  
+  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =
+    useState(false);
+
   useEffect(() => {
     if (modalVisible) {
       // 모달이 보이는 상태일 때만 경고창을 띄웁니다.
@@ -252,7 +253,13 @@ const ModalComp = ({
         <View style={styles.searchContainerModal}>
           <TextInput
             style={styles.searchInputModal}
-            placeholder="주문 번호를 입력하세요."
+            placeholder={
+              searchCriteria === "STSeq"
+                ? "주문 번호를 입력하세요."
+                : searchCriteria === "UserHp"
+                ? "휴대폰 번호를 입력하세요."
+                : "주문 키를 입력하세요."
+            }
             placeholderTextColor="rgba(0, 0, 0, 0.5)" // 투명한 검정 색상으로 설정
             value={searchOrder}
             onChangeText={(text) => setSearchOrder(text)}
@@ -703,7 +710,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-
 
   // 모달 닫는 버튼 스타일
   closeButton: {
