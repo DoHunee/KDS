@@ -73,7 +73,8 @@ const connectToServer = (stCode, posSeq, userId) => {
       console.log("중복된 주문입니다");
     } else {
       // 중복되지 않은 새 주문이 있으면 기존 주문 목록에 추가
-      orderListArray = orderListArray.concat(wrappedNewOrderList);
+      // orderListArray = orderListArray.concat(wrappedNewOrderList);
+      orderListArray = [...wrappedNewOrderList]; // 기존 주문 목록을 새 주문 목록으로 대체
       console.log("콘솔로 온 데이터",wrappedNewOrderList);
   
       // 새 주문 알림 표시
