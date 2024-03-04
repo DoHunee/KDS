@@ -10,7 +10,7 @@ const SERVER_URL = "http://211.54.171.41:8025/admin";
 // 주문 데이터를 저장할 배열
 let orderListArray = [];
 
-const connectToServer = (stCode, posSeq, userId, setData) => {
+const connectToServer = (stCode, posSeq, userId) => {
 
   const socket = io(SERVER_URL, {
     // reconnection: false, // 자동 재접속 비활성화
@@ -74,6 +74,7 @@ const connectToServer = (stCode, posSeq, userId, setData) => {
     } else {
       // 중복되지 않은 새 주문이 있으면 기존 주문 목록에 추가
       orderListArray = orderListArray.concat(wrappedNewOrderList);
+      console.log("콘솔로 온 데이터",wrappedNewOrderList);
   
       // 새 주문 알림 표시
       Alert.alert(

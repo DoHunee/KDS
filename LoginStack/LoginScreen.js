@@ -241,7 +241,7 @@ const LoginScreen = ({ navigation, route }) => {
     >
       <TouchableWithoutFeedback onPress={handleDismissKeyboard}>
         <View style={styles.container}>
-          <Text style={styles.title}>🚀 OPen 🚀</Text>
+          <Text style={styles.title}>🚀 Open 🚀</Text>
           {isLoggedIn ? (
             // 로그인 후 화면
             <View>

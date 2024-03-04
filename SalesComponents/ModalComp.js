@@ -30,12 +30,14 @@ const ModalComp = ({
   handleOrderStatusButtonClick,
   selectedOrders,
   selectedCancelOrders,
+  searchCriteria,
+  setSearchCriteria
 }) => {
   const dispatch = useDispatch();
   const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
   const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
-  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] = useState(false);
-
+  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =useState(false);
+  
   useEffect(() => {
     if (modalVisible) {
       // 모달이 보이는 상태일 때만 경고창을 띄웁니다.
@@ -140,7 +142,6 @@ const ModalComp = ({
 
   // 결제 내역 섹션을 렌더링하는 함수
   const renderPaymentDetailsModal = (orderKey) => {
-    
     if (!paymentDetails || !showPaymentDetails[orderKey]) return null;
 
     // orderKey를 사용하여 현재 주문 객체 찾기
@@ -216,6 +217,37 @@ const ModalComp = ({
         style={styles.modalContainer}
         contentContainerStyle={styles.modalContentContainer}
       >
+        {/* 검색 기준 선택 버튼 추가 */}
+        <View style={styles.searchCriteriaContainer}>
+          <TouchableOpacity
+            style={[
+              styles.criteriaButton,
+              searchCriteria === "STSeq" && styles.selectedCriteriaButton,
+            ]}
+            onPress={() => setSearchCriteria("STSeq")}
+          >
+            <Text style={styles.criteriaButtonText}>주문 번호</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.criteriaButton,
+              searchCriteria === "UserHp" && styles.selectedCriteriaButton,
+            ]}
+            onPress={() => setSearchCriteria("UserHp")}
+          >
+            <Text style={styles.criteriaButtonText}>휴대폰 번호</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.criteriaButton,
+              searchCriteria === "OrderKey" && styles.selectedCriteriaButton,
+            ]}
+            onPress={() => setSearchCriteria("OrderKey")}
+          >
+            <Text style={styles.criteriaButtonText}>주문 키</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* 검색 상자 및 검색 버튼 추가 */}
         <View style={styles.searchContainerModal}>
           <TextInput
@@ -611,6 +643,79 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+  orderText: {
+    fontSize: 16, // 텍스트 크기
+    color: "#333", // 텍스트 색상
+    marginBottom: 5, // 요소 하단의 마진
+    fontWeight: "bold", // 글자 굵기
+  },
+
+  searchCriteriaContainer: {
+    flexDirection: "row", // 버튼을 가로로 나열
+    justifyContent: "center", // 버튼을 중앙 정렬
+    marginVertical: 10, // 상하 마진 추가
+  },
+  criteriaButton: {
+    padding: 10, // 패딩 설정
+    marginHorizontal: 5, // 좌우 마진 추가
+    backgroundColor: "#ddd", // 기본 배경색 설정
+    borderRadius: 5, // 버튼의 모서리를 둥글게
+  },
+  selectedCriteriaButton: {
+    backgroundColor: "#aaa", // 선택된 버튼의 배경색 변경
+  },
+  criteriaButtonText: {
+    fontSize: 16, // 텍스트 크기 설정
+    color: "#333", // 텍스트 색상 설정
+  },
+
+  // 검색 상자 및 검색 버튼 스타일
+  searchContainerModal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
+  },
+  searchInputModal: {
+    flex: 1,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 8,
+  },
+  searchButtonModal: {
+    backgroundColor: "#3498db",
+    padding: 10,
+    borderRadius: 5,
+  },
+  searchButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  // 필터링된 주문 목록 스타일
+  orderItem: {
+    backgroundColor: "#f9f9f9",
+    borderWidth: 1,
+    borderColor: "#eee",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+
+
+  // 모달 닫는 버튼 스타일
+  closeButton: {
+    backgroundColor: "#3498db",
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+  },
+  closeButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
 

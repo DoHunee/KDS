@@ -54,6 +54,10 @@ const Sales = () => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
 
+  const [searchCriteria, setSearchCriteria] = useState("STSeq"); // 기본 검색 기준을 'STSeq'로 설정
+
+
+  
   // 로그인 관련
   useEffect(() => {
     if (!isLoggedIn) {
@@ -301,33 +305,36 @@ const Sales = () => {
     setselectedcancelOrders([]);
     setReadyButtonTranslucent(false);
     setDeclineButtonTranslucent(false);
-    let filteredOrders = [];
+  
     // 날짜 범위 선택 시 단일 날짜 선택 초기화
     if (selectedStartDate && selectedEndDate) {
       setSelectedDate(null); // 단일 날짜 선택 초기화
     }
-    // 주문 번호가 입력되지 않은 경우
-    if (!searchOrder) {
-      filteredOrders = completeOrders.filter((order) => {
-        const orderDate = order.SDDate.split(" ")[0];
-        const isWithinDateRange = selectedDate
-          ? orderDate === selectedDate
-          : new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
+  
+    let filteredOrders = completeOrders.filter((order) => {
+      // 날짜 필터링 로직
+      const orderDate = order.SDDate.split(" ")[0];
+      const isWithinDateRange = selectedDate
+        ? orderDate === selectedDate
+        : new Date(orderDate) >= new Date(selectedStartDate) && new Date(orderDate) <= new Date(selectedEndDate);
+  
+      // 검색 기준에 따른 필터링 로직
+      if (!searchOrder) {
         return isWithinDateRange;
-      });
-    } else {
-      // 주문 번호 필터링 로직
-      filteredOrders = completeOrders.filter(
-        (order) =>
-          order.STSeq.toString().includes(searchOrder) &&
-          (!selectedDate || order.SDDate.split(" ")[0] === selectedDate) &&
-          (!selectedStartDate ||
-            new Date(order.SDDate.split(" ")[0]) >=
-              new Date(selectedStartDate)) &&
-          (!selectedEndDate ||
-            new Date(order.SDDate.split(" ")[0]) <= new Date(selectedEndDate))
-      );
-    }
+      } else {
+        switch (searchCriteria) {
+          case 'STSeq':
+            return order.STSeq.toString().includes(searchOrder) && isWithinDateRange;
+          case 'UserHp':
+            return order.UserHp.includes(searchOrder) && isWithinDateRange;
+          case 'OrderKey':
+            return order.OrderKey.toString().includes(searchOrder) && isWithinDateRange;
+          default:
+            return isWithinDateRange;
+        }
+      }
+    });
+  
     // 필터링된 주문 목록 설정
     setSelectedOrders(filteredOrders);
   };
@@ -482,6 +489,8 @@ const Sales = () => {
               cancelButtonTranslucent={cancelButtonTranslucent}
               selectedOrders={selectedOrders}
               selectedCancelOrders={selectedCancelOrders}
+              searchCriteria={searchCriteria}
+              setSearchCriteria = {setSearchCriteria}
               setSearchOrder={setSearchOrder}
               handleSearchOrder={handleSearchOrder} // 모달창 내 검색 버튼을 눌렀을 때의 동작을 처리하는 함수
               handleOrderStatusButtonClick={handleOrderStatusButtonClick} // 모달창 ProcessCode 필터링 버튼 클릭에 대한 처리 함수
