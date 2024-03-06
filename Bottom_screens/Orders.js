@@ -331,7 +331,7 @@ const Orders = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleDeclineReason(false)}
+              onPress={() => setIsModalVisible(false)}
             >
               <Text style={styles.textStyle}>취소</Text>
             </TouchableOpacity>

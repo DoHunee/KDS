@@ -36,8 +36,7 @@ const ModalComp = ({
   const dispatch = useDispatch();
   const [paymentDetails, setPaymentDetails] = useState(null); // 결제 내역을 저장할 상태
   const [showPaymentDetails, setShowPaymentDetails] = useState({}); //상세결제내역 보였다 안보였다 하게!
-  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =
-    useState(false);
+  const [isPaymentDetailsModalVisible, setIsPaymentDetailsModalVisible] =useState(false);
 
   useEffect(() => {
     if (modalVisible) {
