@@ -7,6 +7,7 @@ const initialState = {
   pending: [], // 대기 목록
   current: [], //현재 주문 목록
   complete: [], //완료 목록
+  OOrders : []
 };
 
 // 새로운 전역 상태 추가
@@ -15,6 +16,7 @@ const globalState = {
   pending: initialState.pending,
   current: initialState.current,
   complete: initialState.complete,
+  OOrders : initialState.OOrders,
   
   
 };
@@ -24,6 +26,25 @@ export const OrdersDistrubutionSlice = createSlice({
   name: "ordersDistribution",
   initialState: { ...initialState, ...globalState },
   reducers: {
+
+    // orders 배열 업데이트 리듀서
+    updateOOrders: (state, action) => {
+      // 새로운 주문 목록
+      const newOrders = action.payload;
+      
+      // 중복된 주문을 제거하고 남은 주문만을 새로운 배열에 추가
+      const uniqueOrders = newOrders.filter((newOrder) => (
+        !state.OOrders.some((existingOrder) => (
+          existingOrder.STSeq === newOrder.STSeq
+        ))
+      ));
+      
+      // 새로운 배열을 기존 주문 배열에 추가하여 중복 없이 누적
+      state.OOrders = [...state.OOrders, ...uniqueOrders];
+      
+      console.log("OOrders 배열이 업데이트되었습니다:", state.OOrders);
+    },
+
     // 대기 중인 주문 목록을 초기 데이터로 설정
     handlePending: (state, action) => {
       // state.pending = data;
@@ -190,6 +211,7 @@ export const OrdersDistrubutionSlice = createSlice({
 
 // Export action creator 함수
 export const {
+  updateOOrders,
   handlePending,
   onConfirm,
   onDecline,

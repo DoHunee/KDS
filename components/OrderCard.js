@@ -21,7 +21,7 @@ const OrderCard = ({
   
   // 여기서 data 객체를 구성하고 있는겨!!!
   const handleOnPress = (data) => {
-    onPress({ action: data, STSeq: STSeq ,OrderKey : OrderKey });
+    onPress({ action: data, STSeq: STSeq ,OrderKey : OrderKey , ProcessCode : ProcessCode });
   };
 
   const [hours, minutes] = SDTime.split(":").map((num) => parseInt(num, 10));

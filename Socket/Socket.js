@@ -43,12 +43,12 @@ const connectToServer = (stCode, posSeq, userId) => {
             console.log("확인 버튼 클릭됨");
             // "open" 이벤트로 "OK"를 다시 emit
             socket.emit("open", "OK");
-          }
+          },
         },
         {
           text: "취소",
           onPress: () => console.log("취소 버튼 클릭됨"),
-          style: "cancel"
+          style: "cancel",
         },
       ],
       { cancelable: false }
@@ -73,9 +73,11 @@ const connectToServer = (stCode, posSeq, userId) => {
       console.log("중복된 주문입니다");
     } else {
       // 중복되지 않은 새 주문이 있으면 기존 주문 목록에 추가
-      // orderListArray = orderListArray.concat(wrappedNewOrderList);
-      orderListArray = [...wrappedNewOrderList]; // 기존 주문 목록을 새 주문 목록으로 대체
-      console.log("콘솔로 온 데이터",wrappedNewOrderList);
+      // orderListArray = [...wrappedNewOrderList]; // 기존 주문 목록을 새 주문 목록으로 대체
+      orderListArray = [...orderListArray, ...wrappedNewOrderList]; // 기존 주문 목록에 새 주문 목록을 추가   
+      
+      // console.log("콘솔로 온 데이터",wrappedNewOrderList);
+      // console.log("디스패칭할  데이터",orderListArray);
   
       // 새 주문 알림 표시
       Alert.alert(
@@ -92,7 +94,7 @@ const connectToServer = (stCode, posSeq, userId) => {
       store.dispatch(handlePending(orderListArray));
     }
   });
-  
+
   return socket; // 생성된 소켓 반환
 };
 

@@ -124,11 +124,6 @@ const LoginScreen = ({ navigation, route }) => {
           onPress: async () => {
             dispatch(logout()); // 전역으로 업데이트
             setIsLoggedIn(false); // 로컬 상태 업데이트
-            if (socket.current) {
-              socket.current.emit("close", {stCode: storedNumberExample}); //폐점 신호를 서버에 전달!
-              socket.current.disconnect(); // 소켓 연결 해제
-              socket.current = null; // 소켓 상태 초기화
-            }
           },
         },
         {
@@ -161,20 +156,17 @@ const LoginScreen = ({ navigation, route }) => {
     // 로그인 상태가 true일 때 실행되는 로직
     if (isLoggedIn) {
       navigation.navigate("Orders");
-      // console.log("로그인 후 isLoggedIn:", isLoggedIn);
+      
       // 현재 소켓 연결이 없을 때만 소켓 연결 시도
       if (!socket.current) {
         // 어차피 example 값과 맞아야 로그인이 되니까 이렇게 해도 상관없네!
         socket.current = connectToServer(storedNumberExample,CategoryNumberExample,EmployeeIDExample,dispatch);
         console.log(storedNumberExample, CategoryNumberExample, EmployeeIDExample);
-
-        // const newSocket = connectToServer(storedNumber.join(''), categoryNumber, employeeID, dispatch);
-        // console.log ("여기서 값이 안뜨네!",storedNumber.join(''), categoryNumber, employeeID);
-
-        // 소켓 연결 후 "open" 이벤트 전송
-        socket.current.emit("open", {
-          stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
-        });
+       
+        // // 소켓 연결 후 "open" 이벤트 전송
+        // socket.current.emit("open", {
+        //   stCode: storedNumberExample, // 배열 형태의 storedNumber를 문자열로 결합
+        // });
         
       }
     } else {

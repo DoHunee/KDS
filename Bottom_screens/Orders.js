@@ -18,6 +18,7 @@ import {
   onConfirm,
   onDecline,
   onImmediateReceipt,
+  updateOOrders,
 } from "../store/storeSlice";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -25,7 +26,8 @@ const Orders = ({ navigation }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const pendingOrders = useSelector((state) => state.OrdersDistrubutionSlice.pending);
-  const [orders, setOrders] = useState([]);
+  const OOrders = useSelector((state) => state.OrdersDistrubutionSlice.OOrders);
+  const [orders, setOrders] = useState([]);  
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selctedAction, setSelctedAction] = useState(null);
@@ -39,7 +41,7 @@ const Orders = ({ navigation }) => {
     }
   }, [isLoggedIn]);
 
-  // 소켓으로 가져온 주문목록 StoreSlice.js에서 지정된 handlePending
+  // handlePending 액션을 디스패치하여 초기 pendingOrders 상태를 가져옵니다. 
   useEffect(() => {
     dispatch(handlePending());
   }, []);
