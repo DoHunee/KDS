@@ -48,12 +48,28 @@ const Orders = ({ navigation }) => {
 
   //pendingOrders 상태에 변경사항이 있을 때마다 orders 상태가 업데이트되고, 이는 OrderList 컴포넌트에 반영되어 UI가 업데이트되어야 합니다.
   useEffect(() => {
-    // pendingOrders가 존재하고 배열이면 orders 상태를 업데이트합니다.
     if (pendingOrders && Array.isArray(pendingOrders)) {
-      setOrders(pendingOrders); // pendingOrders를 orders로 업데이트합니다.
-      console.log("확인해라!!!!!!", pendingOrders);
+      // OOrders에 없는 pendingOrders만 필터링합니다.
+      const newOrders = pendingOrders.filter(pendingOrder => 
+        !OOrders.some(oOrder => JSON.stringify(oOrder) === JSON.stringify(pendingOrder))
+      );
+  
+      // 필터링된 새로운 주문을 기존 orders에 추가합니다.
+      if (newOrders.length > 0) {
+        setOrders(prevOrders => [...prevOrders, ...newOrders]);
+        console.log("추가된 새로운 주문", newOrders);
+      }
     }
-  }, [pendingOrders]);
+  }, [pendingOrders, OOrders]); // 의존성 배열에 OOrders를 추가합니다.
+
+
+  useEffect(() => {
+    console.log("orders 배열이 업데이트되었습니다:", orders);
+    // orders와 OOrders가 실제로 다른 경우에만 updateOOrders 액션을 디스패치합니다.
+    if (JSON.stringify(orders) !== JSON.stringify(OOrders)) {
+      dispatch(updateOOrders(orders));
+    }
+  }, [orders]);
 
   // 버튼 클릭할때 이벤트!! (수락,거절 ,즉시수령 )
   const handleButtonPress = async (data) => {
@@ -85,6 +101,8 @@ const Orders = ({ navigation }) => {
           // 성공 응답 처리
           console.log("성공:", result.res_msg);
           dispatch(onConfirm({ STSeq: data.STSeq, res_cd: result.res_cd }));
+            // 'orders' 배열에서 현재 처리한 주문을 제거
+          setOrders(prevOrders => prevOrders.filter(order => order.OrderKey !== data.OrderKey));
           // 필요한 추가 처리 작성
         } else {
           // 실패 응답 처리
@@ -95,7 +113,8 @@ const Orders = ({ navigation }) => {
         console.error("API 요청 중 오류 발생:", error);
         // 네트워크 에러 처리
       }
-    } else if (data.action === "즉시수령") {
+    } 
+    else if (data.action === "즉시수령") {
       Alert.alert(
         "즉시 수령 확인",
         "정말로 즉시 수령하시겠습니까?",
@@ -138,6 +157,7 @@ const Orders = ({ navigation }) => {
                       res_cd: result.res_cd,
                     })
                   );
+                  setOrders(prevOrders => prevOrders.filter(order => order.OrderKey !== data.OrderKey));
                   // 필요한 추가 처리 작성
                 } else {
                   // 실패 응답 처리
@@ -153,7 +173,8 @@ const Orders = ({ navigation }) => {
         ],
         { cancelable: false }
       );
-    } else if (data.action === "거절") {
+    } 
+    else if (data.action === "거절") {
       setSelectedOrderId(data.STSeq);
       setSelctedAction(data.action);
       setSelctedOrderKey(data.OrderKey);
@@ -186,6 +207,8 @@ const Orders = ({ navigation }) => {
         if (result.res_cd === "00") {
           // 성공 응답 처리, 주문 수락 액션 디스패치
           dispatch(onConfirm({ STSeq: order.STSeq, res_cd: result.res_cd }));
+          
+          
         } else {
           // 실패 응답 처리, 필요한 에러 처리 작성
           console.error("주문 수락 실패:", result.res_msg);
@@ -239,6 +262,7 @@ const Orders = ({ navigation }) => {
         console.log("디스패치에 쓰이는 값 !!!",selectedOrderId,result.res_cd,reason); //  44 00 고객 요청에 따른 취소
         dispatch(onDecline({STSeq: selectedOrderId,res_cd: result.res_cd,declineReason: reason})
         );
+        setOrders(prevOrders => prevOrders.filter(order => order.OrderKey !== selctedOrderKey));
       } else {
         console.error("실패:", result.res_msg);
         // 필요한 에러 처리 작성
