@@ -313,13 +313,10 @@ const ModalComp = ({
             ]}
           >
             <View style={styles.orderBackground}>
-              <Text style={styles.orderText}>
-                이름: {order.UserName} [{order.UserHp}]
-              </Text>
-              <Text style={styles.orderText}>OrderKey : {order.OrderKey}</Text>
-
-              <View style={styles.lineStyle}></View>
+              <Text style={styles.orderText}>이름: {order.UserName} [{order.UserHp}]</Text>
               <Text style={styles.orderText}>주문번호 : {order.STSeq} </Text>
+              {/* <Text style={styles.orderText}>OrderKey : {order.OrderKey}</Text> */}
+              <View style={styles.lineStyle}></View>
               <Text style={styles.orderText}>판매날짜 : {order.SDDate} </Text>
               <Text style={styles.orderText}>판매시간 : {order.SDTime} </Text>
               <Text style={styles.orderText}>

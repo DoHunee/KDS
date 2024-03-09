@@ -42,7 +42,7 @@ export const OrdersDistrubutionSlice = createSlice({
       // 새로운 배열을 기존 주문 배열에 추가하여 중복 없이 누적
       state.OOrders = [...state.OOrders, ...uniqueOrders];
       
-      console.log("OOrders 배열이 업데이트되었습니다:", state.OOrders);
+      // console.log("OOrders 배열이 업데이트되었습니다:", state.OOrders);
     },
 
     // 대기 중인 주문 목록을 초기 데이터로 설정
